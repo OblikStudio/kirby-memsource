@@ -1,0 +1,11 @@
+{
+  "repositories": [
+    {
+      "type": "git",
+      "url": "https://github.com/theodoreb/php-memsource.git"
+    }
+  ],
+  "require": {
+    "guzzlehttp/guzzle": "^6.3"
+  }
+}
