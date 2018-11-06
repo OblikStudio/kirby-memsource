@@ -2,6 +2,8 @@
 
 require_once(__DIR__ . DS . 'vendor' . DS . 'autoload.php');
 require_once(__DIR__ . DS . 'src' . DS . 'Memsource.php');
+require_once(__DIR__ . DS . 'src' . DS . 'BlueprintReader.php');
+require_once(__DIR__ . DS . 'src' . DS . 'Exporter.php');
 
 if (function_exists('panel')) {
     panel()->routes([
@@ -25,12 +27,14 @@ if (function_exists('panel')) {
             'pattern' => 'memsource/upload',
             'method' => 'GET',
             'action' => function () {
-                echo "<pre>";
-                include __DIR__ . DS . 'src' . DS . 'utils' . DS . 'export-content.php';
-                return response::json($site_content);
+                $exporter = new Memsource\Exporter;
+
+                // return response::json($exporter->exportPage(site()->children()->findByURI('home/testimonials/michael-arrington')));
+                return response::json($exporter->export());
             }
         ]
     ]);
 }
+
 
 kirby()->set('widget', 'memsource', __DIR__ . DS . 'widgets' . DS . 'memsource');
