@@ -13,15 +13,12 @@ if (function_exists('panel')) {
             'method' => 'POST',
             'action' => function () {
                 $memsource = new Memsource\App;
-                $response = $memsource->login(
+                $data = $memsource->login(
                     $_POST['ms-username'],
                     $_POST['ms-password']
                 );
 
-                $data = json_decode($response->getBody());
-                $_SESSION['memsource_token'] = $data->token;
-
-                return $response->getBody();
+                return response::json($data);
             }
         ],
         [
@@ -43,14 +40,21 @@ if (function_exists('panel')) {
             'method' => 'GET',
             'action' => function () {
                 echo "<pre>";
-                // $client = new Memsource\App;
-                // $response = $client->readJob();
 
-                $jsonData = file_get_contents(__DIR__ . DS . 'import.json');
-                $parsedData = json_decode($jsonData, true);
+                // $jsonData = file_get_contents(__DIR__ . DS . 'import.json');
+                // $parsedData = json_decode($jsonData, true);
 
-                $importer = new Memsource\Importer;
-                $importer->import($parsedData, 'zh');
+                // $importer = new Memsource\Importer;
+                // $importer->import($parsedData, 'zh');
+
+
+                $memsource = new Memsource\App;
+
+                $response = $memsource->login('joroyordanov', 'BCRm6C6uZmjrQ9a');
+                return response::json($response);
+                // var_dump(json_decode($response->getBody(), true));
+                
+                return '_';
 
                 // return response::json($response);
             }

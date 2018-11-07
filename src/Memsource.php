@@ -4,21 +4,70 @@ namespace Memsource;
 use GuzzleHttp\Client;
 
 class App {
-	private static $client = null;
+	private static $file = __DIR__ . DS . '../memsource.json';
+	private $client = null;
 	private $token = null;
 
 	public function __construct () {
-		$this->token = 'zpSY5b8Jj150wfKdihyPQV04BcvdwJBbij4bHwBJsqkJJfC7RLJvOQItq0tfbh8D4';
-		static::$client = new Client(['base_uri' => 'https://cloud.memsource.com/web/api2/v1/']);
+		$store = static::store();
+
+		$this->client = new Client(['base_uri' => 'https://cloud.memsource.com/web/api2/v1/']);
+		$this->token = !empty($store['token']) ? $store['token'] : null;
+	}
+
+	private static function store ($mutator = null) {
+		$store = null;
+
+		try {
+			$store = file_get_contents(static::$file);
+			$store = json_decode($store, true);
+		} catch (\Exception $e) {
+			error_log('Could not open/parse store file.');
+		}
+
+		if (empty($store)) {
+			$store = array();
+		}
+		
+		if (is_callable($mutator)) {
+			try {
+				$mutator($store);
+			} catch (\Exception $e) {
+				error_log('Error while mutating store data.');
+			}
+
+			$json = json_encode($store, JSON_PRETTY_PRINT);
+			file_put_contents(static::$file, $json);
+		}
+		
+		return $store;
 	}
 
 	public function login ($user, $pass) {
-		return static::$client->request('POST', 'auth/login', [
+		$data = null;
+		$request = $this->client->request('POST', 'auth/login', [
 			'json' => [
 				'userName' => $user,
 				'password' => $pass
 			]
 		]);
+
+		try {
+			$data = json_decode($request->getBody(), true);
+		} catch (\Exception $e) {
+			$data = array('error' => 'Could not parse authentication response');
+		}
+
+		if ($data && empty($data['error'])) {
+			return static::store(function (&$store) use ($data) {
+				$this->token = $data['token'];
+				$_SESSION['memsource_token'] = $data['token'];
+
+				$store['user'] = $data['user'];
+				$store['token'] = $data['token'];
+				$store['token_expires'] = $data['expires'];
+			});
+		}
 	}
 
 	public function createJob ($filename, $data) {
@@ -68,7 +117,7 @@ class App {
 		);
 
 		try {
-			$res = static::$client->post('projects/ZIj01S6l1x1KYiu7ggDNkf/jobs', [
+			$res = $this->client->post('projects/ZIj01S6l1x1KYiu7ggDNkf/jobs', [
 			    'headers' => [
 			        'Content-Type' => 'application/octet-stream',
 			        'Content-Disposition' => 'filename*=UTF-8\'\'' . $filename,
@@ -88,7 +137,7 @@ class App {
 
 	public function readJob () {
 		// uftfAD3Tk3qj1i7f5xqBl5
-		$res = static::$client->request('GET', 'projects/12593321/jobs/uftfAD3Tk3qj1i7f5xqBl5/preview', [
+		$res = $this->client->request('GET', 'projects/12593321/jobs/uftfAD3Tk3qj1i7f5xqBl5/preview', [
 			'query' => [
 				'token' => $this->token
 			]
