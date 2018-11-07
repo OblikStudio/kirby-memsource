@@ -70,6 +70,30 @@ class App {
 		}
 	}
 
+	public static function getTargetLanguages () {
+		$targetLanguages = array();
+        $siteLanguages = site()->languages();
+        $defaultLanguage = site()->defaultLanguage();
+
+        foreach ($siteLanguages as $lang) {
+            if ($lang->code() !== $defaultLanguage->code()) {
+                array_push($targetLanguages, strtolower($lang->locale()));
+            }
+        }
+
+        return $targetLanguages;
+	}
+
+	public function listProjects () {
+		$res = $this->client->request('GET', 'projects', [
+			'query' => [
+				'token' => $this->token
+			]
+		]);
+
+		return $res;
+	}
+
 	public function createJob ($filename, $data) {
 		// {
 		// "asyncRequest": {
@@ -113,7 +137,7 @@ class App {
 		// }
 
 		$metadata = array(
-			'targetLangs' => ['bg', 'ru']
+			'targetLangs' => static::getTargetLanguages()
 		);
 
 		try {

@@ -25,14 +25,18 @@ if (function_exists('panel')) {
             'pattern' => 'memsource/upload',
             'method' => 'GET',
             'action' => function () {
+                $memsource = new Memsource\App;
                 $exporter = new Memsource\Exporter;
-                $siteData = $exporter->export();
+                // $siteData = $exporter->export();
+
+
+                var_dump($memsource->getTargetLanguages());
 
                 // $client = new Memsource\App;
                 // $response = $client->createJob('nexo.json', $siteData);
 
                 // return response::json($exporter->exportPage(site()->children()->findByURI('home/testimonials/michael-arrington')));
-                return response::json($siteData);
+                return response::json(null);
             }
         ],
         [
