@@ -5,9 +5,10 @@ use GuzzleHttp\Client;
 
 class App {
 	private static $client = null;
-	private $token = 'nTYiSFJbarg9PkwR1TUiW2xo4hzipJ7shDvOaskGB68zUx1M09USgRq3y0XE2w2O4';
+	private $token = null;
 
 	public function __construct () {
+		$this->token = 'zpSY5b8Jj150wfKdihyPQV04BcvdwJBbij4bHwBJsqkJJfC7RLJvOQItq0tfbh8D4';
 		static::$client = new Client(['base_uri' => 'https://cloud.memsource.com/web/api2/v1/']);
 	}
 
@@ -20,37 +21,74 @@ class App {
 		]);
 	}
 
-	public function createJob () {
+	public function createJob ($filename, $data) {
+		// {
+		// "asyncRequest": {
+		// "action": "IMPORT_JOB",
+		// "dateCreated": "2018-11-07T06:57:18+0000",
+		// "id": "250209538"
+		// },
+		// "jobs": [
+		// {
+		// "jobAssignedEmailTemplate": null,
+		// "workflowLevel": 1,
+		// "workflowStep": null,
+		// "uid": "uftfAD3Tk3qj1i7f5xqBl5",
+		// "filename": "nexo.json",
+		// "status": "NEW",
+		// "imported": false,
+		// "dateCreated": "2018-11-07T06:57:18+0000",
+		// "notificationIntervalInMinutes": -1,
+		// "providers": [],
+		// "dateDue": null,
+		// "continuous": false,
+		// "targetLang": "bg"
+		// },
+		// {
+		// "jobAssignedEmailTemplate": null,
+		// "workflowLevel": 1,
+		// "workflowStep": null,
+		// "uid": "AK05lYCHH0AgS4qAOhr8Ie",
+		// "filename": "nexo.json",
+		// "status": "NEW",
+		// "imported": false,
+		// "dateCreated": "2018-11-07T06:57:18+0000",
+		// "notificationIntervalInMinutes": -1,
+		// "providers": [],
+		// "dateDue": null,
+		// "continuous": false,
+		// "targetLang": "ru"
+		// }
+		// ],
+		// "unsupportedFiles": []
+		// }
+
 		$metadata = array(
 			'targetLangs' => ['bg', 'ru']
 		);
 
-		$data = array(
-			'test' => 'foo',
-			'bar' => 'baz'
-		);
-
 		try {
-			$res = $client->post('projects/ZIj01S6l1x1KYiu7ggDNkf/jobs', [
+			$res = static::$client->post('projects/ZIj01S6l1x1KYiu7ggDNkf/jobs', [
 			    'headers' => [
 			        'Content-Type' => 'application/octet-stream',
-			        'Content-Disposition' => "filename*=UTF-8''test.json",
+			        'Content-Disposition' => 'filename*=UTF-8\'\'' . $filename,
 			        'Memsource' => json_encode($metadata)
 			    ],
 			    'query' => [
-			    	'token' => $token
+			    	'token' => $this->token
 			    ],
 				'body' => json_encode($data),
 			]);
 
-			echo $res->getBody();
+			return $res->getBody();
 		} catch (Exception $e) {
-			echo ($e->getResponse()->getBody(true));
+			return ($e->getResponse()->getBody(true));
 		}
 	}
 
 	public function readJob () {
-		$res = static::$client->request('GET', 'projects/12593321/jobs/0dDfr7b48WTGdWZmrIwjc6/preview', [
+		// uftfAD3Tk3qj1i7f5xqBl5
+		$res = static::$client->request('GET', 'projects/12593321/jobs/uftfAD3Tk3qj1i7f5xqBl5/preview', [
 			'query' => [
 				'token' => $this->token
 			]

@@ -4,6 +4,7 @@ require_once(__DIR__ . DS . 'vendor' . DS . 'autoload.php');
 require_once(__DIR__ . DS . 'src' . DS . 'Memsource.php');
 require_once(__DIR__ . DS . 'src' . DS . 'BlueprintReader.php');
 require_once(__DIR__ . DS . 'src' . DS . 'Exporter.php');
+require_once(__DIR__ . DS . 'src' . DS . 'Importer.php');
 
 if (function_exists('panel')) {
     panel()->routes([
@@ -28,9 +29,30 @@ if (function_exists('panel')) {
             'method' => 'GET',
             'action' => function () {
                 $exporter = new Memsource\Exporter;
+                $siteData = $exporter->export();
+
+                // $client = new Memsource\App;
+                // $response = $client->createJob('nexo.json', $siteData);
 
                 // return response::json($exporter->exportPage(site()->children()->findByURI('home/testimonials/michael-arrington')));
-                return response::json($exporter->export());
+                return response::json($siteData);
+            }
+        ],
+        [
+            'pattern' => 'memsource/download',
+            'method' => 'GET',
+            'action' => function () {
+                echo "<pre>";
+                // $client = new Memsource\App;
+                // $response = $client->readJob();
+
+                $jsonData = file_get_contents(__DIR__ . DS . 'import.json');
+                $parsedData = json_decode($jsonData, true);
+
+                $importer = new Memsource\Importer;
+                $importer->import($parsedData, 'zh');
+
+                // return response::json($response);
             }
         ]
     ]);

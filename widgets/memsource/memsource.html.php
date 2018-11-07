@@ -13,7 +13,9 @@
 </style>
 
 <div class="login">
-	<strong><?= $_SESSION['memsource_token'] ?></strong>
+	<?php if (isset($_SESSION['memsource_token'])): ?>
+		<strong><?= $_SESSION['memsource_token'] ?></strong>
+	<?php endif; ?>
 
 	<form action="<?= $url_auth; ?>" method="post">
 		<div class="field field-content">

@@ -1,0 +1,463 @@
+{
+"$site": {
+"title": "Testing kripto backed zaemi",
+"description": "Nekso e purvata banka tam s naemi na Kredisimo i oshte nqkakav description",
+"copyright": "© (date: Year) (link: http://nexo.io text: Nekso)",
+"socialtelegram": "https://t.me/nexofinance",
+"socialfacebook": "https://www.facebook.com/NexoFinance",
+"socialtwitter": "https://twitter.com/NexoFinance",
+"socialmedium": "https://medium.com/nexo",
+"socialreddit": "https://www.reddit.com/r/nexo/",
+"socialemail": "info@nexo.io",
+"title_crypto": "Vnezapen %s-backed Loans",
+"heading": "Get an Vnezapen Loan <br class=\"hidden-mobile\"> backed with your %s",
+"heading_vote": "Glasuvai za %s da bade dobaven v Nekso kato instant zaem",
+"cryptos": [
+{
+"name": "Bitkoina"
+},
+{
+"name": "Lainereum"
+},
+{
+"name": "Neksotokeni"
+},
+{
+"name": "XRP"
+},
+{
+"name": "BNB"
+},
+{
+"name": "Bitkoin Keshovica"
+},
+{
+"name": "Cardano"
+},
+{
+"name": "Dash"
+},
+{
+"name": "EOS"
+},
+{
+"name": "Ethereum Classic"
+},
+{
+"name": "IOTA"
+},
+{
+"name": "KIN"
+},
+{
+"name": "Litecoin"
+},
+{
+"name": "Monero"
+},
+{
+"name": "NEO"
+},
+{
+"name": "OmiseGo"
+},
+{
+"name": "QTum"
+},
+{
+"name": "Stellar"
+},
+{
+"name": "Tron"
+},
+{
+"name": "VeChain"
+},
+{
+"name": "ZCash"
+}
+]
+},
+"home": {
+"title": "Home"
+},
+"home/how-it-works": {
+"title": "How It Works"
+},
+"home/video": {
+"title": "Video"
+},
+"home/testimonials": {
+"title": "Testimonialite mi"
+},
+"home/testimonials/michael-arrington": {
+"title": "Misho Kalufa"
+},
+"home/testimonials/trevor-koverko": {
+"title": "Trevor Koverko"
+},
+"home/testimonials/tim-draper": {
+"title": "Tim Draper"
+},
+"home/testimonials/paolo-tasca": {
+"title": "Paolo Tasca"
+},
+"home/testimonials/kenneth-goodwin-jr": {
+"title": "Kenneth Goodwin Jr."
+},
+"home/testimonials/ugo-bechis": {
+"title": "Ugo Bechis"
+},
+"home/happy-clients": {
+"title": "Happy Clients"
+},
+"home/happy-clients/block-legend": {
+"title": "Block_Legend",
+"text": "\"I am really impressed, in less than 3 hours I applied for a loan leaving NEXO tokens as collateral and they already transferred the funds in Tether to continue making investments in Cryptography. Thank you, Nexo - really amazing!\""
+},
+"home/happy-clients/kingeek": {
+"title": "Neav tam - Himika 👑",
+"text": "\"Trebva neshto tam da se pravi s altkoinite. Used my $NEXO as collateral on Nexo and got a loan for $55K USD almost instantly. No credit check, No bullshit applications, just what I needed 😌\""
+},
+"home/happy-clients/cryptojenks": {
+"title": "CryptoJenks",
+"text": "\"I'm extremely bullish on $Nexo too. Took out my 2nd loan on Friday, within 1hr it was approved and I had USDT sitting in my Binance account. This is an innovation.\""
+},
+"home/happy-clients/optimistictrav": {
+"title": "OptimisticTrav",
+"text": "\"I see nexo being the gold standard in crypto lending. Like BNB is in the exchange token space nexo will be in crypto lending.\""
+},
+"home/happy-clients/julio": {
+"title": "Julio",
+"text": "\"Incredible project, incredible team. Took some loan, instant payment, I thought it was just buzzwords, but I got the money in a few hours. Insane!\""
+},
+"home/happy-clients/cryptovizion": {
+"title": "Cryptovizion",
+"text": "\"What a fantastic service to all the crypto believers. Just bought a new car on crypto loan through Nexo. Great time to be buying the $NEXO token.\""
+},
+"home/happy-clients/cryptocrazyme": {
+"title": "CCME",
+"text": "\"You guys definitely deserve to be praised. Took 3 loans already and none of them has taken more than a day. $NEXO will definitely be my biggest bag for coming years. Keep doing what you do. Good luck!\""
+},
+"home/happy-clients/lioncrypt0": {
+"title": "LionCrypt0",
+"text": "\"I’m impressed by the great token utility as I can take a loan against $NEXO while those same NEXO tokens will also earn me dividends ❤️every month.\""
+},
+"home/happy-clients/davidmc0": {
+"title": "@DavidMc0",
+"text": "\"Just a note to say I've had another brilliant experience with Nexo, having received funds to my account after requesting a loan last night.\""
+},
+"home/happy-clients/peteatkins78": {
+"title": "peteatkins78",
+"text": "\"Did my first loan. Was easy, fast and I got in the trade I wanted. Best part is - I still have my BTC!\""
+},
+"home/happy-clients/prodical": {
+"title": "prodical",
+"text": "\"Just got a loan with Nexo very smooth process! I Think I might invest. Cool!\""
+},
+"home/happy-clients/thagoattttt": {
+"title": "ThaGoattttt",
+"text": "\"Thanks for the loan! One of the few projects that actually works well! Congratz 💪\""
+},
+"home/happy-clients/cryptofuchs": {
+"title": "cryptofuchs",
+"text": "\"It took literally less than 24 hrs from funding Nexo wallet to cash in my bank account! Good job Nexo!\""
+},
+"home/happy-clients/nye-the-crypto-guy": {
+"title": "larry128",
+"text": "\"Vnezapen\" is the important keyword. I've gotten loans approved/transferred from them in under 15 minutes.\""
+},
+"home/clients": {
+"title": "Clients"
+},
+"home/why-choose-the-nexo-platform": {
+"title": "Why Choose The Nexo Platform"
+},
+"home/about-us": {
+"title": "About Us"
+},
+"home/advisors": {
+"title": "Advisors"
+},
+"home/advisors/michael-arrington": {
+"title": "Michael Arrington"
+},
+"home/advisors/trevor-koverko": {
+"title": "Trevor Koverko"
+},
+"home/advisors/paolo-tasca": {
+"title": "Paolo Tasca"
+},
+"home/advisors/sqj12490andos": {
+"title": "Kenneth A. Goodwin Jr."
+},
+"home/advisors/ugo-bechis": {
+"title": "Ugo Bechis"
+},
+"home/credit-card": {
+"title": "Greditna Garda"
+},
+"home/credit-card-overview": {
+"title": "Credit Card Overview"
+},
+"home/market-clients": {
+"title": "Market & Clients"
+},
+"home/new-loan": {
+"title": "New Loan"
+},
+"home/nexo-in-numbers": {
+"title": "Nexo In Numbers"
+},
+"home/nexo-in-the-media": {
+"title": "Nexo In The Media"
+},
+"home/nexo-in-the-media/entrepreneur": {
+"title": "Entrepreneur"
+},
+"home/nexo-in-the-media/coindesk": {
+"title": "Coindesk"
+},
+"home/nexo-in-the-media/forbes": {
+"title": "Forbes"
+},
+"home/nexo-in-the-media/cointelegraph": {
+"title": "Cointelegraph"
+},
+"home/nexo-in-the-media/bloomberg": {
+"title": "Bloomberg"
+},
+"home/nexo-in-the-media/american-banker": {
+"title": "American Banker"
+},
+"home/nexo-in-the-media/cnbc": {
+"title": "CNBC"
+},
+"home/nexo-in-the-media/seeking-alpha": {
+"title": "Seeking Alpha"
+},
+"home/nexo-in-the-media/bitcoin-com": {
+"title": "Bitcoin.com"
+},
+"home/our-mission": {
+"title": "Our Mission",
+"text": "test"
+},
+"home/our-vision": {
+"title": "Our Vision",
+"text": "In its historical development, Credissimo\r\nhas been identifying and successfully solving inefficiencies on lending markets by creating innovative and convenient financing solutions.\r\n\r\nBy applying blockchain technology, Nexo is Credissimo's answer to solving the lack of financing for the new digital economy.\r\n\r\n(image: support.svg class: imgNoSpacing shadow-02)\r\n\r\nPowered by 10 years of Credissimo's expertise, Nexo is offering the world's first instant crypto-backed loans."
+},
+"home/partners": {
+"title": "Partners"
+},
+"home/roadmap": {
+"title": "Roadmap"
+},
+"instant-crypto-loans": {
+"title": "Vnezapen Crypto Loans"
+},
+"instant-crypto-loans/business-model": {
+"title": "Business Model"
+},
+"instant-crypto-loans/problem-solution": {
+"title": "Problem & Solution"
+},
+"instant-crypto-loans/oracle": {
+"title": "Nexo Oracle",
+"text": "The Oracle is an independent system of Nexo. Drawing from **10 years of expertise and innovations developed within Credissimo**, its purpose is to autonomously and securely maintain all key processes of the Bank. By analysing Big Data from numerous sources, its Artificial Intelligence and Machine Learning algorithms create unmatched automation efficiencies."
+},
+"instant-crypto-loans/smart-contracts": {
+"title": "Loan Contracts"
+},
+"credit-card": {
+"title": "Credit Card"
+},
+"why-nexo": {
+"title": "Why Nexo"
+},
+"why-nexo/why-nexo": {
+"title": "Why Nexo"
+},
+"why-nexo/advantages": {
+"title": "Advantages"
+},
+"company": {
+"title": "Company"
+},
+"company/why-nexo": {
+"title": "Why Nexo"
+},
+"company/about-us": {
+"title": "About Us"
+},
+"company/our-vision": {
+"title": "Our Vision",
+"text": "In its historical development, Credissimo\r\nhas been identifying and successfully solving inefficiencies on lending markets by creating innovative and convenient financing solutions.\r\n\r\nBy applying blockchain technology, Nexo is Credissimo's answer to solving the lack of financing for the new digital economy.\r\n\r\n(image: support.svg class: imgNoSpacing shadow-02)\r\n\r\nPowered by 10 years of Credissimo's expertise, Nexo is offering the world's first instant crypto-backed loans."
+},
+"company/our-mission": {
+"title": "Our Mission",
+"text": "test"
+},
+"company/partners": {
+"title": "Partners"
+},
+"company/roadmap": {
+"title": "Roadmap"
+},
+"company/whitepaper": {
+"title": "Whitepaper"
+},
+"company/advisors": {
+"title": "Advisors"
+},
+"company/advisors/michael-arrington": {
+"title": "Michael Arrington"
+},
+"company/advisors/trevor-koverko": {
+"title": "Trevor Koverko"
+},
+"company/advisors/paolo-tasca": {
+"title": "Paolo Tasca"
+},
+"company/advisors/sqj12490andos": {
+"title": "Kenneth A. Goodwin Jr."
+},
+"company/advisors/ugo-bechis": {
+"title": "Ugo Bechis"
+},
+"company/team": {
+"title": "Team"
+},
+"company/team/kosta-kantchev": {
+"title": "Kosta Kantchev",
+"text": "Phasellus eget diam placerat, malesuada justo et, fermentum mauris. Aliquam convallis commodo semper. Suspendisse venenatis est ac sapien aliquet, sed varius quam rhoncus. Morbi libero tellus, blandit vitae tortor at, fringilla hendrerit lacus.\r\n\r\nDuis non leo congue, consequat elit vestibulum, porttitor quam."
+},
+"company/team/georgi-shulev": {
+"title": "Georgi Shulev"
+},
+"company/team/antoni-trenchev": {
+"title": "Antoni Trenchev"
+},
+"company/team/vasil-petrov": {
+"title": "Vasil Petrov"
+},
+"company/team/kalin-metodiev": {
+"title": "Kalin Metodiev"
+},
+"company/team/kamen-trendafilov": {
+"title": "Kamen Trendafilov"
+},
+"company/team/savina-boncheva": {
+"title": "Savina Boncheva"
+},
+"company/team/bilyana-christova": {
+"title": "Bilyana Christova"
+},
+"company/team/plamen-todorov": {
+"title": "Plamen Todorov"
+},
+"company/team/teodora-atanasova": {
+"title": "Teodora Atanasova"
+},
+"company/team/joro-yordanov": {
+"title": "Joro Yordanov"
+},
+"company/team/boris-delev": {
+"title": "Boris Delev"
+},
+"company/team/ivan-kostov": {
+"title": "Ivan Kostov"
+},
+"company/team/yasen-damyanov": {
+"title": "Yasen Damyanov"
+},
+"company/team/mario-krastev": {
+"title": "Mario Krastev"
+},
+"company/team/you": {
+"title": "You"
+},
+"company/innovations": {
+"title": "Innovations"
+},
+"airdrop": {
+"title": "Airdrop",
+"metatitle": "1 Million NEXO Tokens have been claimed",
+"metadescription": "Thank you for participating and spreading the word about Nexo - The World’s First Vnezapen Crypto-backed Loans!"
+},
+"airdrop/closed": {
+"title": "Closed",
+"metatitle": "1 Million NEXO Tokens have been claimed",
+"metadescription": "Thank you for participating and spreading the word about Nexo - The World’s First Vnezapen Crypto-backed Loans!"
+},
+"ambassadors": {
+"title": "Ambassadors",
+"metatitle": "Win the Best Job in Crypto and Get Paid $100,000",
+"metadescription": "Become a top Blockchain Leader and be at the epicenter when the blockchain future is being forged"
+},
+"ambassadors/referral": {
+"title": "Referral",
+"metatitle": "Win the Best Job in Crypto and Get Paid $100,000",
+"metadescription": "Become a top Blockchain Leader and be at the epicenter when the blockchain future is being forged"
+},
+"ambassadors/success": {
+"title": "Success",
+"metatitle": "Win the Best Job in Crypto and Get Paid $100,000",
+"metadescription": "Become a top Blockchain Leader and be at the epicenter when the blockchain future is being forged"
+},
+"careers": {
+"title": "Careers"
+},
+"error": {
+"title": "Error",
+"intro": "The page has not been found.",
+"text": "Well, stuff can go wrong sometimes and maybe you mistyped a URL, tapped/clicked on a broken link or your computer just wants to drive you nuts. Anyway … keep calm and take a look at our beautiful (link: / text: homepage) instead."
+},
+"loan": {
+"title": "Loan"
+},
+"loan-terms": {
+"title": "Credit Facility Master Agreement",
+"text": "<p>\r\nThe Borrower has asked Nexo (any holding companies, subsidiaries or related entities, all of which are hereinafter referred to as the ”Lender”) to grant the Borrower a credit facility in the Nexo Wallet (hereinafter the “Wallet”), in accordance with the following terms and conditions:\r\n</p>\r\n\r\n\r\n<h4>1 Purpose of the credit facility</h4>\r\n<p>\r\n1.1 In connection with the credit facility (hereinafter the ”Credit Facility”) granted hereby, the Lender may, at its discretion, grant to the Borrower one or more overdraft facilities (with a renewal option).\r\n</p>\r\n<p>\r\n1.2 To the extent that securities are entered into on the Wallet at the Borrower’s instruction, the Borrower confirms that the Borrower understands and fully accepts the risks associated with these transactions and that the Borrower is fully aware of the risk of loss (partial or complete) resulting therefrom.\r\n</p>\r\n<p>\r\n1.3 It is expressly agreed that the Lender has no obligation to evaluate, monitor or verify the use or the allocation of the borrowed funds.\r\n</p>\r\n\r\n\r\n<h4>2 Maximum amount and conditions for granting a credit facility</h4>\r\n<p>\r\n2.1 The total amount of the Credit Facility (including the accrued interest, the current interest, any fees and other amount due in respect of the Credit Facility) shall not, </p>as a general rule, exceed the pledge value (hereinafter the ”Pledge Value”, as defined in Article 3.2 below) attributed to all the collateral security (hereinafter the\r\n”Collateral Security”, as defined in article 3.1 below), less the portion of the Pledge Value of the Collateral Security already allocated to other commitments of the Borrower, if applicable.\r\n<p>\r\n2.2 The grant of an overdraft facility requires a request from the Borrower in a form acceptable to the Lender, as well as the Lender’s prior agreement and the satisfaction of the conditions precedent defined in Article 7 below.\r\n</p>\r\n<p>\r\n2.3 If the Lender agrees to grant an overdraft facility to the Borrower, the Lender will provide the Borrower with a transaction advice.\r\n</p>\r\n<p>\r\n 2.4 The Borrower may request renewal of a Credit Facility by notifying the Lender at least three business days prior to its maturity date. If the Lender has not received any such notice by that date, the Lender may, at its discretion, renew the Credit Facility for the same term, provided that the required level of security (hereinafter the ”Required Level of Security”, as defined in Article 3.3 below) is still met and that the conditions precedent defined in Article 7 below are still fulfilled. The Lender shall set the new interest rate in accordance with Article 6 below. If the Lender agrees to renew a Credit Facility or to grant a new one effective as of the maturity date of an existing Credit Facility, no payment related to the amount of the Credit Facility so renewed or refinanced will be requested of any of the parties at that time.\r\n</p>\r\n<p>\r\n2.5 Each use of the current account overdraft facility and each fixed­-term advance shall be recorded on the account statements in the Wallet. The account statements shall be considered a confirmation of the amount owed in respect of the Credit Facility and shall constitute conclusive proof that the Borrower has borrowed such amount, unless there is an obvious error.\r\n</p>\r\n\r\n\r\n<h4>3 Collateral security and pledge value</h4>\r\n<p>\r\n3.1 The Credit Facility, as well as any other right of the Lender against the Borrower, shall be secured at all times by the following Collateral Security:\r\n</p>\r\n<p>\r\na) a right of pledge (hereinafter the ”Pledge”) on all assets deposited by the Borrower with the Lender in accordance with the pledge agreement entered into separately between the Lender and the Borrower (hereinafter the ”Pledge Agreement”);\r\n</p>\r\n<p>\r\nb) any other additional security that may be agreed between the Lender and the Borrower and/or a third party guarantor, or that the Lender may request at its discretion.\r\n</p>\r\n\r\n<p>\r\n3.2 The Borrower shall at times maintain assets with the Lender that the Lender considers acceptable to constitute the Collateral Security. The Pledge Value attributed by the Lender to each Collateral Security shall be dynamically calculated by the Lender in accordance with the Lender’s applicable policy at the moment, on the basis of margin percentages applied to the market value of assets that are part of this Collateral Security, which shall be valued at an exchange ratio equivalent to the volume­-weighted average price of the asset, across leading cryptocurrency exchanges, including but not limited to Kraken, GDAX, Bitstamp, Bitfinex, Gemini, and ItBit.\r\n</p>\r\n\r\n<p>\r\n 3.3 The Pledge Value of the Collateral Security must at all times be sufficient to cover at least one hundred percent (100%) of the following: the total amount owed on the Credit Facility (including accrued interest, current interest, any fees and any other amount owed on the Credit Facility); any other amount that may be owed to the Lender by the Borrower for any reason; and the pledge assets security for any market given transactions (i. e. the Required Level of Security).\r\n</p>\r\n\r\n<h4>\r\n4 Margin call\r\n</h4>\r\n\r\n<p>\r\n4.1. If, in the Lender’s opinion, the Pledge Value of the Collateral Security is less than the Required Level of Security, the Borrower shall, at the Lender’s request, furnish additional Collateral Security and/or make the required reimbursements and/or instruct the Lender to liquidate the necessary amount of the Collateral Security.\r\n</p>\r\n<p>\r\n4.2. Any breach by the Borrower of the obligation to furnish any additional Collateral Security and/or to make the required reimbursements and/or instruct the Lender to liquidate the necessary amount of the Collateral Security within the deadline, to the satisfaction of the Lender, shall constitute an event of default (hereinafter an ”Event of Default”, as defined in Article 10 below) and shall permit the Lender to exercise all or part of its rights related to the Collateral Security, in particular those described in Article 5 below.\r\n</p>\r\n\r\n\r\n<h4>5 Realisation of collateral security</h4>\r\n<p>\r\n5.1 In the event the Borrower does not restore the Required Level of Security in accordance with the Lender’s request, or an Event of Default, as defined in Article 10 below occurs, the Lender shall be expressly authorised, but not under the obligation, to realise, all or part of the assets pledged to the Lender by the Borrower or by third parties, in accordance with the Pledge provided for in Article 3.1 above, in the manner and within the deadline that the Lender deems appropriate, and without any obligation to comply with the procedures set forth by the Federal Law on Debt Collection and Bankruptcy or to allocate the proceeds of the realisation net of costs to the reimbursement of the Credit Facility.\r\n</p>\r\n<p>\r\n5.2 The Borrower hereby releases the Lender from all liability in connection with such realisation of the assets pledged by the Borrower to cover the Credit Facility.\r\n</p>\r\n\r\n\r\n<h4>6 Interest rate and payment of interest</h4>\r\n<p>\r\n6.1 The annual interest rate applicable to the Credit Facility, as well as any fees related thereto, shall be determined at the time the Credit Facility is granted.\r\n</p>\r\n6.2 The interest rate applicable to overdrafts shall be fixed at the Nexo Prime Rate (hereinafter the ”Nexo Prime Rate”), applicable at the time of the use in question (as determined by the Lender at its discretion, on the basis of the market conditions and the Lender’s financing cost). The Borrower acknowledges that the Nexo Prime Rate may not be less than zero and may vary at any time without notice, in order to reflect a change in market conditions and the Lender’s financing cost.\r\n<p>\r\n6.3 Interest shall be calculated and debited by the Lender on a periodic basis, as a rule at the end of each calendar day. Interest shall be calculated on the basis of the actual number of days elapsed in a 360­day year.\r\n</p>\r\n<p>\r\n6.4 The Borrower expressly authorises the Lender to automatically debit any due interest from the Wallet without notice. Any shortfall resulting from this debit shall be considered a principal amount borrowed by the Borrower from the Lender under the Credit Facility.\r\n</p>\r\n\r\n\r\n\r\n<h4>7 Conditions precedent</h4>\r\n<p>\r\n7.1 The Credit Facility is subject to receipt by the Lender of any document reasonably required by the Lender.\r\n</p>\r\n<p>\r\n7.2 The grant or renewal of a overdraft facility shall only be allowed if it does not involve, in the Lender’s opinion, any illegality, and existing market conditions allow the Lender to obtain the financing necessary to comply with the Borrower’s request.\r\n</p>\r\n\r\n\r\n<h4>8 Reimbursement</h4>\r\n<p>\r\n8.1 Any amount owed under the Credit Facility must be reimbursed at its maturity date.\r\n</p>\r\n<p>\r\n8.2 If, at the reimbursement date of an amount owed in respect of the Credit Facility, the Borrower does not pay any amount whatsoever, whether principal, interest or otherwise, the Lender reserves the right to require the Borrower to pay default interest (both before and after a judgment) beginning on such date and until such amounts are paid, at an annual rate of two percent (2%) above the interest rate, as determined by the Lender in accordance with Article 6, or that would have applied to said amount if it had resulted from use of the Credit Facility. The Borrower’s obligation to pay the default interest shall survive the termination of the Credit Facility.\r\n</p>\r\n\r\n\r\n<h4>9 Termination</h4>\r\n<p>\r\n9.1 The Credit Facility is granted for an indefinite period of time. The two parties are entitled to terminate the Credit Facility at any time with immediate effect by written notice to the other party.\r\n</p>\r\n<p>\r\n9.2 If the Credit Facility is terminated, the amounts due in respect of any overdraft facility shall become immediately due and payable, including the interest and other fees accrued as of the effective date of termination (subject to the Events of Default defined in Article 10 below).\r\n</p>\r\n\r\n\r\n<h4>10 Default</h4>\r\n<p>\r\n10.1 The occurrence of one of the following events constitutes an Event of Default:\r\n</p>\r\n<p>\r\na) the Borrower breaches one of the Borrower’s obligations in respect of the Credit Facility, including but not limited to any obligation to pay any amount whatsoever (principal, interest or other) to the Lender in respect of the Credit Facility;\r\n</p>\r\n<p>\r\nb) the Borrower breaches another obligation in connection with the Borrower’s relationship with the Lender (including any obligation resulting from the Collateral Security, including the obligation to maintain assets with the Lender considered by the Lender to be acceptable and adequate pursuant to Article 3.2;\r\n</p>\r\n<p>\r\nc) the Borrower does not pay an amount owed to a third party under a contract with such third party in connection with the Borrower’s financial debt, or such financial debt of the Borrower becomes due and payable before its contractual maturity;\r\n</p>\r\n<p>\r\nd) the Borrower is unable to pay the Borrower’s debts, enters into an agreement or arrangement with the Borrower’s creditors related to the restructuring of the Borrower’s debts, or is the subject of any measures to have the Borrower declared bankrupt or to appoint a curator, administrator, trustee or liquidator;\r\n</p>\r\n<p>\r\ne) all or part of the Collateral Security terminates (unless the Pledge Value of the Collateral Security is sufficient to attain the Required Level of Security) or is encumbered in favour of a person other than the Lender, without the Lender’s prior written consent;\r\n</p>\r\n<p>\r\nf) the Lender considers it necessary for its own protection;\r\n</p>\r\n<p>\r\ng) it is or becomes illegal for the Borrower to perform the Borrower’s obligations under the Credit Facility, the Pledge or any other Collateral Security;\r\n</p>\r\n<p>\r\nh) it is or becomes illegal under the regulatory framework for the Lender to perform the Lender’s obligations under the Credit Facility or the Pledge;\r\n</p>\r\n<p>\r\ni) the Lender is unable to contact the Borrower in accordance with the Borrower’s most recent instructions for sending correspondence;\r\n</p>\r\n<p>\r\nj) a significant deterioration (determined at the Lender’s discretion) in the Borrower’s business or the financial position has occurred since the date of this Agreement.\r\n</p>\r\n<p>\r\n10.2 If the Lender is aware of an Event of Default, the Lender is entitled:\r\n</p>\r\n<p>\r\na) to terminate the Credit Facility with immediate effect.\r\n</p>\r\n<p>\r\nb) to declare immediately payable any principal amount due in respect of the Credit Facility, as well as the interest accrued and any other amount due in respect of the Credit Facility;\r\n</p>\r\n<p>\r\nc) to realise, at the Lender’s discretion, all or part of the Collateral Security in accordance with the applicable contractual terms; and/or\r\n</p>\r\n<p>\r\nd) in general, to take any action it deems necessary to protect its interests.\r\n</p>\r\n\r\n<h4>11 Notices to the borrower</h4>\r\n<p>\r\n11.1 Notices by the Lender to the Borrower are deemed validly received when they have been sent to the last email address indicated by the Borrower.\r\n</p>\r\n<p>\r\n11.2 The Borrower releases the Lender from any liability in the event the Borrower does not personally receive any notice that the Lender may have sent to the Borrower’s last known email address.\r\n</p>\r\n\r\n<h4>12 Miscellaneous</h4>\r\n<p>\r\n12.1 If, at any time, a provision of this Agreement is declared unlawful, invalid or unenforceable in any manner with respect to the laws of any jurisdiction, the lawfulness, validity and enforceability of the remaining provisions of this Agreement shall not be affected thereby. The parties shall replace the unlawful, invalid or unenforceable provision with a provision that is as consistent with the original content as possible.\r\n</p>\r\n12.2 If, at any time, the Borrower is required by law or regulations to make a deduction or a withholding on an amount, the Borrower agrees to pay the additional amount necessary such that, once the deduction or withholding is taken into account, the Lender will actually receive the total amount that it would have received if that deduction or withholding had not been made.\r\n <p>\r\n12.3 Notwithstanding the Lender’s right to offset any obligation of the Borrower against any credit balance owed to the Borrower under any contract, and regardless of the currency of such obligations, all amounts owed by the Borrower in respect of the Credit Facility (principal, interest or fees) must be paid to the Lender without invoking any offset or a counterclaim.\r\n</p>\r\n12.4 The Borrower authorizes the Lender to disclose to any person or entity providing Collateral Security all confidential information related to the Credit Facility and/or the Borrower.\r\n <p>\r\n12.5 The Borrower shall, within three business days of the request, pay to the Lender the amount of all fees and expenses (including attorney’s fees) that it may occur in connection with the enforcement or preservation of any right under the Credit Facility, the Pledge or any other document in connection with the Credit Facility.\r\n</p>\r\n12.6 If, pursuant to a legal or regulatory requirement or the request of a supervisory authority, the Lender must incur an additional cost to maintain or finance the Credit Facility, the Borrower agrees to pay to the Lender, upon request, the amount that the Lender certifies as necessary to offset this increased cost. The Lender’s confirmation that such circumstances have occurred with the related consequences shall be binding on the Borrower.\r\n <p>\r\n12.7 The relationship between the Lender and the Borrower is governed exclusively by the law of the Lender’s jurisdiction.\r\n</p>\r\n12.8 Any dispute concerning the relationship between the Lender and the Borrower is subject to the exclusive jurisdiction of the Courts of Zug. An appeal to the Federal Supreme Court of Switzerland is reserved. The place of performance and the place of enforcement is Zug. The Lender is nonetheless entitled to initiate proceedings in any other competent jurisdiction.\r\n</p>\r\n\r\n<br>\r\n\r\n<h1 class=\"section-title\">Pledge Agreement</h1>\r\n<p>\r\nThe Pledgor depending on their country of residence hereby pledges in favour of Nexo (any holding companies, subsidiaries or related entities, all of which are hereinafter referred to as the ”Lender”), any and all assets regardless of their form or kind that currently are (or which may be in the future) held in the Pledgor’s Nexo Wallet(s) (hereinafter, the “Wallet”) as collateral for any present or future claims, including any interest, commissions, fees or other charges, that the Lender may have against the Pledgor, including as a result of third-­party claims related to the Pledgor's Wallet.\r\n</p>\r\n<p>\r\nThe right of pledge granted to the Lender by virtue hereof shall extend to any and all present or future interest, dividends, proceeds, subscription rights or any other matured rights deriving from or appurtenant to the pledged assets. The right of pledge shall extend in particular to:\r\n</p>\r\n1. any and all assets currently or subsequently held in safekeeping in the above­-mentioned Wallet;\r\n <p>\r\n2. any and all assets, claims, cash or other objects and rights that have been (or which may be in the future) deposited in or credited to the above­-mentioned Wallet. In the event the pledged assets are replaced by other assets, the latter shall also be subject to the right of pledge of the Lender without further ado. The right of pledge shall also extend to any and all additional assets deposited into the above­-mentioned Wallet. Upon the Lender’s request, the Pledgor undertakes to carry out all formalities that may be necessary for the Lender to exercise its rights as pledgee. The right of pledge shall remain valid independently of any other present or future security interests or guarantees held by the Lender, and shall only expire once the Lender has been reimbursed in full. The Lender shall be entitled to realise all or part of the pledged assets without having to serve formal notice and without having to observe the procedures set forth by the Swiss Federal Law on Debt Enforcement and Bankruptcy. The Pledgor shall be deemed to have duly received all notifications sent to the Debtor by the Lender.\r\n</p>\r\nThe relationship between the Lender and the Borrower is governed exclusively by the law of the Lender’s jurisdiction. Any dispute concerning the relationship between the Lender and the Borrower is subject to the exclusive jurisdiction of the Lender. An appeal to the Supreme Court of the Lender’s jurisdiction is reserved. The place of performance and the place of enforcement is the Lender’s jurisdiction. The Lender is nonetheless entitled to initiate proceedings in any other competent jurisdiction."
+},
+"privacy-policy": {
+"title": "Privacy Policy",
+"text": "<p>\r\n    This privacy policy has been compiled to better serve those who are concerned with how their 'Personally Identifiable Information' (PII) is being used online. PII, as described in privacy law and information security, is information that can be used on its own or with other information to identify, contact, or locate a single person, or to identify an individual in context. Please read our privacy policy carefully to get a clear understanding of how we collect, use, protect or otherwise handle your Personally Identifiable Information in accordance with our website.\r\n</p>\r\n\r\n<h4>\r\n    What personal information do we collect from the people that visit our blog, website or app?\r\n</h4>\r\n\r\n<p>\r\n    When ordering or registering on our site, as appropriate, you may be asked to enter your name, email address or other details to help you with your experience.\r\n</p>\r\n\r\n<h4>\r\n    When do we collect information?\r\n</h4>\r\n\r\n<p>\r\n    We collect information from you when you register on our site or enter information on our site.\r\n</p>\r\n\r\n<h4>\r\n    How do we use your information?\r\n</h4>\r\n\r\n<p>\r\n    We may use the information we collect from you when you register, make a purchase, sign up for our newsletter, respond to a survey or marketing communication, surf the website, or use certain other site features in the following ways:\r\n</p>\r\n\r\n<ul>\r\n    <li>\r\n        <span>\r\n            To personalize your experience and to allow us to deliver the type of content and product offerings in which you are most interested.\r\n        </span>\r\n    </li>\r\n    <li>\r\n        <span>\r\n            To improve our website in order to better serve you.\r\n        </span>\r\n    </li>\r\n    <li>\r\n        <span>\r\n            To quickly process your transactions.\r\n        </span>\r\n    </li>\r\n</ul>\r\n\r\n\r\n<h4>\r\n    How do we protect your information?\r\n</h4>\r\n\r\n<p>\r\n    We do not use vulnerability scanning and/or scanning to PCI standards. <br>\r\n    We only provide articles and information. We never ask for credit card numbers. <br>\r\n    We use regular Malware Scanning.\r\n</p>\r\n\r\n<p>\r\n    Your personal information is contained behind secured networks and is only accessible by a limited number of persons who have special access rights to such systems, and are required to keep the information confidential. In addition, all sensitive/credit information you supply is encrypted via Secure Socket Layer (SSL) technology.\r\n</p>\r\n\r\n<p>\r\n    We implement a variety of security measures when a user enters, submits, or accesses their information to maintain the safety of your personal information.\r\n</p>\r\n\r\n<h4>\r\n    Do we use 'cookies'?\r\n</h4>\r\n\r\n<p>\r\n    Yes. Cookies are small files that a site or its service provider transfers to your computer's hard drive through your Web browser (if you allow) that enables the site's or service provider's systems to recognize your browser and capture and remember certain information. They are also used to help us understand your preferences based on previous or current site activity, which enables us to provide you with improved services. We also use cookies to help us compile aggregate data about site traffic and site interaction so that we can offer better site experiences and tools in the future.\r\n</p>\r\n\r\n<h4>\r\n    We use cookies to:\r\n</h4>\r\n\r\n<ul>\r\n    <li>\r\n        <span>\r\n            Understand and save user's preferences for future visits.\r\n        </span>\r\n    </li>\r\n    <li>\r\n        <span>\r\n            Compile aggregate data about site traffic and site interactions in order to offer better site experiences and tools in the future. We may also use trusted third-party services that track this information on our behalf.\r\n        </span>\r\n    </li>\r\n</ul>\r\n\r\n<p>\r\n    You can choose to have your computer warn you each time a cookie is being sent, or you can choose to turn off all cookies. You do this through your browser settings. Since browser is a little different, look at your browser's Help Menu to learn the correct way to modify your cookies.\r\n</p>\r\n\r\n<h4>\r\n    If users disable cookies in their browser:\r\n</h4>\r\n\r\n<p>\r\n    If you turn cookies off, Some of the features that make your site experience more efficient may not function properly.Some of the features that make your site experience more efficient and may not function properly.\r\n</p>\r\n\r\n\r\n<h4>\r\n    Third-party disclosure\r\n</h4>\r\n\r\n<p>\r\n    We do not sell, trade, or otherwise transfer to outside parties your Personally Identifiable Information unless we provide users with advance notice. This does not include website hosting partners and other parties who assist us in operating our website, conducting our business, or serving our users, so long as those parties agree to keep this information confidential. We may also release information when it's release is appropriate to comply with the law, enforce our site policies, or protect ours or others' rights, property or safety.\r\n</p>\r\n\r\n<h4>\r\n    Third-party links\r\n</h4>\r\n\r\n<p>\r\n    We do not include or offer third-party products or services on our website.\r\n</p>\r\n\r\n<p>\r\n    <strong>If at any time you would like to unsubscribe from receiving future emails, you can email us at</strong> <a href=\"mailto:info@nexo.io\">info@nexo.io</a> and we will promptly remove you from <strong>ALL</strong> correspondence.\r\n</p>\r\n\r\n<h4>\r\n    Contacting Us\r\n</h4>\r\n\r\n<p>\r\n    If there are any questions regarding this privacy policy, you may contact us.\r\n    <a href=\"mailto:info@nexo.io\">info@nexo.io</a>\r\n</p>"
+},
+"referral": {
+"title": "Referral",
+"metatitle": "1 Million NEXO Tokens have been claimed",
+"metadescription": "Thank you for participating and spreading the word about Nexo - The World’s First Vnezapen Crypto-backed Loans!"
+},
+"regulatory": {
+"title": "Regulatory",
+"metatitle": "1 Million NEXO Tokens have been claimed",
+"metadescription": "Thank you for participating and spreading the word about Nexo - The World’s First Vnezapen Crypto-backed Loans!"
+},
+"subscribe": {
+"title": "Subscribe"
+},
+"terms-and-conditions": {
+"title": "Terms and Conditions",
+"text": "<h4>\r\n    1. Introduction.\r\n</h4>\r\n\r\n<p>\r\n    These Terms And Conditions (these “Terms” or these “Terms And Conditions”) contained herein on this webpage, shall govern your use of this website, including all pages within this website (collectively referred to herein below as this “Website”). These Terms apply in full force and effect to your use of this Website and by using this Website, you expressly accept all Terms And Conditions contained herein in full. You must not use this Website, if you have any objection to any of these Terms And Conditions.\r\n</p>\r\n<p>\r\n    This Website is not for use by any minors (defined as those who are not at least 18 years of age), and you must not use this Website if you a minor.\r\n</p>\r\n\r\n<h4>\r\n    2. Intellectual Property Rights.\r\n</h4>\r\n\r\n<p>\r\n    Other than content you own, which you may have opted to include on this Website, under these Terms, Nexo and/or its licensors own all rights to the intellectual property and material contained in this Website, and all such rights are reserved.\r\n    You are granted a limited license only, subject to the restrictions provided in these Terms, for purposes of viewing the material contained on this Website.\r\n</p>\r\n\r\n<h4>\r\n    3. Restrictions.\r\n</h4>\r\n\r\n<p>\r\n    You are expressly and emphatically restricted from all of the following:\r\n</p>\r\n\r\n<ol class=\"ol-letters\">\r\n    <li>\r\n        <span>\r\n            selling, sublicensing and/or otherwise commercializing any Website material;\r\n        </span>\r\n    </li>\r\n    <li>\r\n        <span>\r\n            using this Website in any way that is, or may be, damaging to this Website;\r\n        </span>\r\n    </li>\r\n    <li>\r\n        <span>\r\n            using this Website in any way that impacts user access to this Website;\r\n        </span>\r\n    </li>\r\n    <li>\r\n        <span>\r\n            using this Website contrary to applicable laws and regulations, or in a way that causes;\r\n        </span>\r\n    </li>\r\n    <li>\r\n        <span>\r\n            may cause, harm to the Website, or to any person or business entity;\r\n        </span>\r\n    </li>\r\n    <li>\r\n        <span>\r\n            engaging in any data mining, data harvesting, data extracting or any other similar activity in relation to this Website, or while using this Website;\r\n        </span>\r\n    </li>\r\n</ol>\r\n\r\n<p>\r\n    Certain areas of this Website are restricted from access by you and Nexo may further restrict access by you to any areas of this Website, at any time, in its sole and absolute discretion. Any user ID and password you may have for this Website are confidential and you must maintain confidentiality of such information.\r\n</p>\r\n\r\n\r\n<h4>\r\n    4. Your Content.\r\n</h4>\r\n\r\n<p>\r\n    In these Terms And Conditions, “Your Content” shall mean any audio, video, text, images or other material you choose to display on this Website. With respect to Your Content, by displaying it, you grant Nexo a non-exclusive, worldwide, irrevocable, royalty-free, sublicensable license to use, reproduce, adapt, publish, translate and distribute it in any and all media.\r\n</p>\r\n\r\n<p>\r\n    Your Content must be your own and must not be infringing on any third party’s rights. Nexo reserves the right to remove any of Your Content from this Website at any time, and for any reason, without notice.\r\n</p>\r\n\r\n\r\n<h4>\r\n    5. No warranties.\r\n</h4>\r\n\r\n<p>\r\n    This Website is provided “as is,” with all faults, and Nexo makes no express or implied representations or warranties, of any kind related to this Website or the materials contained on this Website. Additionally, nothing contained on this Website shall be construed as providing consult or advice to you.\r\n</p>\r\n\r\n<h4>\r\n    6. Limitation of liability.\r\n</h4>\r\n\r\n<p>\r\n    In no event shall Nexo, nor any of its officers, directors and employees, be liable to you for anything arising out of or in any way connected with your use of this Website, whether such liability is under contract, tort or otherwise, and Nexo, including its officers, directors and employees shall not be liable for any indirect, consequential or special liability arising out of or in any way related to your use of this Website.\r\n</p>\r\n\r\n<h4>\r\n    7. Indemnification.\r\n</h4>\r\n\r\n<p>\r\n    You hereby indemnify to the fullest extent Nexo from and against any and all liabilities, costs, demands, causes of action, damages and expenses (including reasonable attorney’s fees) arising out of or in any way related to your breach of any of the provisions of these Terms.\r\n</p>\r\n\r\n<h4>\r\n    8. Severability.\r\n</h4>\r\n\r\n<p>\r\n    If any provision of these Terms is found to be unenforceable or invalid under any applicable law, such unenforceability or invalidity shall not render these Terms unenforceable or invalid as a whole, and such provisions shall be deleted without affecting the remaining provisions herein.\r\n</p>\r\n\r\n<h4>\r\n    9. Variation of Terms.\r\n</h4>\r\n\r\n<p>\r\n    Nexo is permitted to revise these Terms at any time as it sees fit, and by using this Website you are expected to review such Terms on a regular basis to ensure you understand all Terms And Conditions governing use of this Website.\r\n</p>\r\n\r\n<h4>\r\n    10. Assignment.\r\n</h4>\r\n\r\n<p>\r\n    Nexo shall be permitted to assign, transfer, and subcontract its rights and/or obligations under these Terms without any notification or consent required. However, you shall not be permitted to assign, transfer, or subcontract any of your rights and/or obligations under these Terms.\r\n</p>\r\n\r\n<h4>\r\n    11. Entire Agreement.\r\n</h4>\r\n\r\n<p>\r\n    These Terms, including any legal notices and disclaimers contained on this Website, constitute the entire agreement between Nexo and you in relation to your use of this Website, and supersede all prior agreements and understandings with respect to the same.\r\n</p>\r\n\r\n<h4>\r\n    12. Governing Law & Jurisdiction.\r\n</h4>\r\n\r\n<p>\r\n    These Terms will be governed by and construed in accordance with the laws of Zug, Switzerland, and you submit to the non-exclusive jurisdiction of the cantonal and federal courts located in Zug, Switzerland for the resolution of any disputes. \r\n</p>"
+},
+"test-page": {
+"title": "Тест страница",
+"foobar": [
+{
+"onefi": "дссад",
+"intro": "3243245325"
+}
+],
+"intro": "intro",
+"text": "text"
+},
+"unsubscribe": {
+"title": "Ънсъбскриб"
+},
+"vote": {
+"title": "Win 100,000 NEXO by Voting for New Collaterals for Nexo Loans",
+"metatitle": "Win 100,000 NEXO by Voting for New Collaterals for Nexo Loans",
+"metadescription": "The crypto assets that receive the most votes from their communities will be added next as collateral options on the Nexo Platform. Glasuvai now! 10 participants will win 100,000 NEXO tokens each."
+}
+}
