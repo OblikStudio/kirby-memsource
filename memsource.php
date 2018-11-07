@@ -6,6 +6,8 @@ require_once(__DIR__ . DS . 'src' . DS . 'BlueprintReader.php');
 require_once(__DIR__ . DS . 'src' . DS . 'Exporter.php');
 require_once(__DIR__ . DS . 'src' . DS . 'Importer.php');
 
+$memsource = new Memsource\App;
+
 if (function_exists('panel')) {
     panel()->routes([
         [
@@ -19,6 +21,38 @@ if (function_exists('panel')) {
                 );
 
                 return response::json($data);
+            }
+        ],
+        [
+            // PUT method is used because GET can't have JSON data in its body
+            // and POST automatically gets a `csrf` parameter appended from
+            // the Kirby panel, which makes the body invalid JSON.
+            'pattern' => 'memsource/store',
+            'method' => 'PUT',
+            'action' => function () use ($memsource) {
+                $data = null;
+                $response = ['status' => 'success'];
+
+                $data = json_decode(kirby()->request()->body(), true);
+                if (!$data) {
+                    $response = [
+                        'status' => 'error',
+                        'message' => 'Empty or invalid input data.'
+                    ];
+                }
+
+                try {
+                    $memsource->store(function (&$store) use ($data) {
+                        $store = array_replace_recursive($store, $data);
+                    });
+                } catch (\Exception $e) {
+                    $response = [
+                        'status' => 'error',
+                        'message' => 'Could not merge data.'
+                    ];
+                }
+
+                return response::json($response);
             }
         ],
         [

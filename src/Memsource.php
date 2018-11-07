@@ -15,7 +15,7 @@ class App {
 		$this->token = !empty($store['token']) ? $store['token'] : null;
 	}
 
-	private static function store ($mutator = null) {
+	public function store ($mutator = null) {
 		$store = null;
 
 		try {

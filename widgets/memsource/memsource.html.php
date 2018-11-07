@@ -19,34 +19,24 @@
 
 	<form action="<?= $url_auth; ?>" method="post">
 		<div class="field field-content">
-			<input class="input" type="text" name="ms-username" autocomplete="section-memsource username" placeholder="Username">
+			<input class="input" type="text" name="userName" autocomplete="section-memsource username" placeholder="Username">
 			<div class="field-icon">
 				<i class="icon fa fa-user"></i>
 			</div>
 		</div>
 		<div class="field field-content">
-			<input class="input" type="password" name="ms-password" autocomplete="section-memsource current-password" placeholder="Password">
+			<input class="input" type="password" name="password" autocomplete="section-memsource current-password" placeholder="Password">
 			<div class="field-icon">
 				<i class="icon fa fa-key"></i>
 			</div>
 		</div>
+
+		<button type="button" class="memsource-req">req</button>
 
 		<button class="btn btn-rounded btn-positive">Authorize</button>
 	</form>
 </div>
 
 <script>
-	var $widget = $('#memsource-widget');
-
-	$widget.find('form').on('submit', function (event) {
-		event.preventDefault();
-
-		var $this = $(this);
-
-		$.ajax({
-			type: $this.attr('method'),
-			url: $this.attr('action'),
-			data: $this.serialize()
-		});
-	});
+<?php include_once __DIR__ . DS . 'assets' . DS . 'build' . DS . 'main.js'; ?>
 </script>

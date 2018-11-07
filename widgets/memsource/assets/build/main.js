@@ -1,0 +1,46 @@
+(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+var $widget = $('#memsource-widget');
+var memsourceUrl = 'http://localhost/nexobank/panel/memsource';
+
+function updateStore (data) {
+	$.ajax({
+		method: 'PUT',
+		url: memsourceUrl + '/store',
+		contentType: 'application/json',
+		data: JSON.stringify(data)
+	}).fail(function (error) {
+		console.warn('Could not update store:', error.responseJSON);
+	});
+}
+
+$widget.find('form').on('submit', function (event) {
+	event.preventDefault();
+
+	var $this = $(this);
+	var data = $this.serializeArray();
+
+	console.log(data);
+
+	$.ajax({
+		method: 'POST',
+		url: 'https://cloud.memsource.com/web/api2/v1/auth/login',
+		contentType: 'application/json',
+		data: JSON.stringify({
+			userName: 'joroyordanov',
+			password: 'BCRm6C6uZmjrQ9a'
+		})
+	}).then(function () {
+		console.log(arguments);
+	});
+});
+
+var $btn = $('.memsource-req');
+$btn.on('click', function () {
+	updateStore({
+		foo: 3295
+	});
+});
+},{}]},{},[1])
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIkM6XFx4YW1wcFxcaHRkb2NzXFxuZXhvYmFua1xcbm9kZV9tb2R1bGVzXFxicm93c2VyLXBhY2tcXF9wcmVsdWRlLmpzIiwiQzoveGFtcHAvaHRkb2NzL25leG9iYW5rL3NpdGUvcGx1Z2lucy9tZW1zb3VyY2Uvd2lkZ2V0cy9tZW1zb3VyY2UvYXNzZXRzL2pzL2Zha2VfOTUwNmZlZmMuanMiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUE7QUNBQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBIiwiZmlsZSI6ImdlbmVyYXRlZC5qcyIsInNvdXJjZVJvb3QiOiIiLCJzb3VyY2VzQ29udGVudCI6WyIoZnVuY3Rpb24gZSh0LG4scil7ZnVuY3Rpb24gcyhvLHUpe2lmKCFuW29dKXtpZighdFtvXSl7dmFyIGE9dHlwZW9mIHJlcXVpcmU9PVwiZnVuY3Rpb25cIiYmcmVxdWlyZTtpZighdSYmYSlyZXR1cm4gYShvLCEwKTtpZihpKXJldHVybiBpKG8sITApO3Rocm93IG5ldyBFcnJvcihcIkNhbm5vdCBmaW5kIG1vZHVsZSAnXCIrbytcIidcIil9dmFyIGY9bltvXT17ZXhwb3J0czp7fX07dFtvXVswXS5jYWxsKGYuZXhwb3J0cyxmdW5jdGlvbihlKXt2YXIgbj10W29dWzFdW2VdO3JldHVybiBzKG4/bjplKX0sZixmLmV4cG9ydHMsZSx0LG4scil9cmV0dXJuIG5bb10uZXhwb3J0c312YXIgaT10eXBlb2YgcmVxdWlyZT09XCJmdW5jdGlvblwiJiZyZXF1aXJlO2Zvcih2YXIgbz0wO288ci5sZW5ndGg7bysrKXMocltvXSk7cmV0dXJuIHN9KSIsInZhciAkd2lkZ2V0ID0gJCgnI21lbXNvdXJjZS13aWRnZXQnKTtcclxudmFyIG1lbXNvdXJjZVVybCA9ICdodHRwOi8vbG9jYWxob3N0L25leG9iYW5rL3BhbmVsL21lbXNvdXJjZSc7XHJcblxyXG5mdW5jdGlvbiB1cGRhdGVTdG9yZSAoZGF0YSkge1xyXG5cdCQuYWpheCh7XHJcblx0XHRtZXRob2Q6ICdQVVQnLFxyXG5cdFx0dXJsOiBtZW1zb3VyY2VVcmwgKyAnL3N0b3JlJyxcclxuXHRcdGNvbnRlbnRUeXBlOiAnYXBwbGljYXRpb24vanNvbicsXHJcblx0XHRkYXRhOiBKU09OLnN0cmluZ2lmeShkYXRhKVxyXG5cdH0pLmZhaWwoZnVuY3Rpb24gKGVycm9yKSB7XHJcblx0XHRjb25zb2xlLndhcm4oJ0NvdWxkIG5vdCB1cGRhdGUgc3RvcmU6JywgZXJyb3IucmVzcG9uc2VKU09OKTtcclxuXHR9KTtcclxufVxyXG5cclxuJHdpZGdldC5maW5kKCdmb3JtJykub24oJ3N1Ym1pdCcsIGZ1bmN0aW9uIChldmVudCkge1xyXG5cdGV2ZW50LnByZXZlbnREZWZhdWx0KCk7XHJcblxyXG5cdHZhciAkdGhpcyA9ICQodGhpcyk7XHJcblx0dmFyIGRhdGEgPSAkdGhpcy5zZXJpYWxpemVBcnJheSgpO1xyXG5cclxuXHRjb25zb2xlLmxvZyhkYXRhKTtcclxuXHJcblx0JC5hamF4KHtcclxuXHRcdG1ldGhvZDogJ1BPU1QnLFxyXG5cdFx0dXJsOiAnaHR0cHM6Ly9jbG91ZC5tZW1zb3VyY2UuY29tL3dlYi9hcGkyL3YxL2F1dGgvbG9naW4nLFxyXG5cdFx0Y29udGVudFR5cGU6ICdhcHBsaWNhdGlvbi9qc29uJyxcclxuXHRcdGRhdGE6IEpTT04uc3RyaW5naWZ5KHtcclxuXHRcdFx0dXNlck5hbWU6ICdqb3JveW9yZGFub3YnLFxyXG5cdFx0XHRwYXNzd29yZDogJ0JDUm02QzZ1Wm1qclE5YSdcclxuXHRcdH0pXHJcblx0fSkudGhlbihmdW5jdGlvbiAoKSB7XHJcblx0XHRjb25zb2xlLmxvZyhhcmd1bWVudHMpO1xyXG5cdH0pO1xyXG59KTtcclxuXHJcbnZhciAkYnRuID0gJCgnLm1lbXNvdXJjZS1yZXEnKTtcclxuJGJ0bi5vbignY2xpY2snLCBmdW5jdGlvbiAoKSB7XHJcblx0dXBkYXRlU3RvcmUoe1xyXG5cdFx0Zm9vOiAzMjk1XHJcblx0fSk7XHJcbn0pOyJdfQ==
+
+//# sourceMappingURL=data:application/json;charset=utf8;base64,eyJ2ZXJzaW9uIjozLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiIiwic291cmNlcyI6WyJtYWluLmpzIl0sInNvdXJjZXNDb250ZW50IjpbInZhciAkd2lkZ2V0ID0gJCgnI21lbXNvdXJjZS13aWRnZXQnKTtcclxudmFyIG1lbXNvdXJjZVVybCA9ICdodHRwOi8vbG9jYWxob3N0L25leG9iYW5rL3BhbmVsL21lbXNvdXJjZSc7XHJcblxyXG5mdW5jdGlvbiB1cGRhdGVTdG9yZSAoZGF0YSkge1xyXG5cdCQuYWpheCh7XHJcblx0XHRtZXRob2Q6ICdQVVQnLFxyXG5cdFx0dXJsOiBtZW1zb3VyY2VVcmwgKyAnL3N0b3JlJyxcclxuXHRcdGNvbnRlbnRUeXBlOiAnYXBwbGljYXRpb24vanNvbicsXHJcblx0XHRkYXRhOiBKU09OLnN0cmluZ2lmeShkYXRhKVxyXG5cdH0pLmZhaWwoZnVuY3Rpb24gKGVycm9yKSB7XHJcblx0XHRjb25zb2xlLndhcm4oJ0NvdWxkIG5vdCB1cGRhdGUgc3RvcmU6JywgZXJyb3IucmVzcG9uc2VKU09OKTtcclxuXHR9KTtcclxufVxyXG5cclxuJHdpZGdldC5maW5kKCdmb3JtJykub24oJ3N1Ym1pdCcsIGZ1bmN0aW9uIChldmVudCkge1xyXG5cdGV2ZW50LnByZXZlbnREZWZhdWx0KCk7XHJcblxyXG5cdHZhciAkdGhpcyA9ICQodGhpcyk7XHJcblx0dmFyIGRhdGEgPSAkdGhpcy5zZXJpYWxpemVBcnJheSgpO1xyXG5cclxuXHRjb25zb2xlLmxvZyhkYXRhKTtcclxuXHJcblx0JC5hamF4KHtcclxuXHRcdG1ldGhvZDogJ1BPU1QnLFxyXG5cdFx0dXJsOiAnaHR0cHM6Ly9jbG91ZC5tZW1zb3VyY2UuY29tL3dlYi9hcGkyL3YxL2F1dGgvbG9naW4nLFxyXG5cdFx0Y29udGVudFR5cGU6ICdhcHBsaWNhdGlvbi9qc29uJyxcclxuXHRcdGRhdGE6IEpTT04uc3RyaW5naWZ5KHtcclxuXHRcdFx0dXNlck5hbWU6ICdqb3JveW9yZGFub3YnLFxyXG5cdFx0XHRwYXNzd29yZDogJ0JDUm02QzZ1Wm1qclE5YSdcclxuXHRcdH0pXHJcblx0fSkudGhlbihmdW5jdGlvbiAoKSB7XHJcblx0XHRjb25zb2xlLmxvZyhhcmd1bWVudHMpO1xyXG5cdH0pO1xyXG59KTtcclxuXHJcbnZhciAkYnRuID0gJCgnLm1lbXNvdXJjZS1yZXEnKTtcclxuJGJ0bi5vbignY2xpY2snLCBmdW5jdGlvbiAoKSB7XHJcblx0dXBkYXRlU3RvcmUoe1xyXG5cdFx0Zm9vOiAzMjk1XHJcblx0fSk7XHJcbn0pOyJdLCJmaWxlIjoibWFpbi5qcyJ9
