@@ -1,0 +1,64 @@
+<style lang="scss">
+@import 'vars';
+
+.ms-info {
+    min-height: 2.75em;
+    margin-bottom: 1.5em;
+    padding: 0.5em;
+    padding-left: 40px;
+    position: relative;
+
+    font-size: 1em;
+    text-align: left;
+    line-height: 1.5em;
+    border: 2px solid;
+    background: #fff;
+
+    &.error {
+        border-color: $color-error;
+        color: $color-error;
+    }
+
+    i {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 40px;
+        height: 40px;
+        position: absolute;
+            top: 0;
+            left: 0;
+
+        font-size: 1.2em;
+    }
+}
+</style>
+
+<template>
+    <div :class="{
+        'ms-info': true,
+        [type]: true
+    }">
+        <i :class="{
+            fa: true,
+            [icon]: true
+        }"></i>
+        <div class="info-content">
+            <slot></slot>
+        </div>
+    </div>
+</template>
+
+<script>
+module.exports = {
+    props: ['type'],
+    computed: {
+        icon: function () {
+            switch (this.type) {
+                case 'error': return 'fa-exclamation-circle';
+                default: return 'fa-info-circle';
+            }
+        }
+    }
+};
+</script>

@@ -2,13 +2,13 @@
 
 return array(
     'title' => 'Memsource',
-    // 'options' => array(
-    //     array(
-    //         'text' => 'Logout',
-    //         'icon' => 'sign-out',
-    //         'link' => 'link/to/option'
-    //     )
-    // ),
+    'options' => array(
+        array(
+            'text' => 'User',
+            'icon' => 'user',
+            'link' => '#'
+        )
+    ),
     'html' => function() {
         return tpl::load(__DIR__ . DS . 'memsource.html.php');
     }

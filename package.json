@@ -1,0 +1,42 @@
+{
+  "name": "kirby-memsource",
+  "version": "0.0.1",
+  "description": "Memsource integration for Kirby",
+  "main": "gulpfile.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/OblikStudio/kirby-memsource.git"
+  },
+  "keywords": [
+    "kirby",
+    "plugin",
+    "memsource",
+    "translate",
+    "localization",
+    "l10n",
+    "import",
+    "exoprt"
+  ],
+  "author": "Hristiyan Dodov",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/OblikStudio/kirby-memsource/issues"
+  },
+  "homepage": "https://github.com/OblikStudio/kirby-memsource#readme",
+  "dependencies": {
+    "axios": "^0.18.0",
+    "vue": "^2.5.17",
+    "vuex": "^3.0.1"
+  },
+  "devDependencies": {
+    "gulp": "^3.9.1",
+    "gulp-bro": "^1.0.3",
+    "gulp-if": "^2.0.2",
+    "gulp-sourcemaps": "^2.6.4",
+    "gulp-uglify": "^3.0.1",
+    "yargs": "^12.0.2"
+  }
+}
