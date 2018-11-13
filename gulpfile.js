@@ -12,7 +12,10 @@ const OPTIONS = {
 
 const PATHS = {
     scripts: {
-        watch: 'widgets/memsource/assets/js/**/*',
+        watch: [
+            'widgets/memsource/assets/**/*',
+            '!widgets/memsource/assets/build/*'
+        ],
         src: 'widgets/memsource/assets/js/main.js',
         dest: 'widgets/memsource/assets/build/'
     }

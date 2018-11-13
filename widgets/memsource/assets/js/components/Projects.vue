@@ -43,7 +43,7 @@
                 margin-right: 0.4em;
 
                 .lang {
-                    color: $color-success;
+                    color: $color-success-dark;
 
                     &.is-invalid {
                         color: $color-error;
@@ -51,7 +51,6 @@
                 }
             }
     }
-        
 }
 </style>
 
@@ -59,7 +58,7 @@
     <dir class="ms-projects">
         <h3>Projects</h3>
 
-        <div class="dashboard-box">
+        <div v-if="projects.length" class="dashboard-box">
             <ul class="dashboard-items">
                 <li v-for="project in projects" class="dashboard-item project">
                     <button>
@@ -74,7 +73,10 @@
                             <span>{{ project.name }}</span>
 
                             <span class="targets" title="Target languages">
-                                <span v-for="lang in project.targetLangs" class="lang">
+                                <span v-for="lang in project.targetLangs" :class="{
+                                    lang: true,
+                                    'is-invalid': !isLanguageSupported(lang)
+                                }">
                                     {{ lang }}
                                 </span>
                             </span>
@@ -83,7 +85,9 @@
                 </li>
             </ul>
         </div>
-
+        <Info v-else-if="error" type="error">
+            {{ error }}
+        </Info>
     </dir>
 </template>
 
@@ -93,28 +97,45 @@ var axios = require('axios');
 var get = require('lodash.get');
 
 module.exports = {
+    components: {
+        Info: require('./Info.vue')
+    },
     data: function () {
         return {
-            projects: []
+            projects: [],
+            error: false
         };
+    },
+    methods: {
+        isLanguageSupported: function (input) {
+            var supported = false;
+
+            this.$store.state.kirby.languages.forEach(function (lang) {
+                if (lang.locale === input) {
+                    supported = true;
+                }
+            });
+
+            return supported;
+        }
     },
     created: function () {
         var self = this;
+
+        this.$store.commit('SET_LOADING', true);
+        this.error = false;
 
         axios.get(config.api + 'projects', {
             params: {
                 token: this.$store.getters.token
             }
         }).then(function (response) {
-            console.log(response);
             var projects = get(response, 'data.content');
-                console.log('proj', projects);
-
-            if (projects) {
-                self.projects = projects;
-            } else {
-                self.projects = null;
-            }
+            self.projects = (projects) ? projects : [];
+        }).catch(function (error) {
+            self.error = self.getErrorMessage(error);
+        }).then(function () {
+            self.$store.commit('SET_LOADING', false);
         });
     }
 };

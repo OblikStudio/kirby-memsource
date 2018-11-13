@@ -1,5 +1,5 @@
 <style lang="scss">
-.memsource-form {
+.ms-form {
     max-width: 16em;
     text-align: center;
     margin: 1.5em auto 0.5em auto;
@@ -7,7 +7,7 @@
 </style>
 
 <template>
-    <form class="memsource-form" @submit="submit">
+    <form class="ms-form" @submit="submit">
         <div class="field field-content">
             <input
                 class="input"
@@ -38,18 +38,15 @@
         </div>
 
         <Info v-if="error" type="error">
-            <p>{{ error }}</p>
+            {{ error }}
         </Info>
-
-        <p v-if="$store.state.session">
-            Hello, {{ $store.state.session.user.firstName }}
-        </p>
 
         <button class="btn btn-rounded btn-positive">Authorize</button>
     </form>
 </template>
 
 <script>
+var config = require('../config');
 var axios = require('axios');
 
 module.exports = {
@@ -71,31 +68,13 @@ module.exports = {
 
             this.error = null;
 
-            axios.post('https://cloud.memsource.com/web/api2/v1/auth/login', {
+            axios.post(config.api + 'auth/login', {
                 userName: this.username,
                 password: this.password
             }).then(function (response) {
                 self.$store.commit('SET_SESSION', response.data);
             }).catch(function (error) {
-                console.log(arguments);
-                var data = error.response && error.response.data,
-                    message = 'Error while logging in.';
-
-                if (data) {
-                    if (data.errorDescription) {
-                        message = data.errorDescription;
-                    } else if (data.errorCode) {
-                        message = data.errorCode;
-
-                        switch (data.errorCode) {
-                            case 'AuthInvalidCredentials': message = 'Invalid credentials.'; break;
-                        }
-                    }
-                } else {
-                    message = (error && error.message) || error;
-                }
-
-                self.error = message;
+                self.error = self.getErrorMessage(error);
             });
         }
     }

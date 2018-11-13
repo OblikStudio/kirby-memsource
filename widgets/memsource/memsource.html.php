@@ -1,16 +1,24 @@
-<pre>
-	<?php
-	$url_panel = panel()->urls->index;
-	$url_main = $url_panel . '/memsource';
-	$url_auth = $url_main . '/auth';
+<?php
+    $langs = [];
+    foreach (site()->languages() as $lang) {
+        array_push($langs, [
+            'code' => $lang->code(),
+            'locale' => strtolower($lang->locale()),
+            'name' => $lang->name(),
+            'isDefault' => $lang->isDefault()
+        ]);
+    }
 
-    $siteLanguages = panel()->site();
-
-    var_dump($siteLanguages);
+    $pluginData = [
+        'languages' => $langs
+    ];
 ?>
-</pre>
 
 <div class="memsource-widget"></div>
+
+<script>
+    window.Memsource = <?= json_encode($pluginData) ?>;
+</script>
 
 <script>
 <?php include_once __DIR__ . DS . 'assets' . DS . 'build' . DS . 'main.js'; ?>

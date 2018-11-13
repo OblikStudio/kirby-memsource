@@ -1,12 +1,22 @@
 var Vue = require('vue');
 var Vuex = require('vuex');
+var session = null;
 
 Vue.use(Vuex);
 
+if (localStorage.memsourceSession) {
+    try {
+        session = JSON.parse(localStorage.memsourceSession);
+    } catch (e) {
+        console.warn(e);
+    }
+}
+
 module.exports = new Vuex.Store({
     state: {
-        screen: 'Login',
-        session: null,
+        kirby: window.Memsource,
+        session: session,
+        loading: false
     },
     getters: {
         token: function (state) {
@@ -22,12 +32,12 @@ module.exports = new Vuex.Store({
         }
     },
     mutations: {
-        SET_SCREEN: function (state, value) {
-            state.screen = value;
-        },
         SET_SESSION: function (state, payload) {
             state.session = payload;
             localStorage.memsourceSession = JSON.stringify(payload);
+        },
+        SET_LOADING: function (state, value) {
+            state.loading = value;
         }
     }
 });
