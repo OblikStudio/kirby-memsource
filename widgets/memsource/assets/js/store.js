@@ -5,6 +5,7 @@ Vue.use(Vuex);
 
 module.exports = new Vuex.Store({
     state: {
+        screen: 'Login',
         session: null,
     },
     getters: {
@@ -21,9 +22,12 @@ module.exports = new Vuex.Store({
         }
     },
     mutations: {
+        SET_SCREEN: function (state, value) {
+            state.screen = value;
+        },
         SET_SESSION: function (state, payload) {
-            console.log('set session', payload);
             state.session = payload;
+            localStorage.memsourceSession = JSON.stringify(payload);
         }
     }
 });

@@ -1,15 +1,15 @@
 <template>
-	<Login></Login>
+	<component :is="$store.state.screen"></component>
 </template>
 
 <script>
-var Login = require('./components/Login.vue');
 var $button = $('#memsource-widget h2 a')
 var $buttonContent = $button.find('span');
 
 module.exports = {
 	components: {
-		Login: Login
+		Login: require('./components/Login.vue'),
+        Projects: require('./components/Projects.vue')
 	},
     methods: {
         openUserScreen: function () {
@@ -23,6 +23,10 @@ module.exports = {
             event.preventDefault();
             self.openUserScreen();
         });
+
+        if (localStorage.memsourceSession) {
+            this.$store.commit('SET_SESSION', JSON.parse(localStorage.memsourceSession));
+        }
     },
     watch: {
         "$store.state.session": {
@@ -35,6 +39,13 @@ module.exports = {
                 }
 
                 $button.css('display', (isLoggedIn) ? 'block' : 'none');
+            }
+        },
+        "$store.getters.token": function (value) {
+            if (value) {
+                this.$store.commit('SET_SCREEN', 'Projects');
+            } else {
+                this.$store.commit('SET_SCREEN', 'Login');
             }
         }
     }
