@@ -2,10 +2,20 @@
 @import 'vars';
 
 .memsource-widget {
-    min-height: 12em;
-    max-height: 20em;
-    overflow: auto;
     position: relative;
+
+    .ms-view {
+        display: flex;
+        align-items: center;
+        height: 15em; 
+        overflow: auto;
+    }
+
+        .ms-screen-wrapper {
+            width: 100%;
+            max-height: 100%;
+            padding-bottom: 1.5em;
+        }
 
     .loading-overlay {
         display: flex;
@@ -64,9 +74,15 @@
 
 <template>
     <div class="memsource-widget">
-        <transition name="fade" mode="out-in">
-        	<component :is="screen"></component>
-        </transition>
+        <Crumbs :entries="crumbs" @click="handleCrumb"></Crumbs>
+
+        <div class="ms-view">
+            <div class="ms-screen-wrapper">
+                <transition name="fade" mode="out-in">
+                    <component :is="screen" @selectProject="selectProject" class="ms-screen"></component>
+                </transition>
+            </div>
+        </div>
 
         <transition name="fade">
             <div v-if="$store.state.loading" class="loading-overlay">
@@ -84,18 +100,40 @@ var $buttonContent = $button.find('span');
 
 module.exports = {
 	components: {
+        Crumbs: require('./components/Crumbs.vue'),
 		Login: require('./components/Login.vue'),
-        Projects: require('./components/Projects.vue')
+        Projects: require('./components/Projects.vue'),
+        Project: require('./components/Project.vue')
 	},
     data: function () {
         return {
-            screen: 'Login'
+            screen: 'Login',
+            crumbs: []
         };
     },
     methods: {
         openUserScreen: function () {
             console.log('open user');
             this.$store.commit('SET_LOADING', !this.$store.state.loading);
+        },
+        selectProject: function (project) {
+            this.$store.commit('SET_PROJECT', project);
+            this.screen = 'Project';
+        },
+        handleCrumb: function (crumb) {
+            for (var i = this.crumbs.length - 1; i >= 0; i--) {
+                var isClicked = (this.crumbs[i].id === crumb);
+
+                if (!isClicked || this.screen !== crumb) {
+                    this.crumbs.splice(i, 1);
+                }
+
+                if (isClicked) {
+                    break;
+                }
+            }
+
+            this.screen = crumb;
         }
     },
     created: function () {
@@ -107,6 +145,26 @@ module.exports = {
         });
     },
     watch: {
+        screen: {
+            immediate: true,
+            handler: function (value, oldValue) {
+                var crumbId = value,
+                    crumbText = value;
+
+                if (value === 'Login' || oldValue === 'Login') {
+                    this.crumbs = [];
+                }
+
+                if (value === 'Project') {
+                    crumbText = this.$store.state.project.name;
+                }
+
+                this.crumbs.push({
+                    id: crumbId,
+                    text: crumbText
+                });
+            }
+        },
         "$store.state.session": {
             immediate: true,
             handler: function (data) {
@@ -123,7 +181,7 @@ module.exports = {
             immediate: true,
             handler: function (value) {
                 if (value) {
-                    this.$store.commit('SET_LOADING', true);
+                    // this.$store.commit('SET_LOADING', true);
                     this.screen = 'Projects';
                 } else {
                     this.screen = 'Login';

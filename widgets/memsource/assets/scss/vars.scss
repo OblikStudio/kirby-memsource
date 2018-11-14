@@ -1,7 +1,18 @@
 $color-success: #8dae28;
 $color-success-dark: #699a27;
 $color-error: #b3000a;
+$color-warning: #e28716;
+$color-action: #1394c5;
 
 $transition-leave: 0.1s ease-out;
 $transition-enter: 0.3s ease;
 $transition-loader: 0.3s ease 0.2s;
+
+.btn-action {
+    border-color: $color-action;
+    color: $color-action;
+
+    &:hover, &:focus {
+        background: $color-action;
+    }
+}

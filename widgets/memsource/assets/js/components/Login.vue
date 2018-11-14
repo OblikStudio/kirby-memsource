@@ -2,7 +2,7 @@
 .ms-form {
     max-width: 16em;
     text-align: center;
-    margin: 1.5em auto 0.5em auto;
+    margin: 0 auto;
 }
 </style>
 

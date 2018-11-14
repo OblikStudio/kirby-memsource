@@ -10,13 +10,18 @@
 
     font-size: 1em;
     text-align: left;
-    line-height: 1.5em;
+    line-height: 1.4;
     border: 2px solid;
     background: #fff;
 
     &.error {
         border-color: $color-error;
         color: $color-error;
+    }
+
+    &.warning {
+        border-color: $color-warning;
+        color: $color-warning;
     }
 
     i {
@@ -43,9 +48,7 @@
             fa: true,
             [icon]: true
         }"></i>
-        <div class="info-content">
-            <slot></slot>
-        </div>
+        <slot></slot>
     </div>
 </template>
 
@@ -56,6 +59,7 @@ module.exports = {
         icon: function () {
             switch (this.type) {
                 case 'error': return 'fa-exclamation-circle';
+                case 'warning': return 'fa-exclamation-triangle';
                 default: return 'fa-info-circle';
             }
         }

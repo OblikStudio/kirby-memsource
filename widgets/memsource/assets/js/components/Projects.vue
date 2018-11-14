@@ -2,11 +2,6 @@
 @import 'vars';
 
 .ms-projects {
-    h3 {
-        margin: 1em;
-        text-align: center;
-    }
-
     .project {
         transition: background 0.1s ease;
 
@@ -34,21 +29,17 @@
             .lang {
                 line-height: 1;
                 font-family: monospace;
-                color: #888;
+                color: $color-error;
+
+                &.is-valid {
+                    color: $color-success-dark;
+                }
             }
 
             .targets {
                 float: right;
                 line-height: 1;
                 margin-right: 0.4em;
-
-                .lang {
-                    color: $color-success-dark;
-
-                    &.is-invalid {
-                        color: $color-error;
-                    }
-                }
             }
     }
 }
@@ -56,15 +47,16 @@
 
 <template>
     <dir class="ms-projects">
-        <h3>Projects</h3>
-
         <div v-if="projects.length" class="dashboard-box">
             <ul class="dashboard-items">
                 <li v-for="project in projects" class="dashboard-item project">
-                    <button>
+                    <button @click="$emit('selectProject', project)">
                         <span class="dashboard-item-icon dashboard-item-icon-with-border" title="Source language">
                             <span class="lang-container">
-                                <span class="lang">
+                                <span :class="{
+                                    lang: true,
+                                    'is-valid': ($store.getters.siteLanguage.locale === project.sourceLang)
+                                }">
                                     {{ project.sourceLang }}
                                 </span>
                             </span>
@@ -75,7 +67,7 @@
                             <span class="targets" title="Target languages">
                                 <span v-for="lang in project.targetLangs" :class="{
                                     lang: true,
-                                    'is-invalid': !isLanguageSupported(lang)
+                                    'is-valid': isLanguageSupported(lang)
                                 }">
                                     {{ lang }}
                                 </span>
@@ -96,6 +88,8 @@ var config = require('../config.js');
 var axios = require('axios');
 var get = require('lodash.get');
 
+var _cache = null;
+
 module.exports = {
     components: {
         Info: require('./Info.vue')
@@ -106,21 +100,13 @@ module.exports = {
             error: false
         };
     },
-    methods: {
-        isLanguageSupported: function (input) {
-            var supported = false;
-
-            this.$store.state.kirby.languages.forEach(function (lang) {
-                if (lang.locale === input) {
-                    supported = true;
-                }
-            });
-
-            return supported;
-        }
-    },
     created: function () {
         var self = this;
+
+        if (_cache) {
+            this.projects = _cache;
+            return;
+        }
 
         this.$store.commit('SET_LOADING', true);
         this.error = false;
@@ -131,7 +117,12 @@ module.exports = {
             }
         }).then(function (response) {
             var projects = get(response, 'data.content');
-            self.projects = (projects) ? projects : [];
+            if (!projects) {
+                projects = [];
+            }
+
+            self.projects = projects;
+            _cache = projects;
         }).catch(function (error) {
             self.error = self.getErrorMessage(error);
         }).then(function () {

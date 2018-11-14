@@ -1,5 +1,16 @@
 module.exports = {
     methods: {
+        isLanguageSupported: function (input) {
+            var supported = false;
+
+            this.$store.state.kirby.languages.forEach(function (lang) {
+                if (lang.locale === input) {
+                    supported = true;
+                }
+            });
+
+            return supported;
+        },
         getErrorMessage: function (error, defaultMessage) {
             var data = (error.response && error.response.data),
                 message = null;

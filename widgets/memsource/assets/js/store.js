@@ -16,7 +16,8 @@ module.exports = new Vuex.Store({
     state: {
         kirby: window.Memsource,
         session: session,
-        loading: false
+        loading: false,
+        project: null
     },
     getters: {
         token: function (state) {
@@ -29,6 +30,17 @@ module.exports = new Vuex.Store({
             }
 
             return null;
+        },
+        siteLanguage: function (state) {
+            var lang = null;
+
+            state.kirby.languages.forEach(function (item) {
+                if (item.isDefault) {
+                    lang = item;
+                }
+            });
+
+            return lang;
         }
     },
     mutations: {
@@ -38,6 +50,9 @@ module.exports = new Vuex.Store({
         },
         SET_LOADING: function (state, value) {
             state.loading = value;
+        },
+        SET_PROJECT: function (state, value) {
+            state.project = value;
         }
     }
 });
