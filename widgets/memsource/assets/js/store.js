@@ -1,36 +1,20 @@
 var Vue = require('vue');
 var Vuex = require('vuex');
-var session = null;
+var memsource = require('./modules/memsource');
 
 Vue.use(Vuex);
 
-if (localStorage.memsourceSession) {
-    try {
-        session = JSON.parse(localStorage.memsourceSession);
-    } catch (e) {
-        console.warn(e);
-    }
-}
-
 module.exports = new Vuex.Store({
+    modules: {
+        memsource: memsource
+    },
     state: {
         kirby: window.Memsource,
-        session: session,
+        session: null,
         loading: false,
         project: null
     },
     getters: {
-        token: function (state) {
-            if (state.session) {
-                var expireDate = new Date(state.session.expires);
-
-                if (Date.now() < expireDate) {
-                    return state.session.token;
-                }
-            }
-
-            return null;
-        },
         siteLanguage: function (state) {
             var lang = null;
 
@@ -46,7 +30,12 @@ module.exports = new Vuex.Store({
     mutations: {
         SET_SESSION: function (state, payload) {
             state.session = payload;
-            localStorage.memsourceSession = JSON.stringify(payload);
+
+            try {
+                localStorage.memsourceSession = JSON.stringify(payload);
+            } catch (e) {
+                console.warn(e);
+            }
         },
         SET_LOADING: function (state, value) {
             state.loading = value;

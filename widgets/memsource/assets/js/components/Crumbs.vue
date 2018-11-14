@@ -2,6 +2,7 @@
 .ms-crumbs {
     display: flex;
     justify-content: center;
+    min-height: 1em;
     margin: 1.5em 0;
     text-align: center;
 

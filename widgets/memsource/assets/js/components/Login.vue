@@ -46,9 +46,6 @@
 </template>
 
 <script>
-var config = require('../config');
-var axios = require('axios');
-
 module.exports = {
     components: {
         Info: require('./Info.vue')
@@ -65,14 +62,13 @@ module.exports = {
             event.preventDefault();
 
             var self = this;
-
             this.error = null;
 
-            axios.post(config.api + 'auth/login', {
-                userName: this.username,
+            this.$store.dispatch('logIn', {
+                username: this.username,
                 password: this.password
-            }).then(function (response) {
-                self.$store.commit('SET_SESSION', response.data);
+            }).then(function () {
+                self.$emit('loggedIn');
             }).catch(function (error) {
                 self.error = self.getErrorMessage(error);
             });

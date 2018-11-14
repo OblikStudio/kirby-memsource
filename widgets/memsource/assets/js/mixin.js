@@ -4,7 +4,7 @@ module.exports = {
             var supported = false;
 
             this.$store.state.kirby.languages.forEach(function (lang) {
-                if (lang.locale === input) {
+                if (!lang.isDefault && lang.locale === input) {
                     supported = true;
                 }
             });

@@ -8,7 +8,11 @@
     button {
         display: block;
         min-width: 8em;
-        margin: 1.5em auto;
+        margin: 0 auto;
+
+        & + button {
+            margin-top: 1.5em;
+        }
     }
 }
 </style>
@@ -19,8 +23,8 @@
             <Info v-for="warning in warnings" type="warning">
                 {{ warning }}
             </Info>
-            <button class="btn btn-rounded btn-action">Export</button>
-            <button class="btn btn-rounded btn-positive">Import</button>
+            <button class="btn btn-rounded btn-action" @click="$emit('exportSite')">Export</button>
+            <button class="btn btn-rounded btn-positive" @click="$emit('importJob')">Import</button>
         </div>
     </div>
 </template>
@@ -64,11 +68,11 @@ module.exports = {
                 values.push('Site language "' + siteLanguage.locale + '" does not match project source language "' + project.sourceLang + '"!');
             }
 
-            if (missingFromKirby) {
+            if (missingFromKirby.length) {
                 values.push('Missing languages in Kirby: ' + missingFromKirby.join(', ') + '!');
             }
 
-            if (missingFromMemsource) {
+            if (missingFromMemsource.length) {
                 values.push('Missing languages in Memsource: ' + missingFromMemsource.join(', ') + '!');
             }
 

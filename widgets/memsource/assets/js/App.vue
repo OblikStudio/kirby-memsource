@@ -7,14 +7,15 @@
     .ms-view {
         display: flex;
         align-items: center;
-        height: 15em; 
+        height: 15em;
+        margin-bottom: 0.5em;
         overflow: auto;
     }
 
         .ms-screen-wrapper {
             width: 100%;
             max-height: 100%;
-            padding-bottom: 1.5em;
+            padding-bottom: 1em;
         }
 
     .loading-overlay {
@@ -30,17 +31,6 @@
         font-size: 2em;
         background: #fff;
         user-select: none;
-
-        .loading-content {
-            transition: opacity $transition-loader;
-        }
-
-        &.fade-enter,
-        &.fade-leave-to {
-            .loading-content {
-                opacity: 0;
-            }
-        }
 
         &.fade-enter-active {
             transition: opacity $transition-leave;
@@ -63,12 +53,6 @@
     .fade-leave-active {
         transition: opacity $transition-leave;
     }
-
-    .fade-enter-active + .loading-overlay {
-        // If the view is just fading in, there's no reason to animate the
-        // loader overlay.
-        transition: none;
-    }
 }
 </style>
 
@@ -79,7 +63,13 @@
         <div class="ms-view">
             <div class="ms-screen-wrapper">
                 <transition name="fade" mode="out-in">
-                    <component :is="screen" @selectProject="selectProject" class="ms-screen"></component>
+                    <component
+                        :is="screen"
+                        class="ms-screen"
+                        @loggedIn="loggedIn"
+                        @selectProject="selectProject"
+                        @exportSite="exportSite"
+                    ></component>
                 </transition>
             </div>
         </div>
@@ -103,11 +93,12 @@ module.exports = {
         Crumbs: require('./components/Crumbs.vue'),
 		Login: require('./components/Login.vue'),
         Projects: require('./components/Projects.vue'),
-        Project: require('./components/Project.vue')
+        Project: require('./components/Project.vue'),
+        Export: require('./components/Export.vue')
 	},
     data: function () {
         return {
-            screen: 'Login',
+            screen: 'Export',
             crumbs: []
         };
     },
@@ -116,9 +107,23 @@ module.exports = {
             console.log('open user');
             this.$store.commit('SET_LOADING', !this.$store.state.loading);
         },
+        loggedIn: function () {
+            this.screen = null;
+            this.showProjects();
+        },
+        showProjects: function () {
+            var self = this;
+
+            this.$store.dispatch('loadProjects').then(function () {
+                self.screen = 'Projects';
+            });
+        },
         selectProject: function (project) {
             this.$store.commit('SET_PROJECT', project);
             this.screen = 'Project';
+        },
+        exportSite: function () {
+            this.screen = 'Export';
         },
         handleCrumb: function (crumb) {
             for (var i = this.crumbs.length - 1; i >= 0; i--) {
@@ -137,7 +142,24 @@ module.exports = {
         }
     },
     created: function () {
-        var self = this;
+        var self = this,
+            savedSession = null;
+
+        try {
+            if (localStorage.memsourceSession) {
+                savedSession = JSON.parse(localStorage.memsourceSession);
+            }
+        } catch (e) {
+            console.warn(e);
+        }
+
+        if (savedSession) {
+            this.$store.commit('SET_SESSION', savedSession);
+            return;
+            this.showProjects();
+        } else {
+            this.screen = 'Login';
+        }
 
         $button.on('click', function (event) {
             event.preventDefault();
@@ -155,6 +177,10 @@ module.exports = {
                     this.crumbs = [];
                 }
 
+                if (!value) {
+                    return; // don't add crumb when screen is set to null
+                }
+
                 if (value === 'Project') {
                     crumbText = this.$store.state.project.name;
                 }
@@ -168,22 +194,19 @@ module.exports = {
         "$store.state.session": {
             immediate: true,
             handler: function (data) {
-                var isLoggedIn = (data && data.user);
+                var user = (data && data.user);
 
-                if (isLoggedIn) {
+                if (user) {
                     $buttonContent.html(data.user.firstName);
                 }
 
-                $button.css('display', (isLoggedIn) ? 'block' : 'none');
+                $button.css('display', (user) ? 'block' : 'none');
             }
         },
         "$store.getters.token": {
             immediate: true,
-            handler: function (value) {
-                if (value) {
-                    // this.$store.commit('SET_LOADING', true);
-                    this.screen = 'Projects';
-                } else {
+            handler: function (value, oldval) {
+                if (value === null) {
                     this.screen = 'Login';
                 }
             }
