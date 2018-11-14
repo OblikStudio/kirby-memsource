@@ -60,17 +60,9 @@ module.exports = {
     methods: {
         submit: function (event) {
             event.preventDefault();
-
-            var self = this;
-            this.error = null;
-
-            this.$store.dispatch('logIn', {
+            this.$emit('logIn', {
                 username: this.username,
                 password: this.password
-            }).then(function () {
-                self.$emit('loggedIn');
-            }).catch(function (error) {
-                self.error = self.getErrorMessage(error);
             });
         }
     }

@@ -9,6 +9,7 @@
         align-items: center;
         height: 15em;
         margin-bottom: 0.5em;
+        position: relative;
         overflow: auto;
     }
 
@@ -16,6 +17,19 @@
             width: 100%;
             max-height: 100%;
             padding-bottom: 1em;
+        }
+
+        .ms-error {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-flow: column nowrap;
+            position: absolute;
+                top: 0;
+                left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(#fff, 0.95);
         }
 
     .loading-overlay {
@@ -66,13 +80,27 @@
                     <component
                         :is="screen"
                         class="ms-screen"
-                        @loggedIn="loggedIn"
+                        @logIn="logIn"
                         @selectProject="selectProject"
                         @export="exportContent"
                         @upload="upload"
                     ></component>
                 </transition>
             </div>
+
+            <transition name="fade">
+                <div v-if="error" class="ms-error">
+                    <Info type="error">
+                        {{ error }}
+                    </Info>
+                    <button
+                        class="btn btn-rounded"
+                        @click="error = null"
+                    >
+                        Close
+                    </button>
+                </div>
+            </transition>
         </div>
 
         <transition name="fade">
@@ -92,6 +120,7 @@ var $buttonContent = $button.find('span');
 module.exports = {
 	components: {
         Crumbs: require('./components/Crumbs.vue'),
+        Info: require('./components/Info.vue'),
 		Login: require('./components/Login.vue'),
         Projects: require('./components/Projects.vue'),
         Project: require('./components/Project.vue'),
@@ -99,8 +128,9 @@ module.exports = {
 	},
     data: function () {
         return {
+            crumbs: [],
             screen: null,
-            crumbs: []
+            error: null
         };
     },
     methods: {
@@ -124,14 +154,22 @@ module.exports = {
             this.screen = crumb;
         },
 
-        loggedIn: function () {
-            this.screen = null;
-            this.showProjects();
+        logIn: function (data) {
+            var self = this;
+
+            this.$store.dispatch('logIn', data).then(function () {
+                self.screen = null;
+                self.showProjects();
+            }).catch(function (error) {
+                self.error = self.getErrorMessage(error);
+            });
         },
         showProjects: function () {
             var self = this;
 
-            this.$store.dispatch('loadProjects').then(function () {
+            this.$store.dispatch('loadProjects').catch(function (error) {
+                self.error = self.getErrorMessage(error);
+            }).then(function () {
                 self.screen = 'Projects';
             });
         },
@@ -145,6 +183,9 @@ module.exports = {
             this.screen = null;
             this.$store.dispatch('exportContent').then(function () {
                 self.screen = 'Export';
+            }).catch(function (error) {
+                self.error = self.getErrorMessage(error);
+                self.screen = 'Project';
             });
         },
         upload: function () {
