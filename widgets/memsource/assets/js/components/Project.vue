@@ -23,7 +23,7 @@
             <Info v-for="warning in warnings" type="warning">
                 {{ warning }}
             </Info>
-            <button class="btn btn-rounded btn-action" @click="$emit('exportSite')">Export</button>
+            <button class="btn btn-rounded btn-action" @click="$emit('export')">Export</button>
             <button class="btn btn-rounded btn-positive" @click="$emit('importJob')">Import</button>
         </div>
     </div>

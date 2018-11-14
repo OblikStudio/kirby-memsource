@@ -35,7 +35,7 @@
             </div>
         </div>
 
-        <form>
+        <form @submit="submit">
             <label class="label" for="ms-export-options">Create job for:</label>
             <div class="field-content">
                 <div class="input input-with-selectbox" :class="{
@@ -70,25 +70,43 @@
 </template>
 
 <script>
+function countObjectData (object) {
+    var data = {
+        strings: 0,
+        chars: 0
+    };
+
+    for (var k in object) {
+        var value = object[k];
+
+        if (value && typeof value === 'object') {
+            var child = countObjectData(value);
+            data.strings += child.strings;
+            data.chars += child.chars;
+        } else {
+            value = value + '';
+
+            data.strings++;
+            data.chars += value.length;                            
+        }
+    }
+
+    return data;
+}
+
+function getExportStats (data) {
+    var stats = countObjectData(data);
+    stats.pages = Object.keys(data).length;
+
+    return stats;
+}
+
 module.exports = {
     data: function () {
         return {
+            stats: [],
             isFocused: false,
-            exportLanguages: '_all',
-            stats: [
-                {
-                    title: 'Pages',
-                    value: 37
-                },
-                {
-                    title: 'Strings',
-                    value: 438
-                },
-                {
-                    title: 'Characters',
-                    value: 12862
-                }
-            ]
+            exportLanguages: '_all'
         };
     },
     computed: {
@@ -109,6 +127,35 @@ module.exports = {
 
             return values;
         }
+    },
+    methods: {
+        submit: function (event) {
+            event.preventDefault();
+
+            this.$emit('upload', this.exportLanguages);
+        },
+        updateExportStats: function (data) {
+            var stats = getExportStats(data);
+
+            this.stats = [
+                {
+                    title: 'Pages',
+                    value: stats.pages
+                },
+                {
+                    title: 'Strings',
+                    value: stats.strings
+                },
+                {
+                    title: 'Characters',
+                    value: stats.chars
+                }
+            ];
+        }
+    },
+    created: function () {
+        var content = this.$store.state.exportData;
+        this.updateExportStats(content);
     }
 };
 </script>

@@ -68,7 +68,8 @@
                         class="ms-screen"
                         @loggedIn="loggedIn"
                         @selectProject="selectProject"
-                        @exportSite="exportSite"
+                        @export="exportContent"
+                        @upload="upload"
                     ></component>
                 </transition>
             </div>
@@ -98,7 +99,7 @@ module.exports = {
 	},
     data: function () {
         return {
-            screen: 'Export',
+            screen: null,
             crumbs: []
         };
     },
@@ -106,24 +107,6 @@ module.exports = {
         openUserScreen: function () {
             console.log('open user');
             this.$store.commit('SET_LOADING', !this.$store.state.loading);
-        },
-        loggedIn: function () {
-            this.screen = null;
-            this.showProjects();
-        },
-        showProjects: function () {
-            var self = this;
-
-            this.$store.dispatch('loadProjects').then(function () {
-                self.screen = 'Projects';
-            });
-        },
-        selectProject: function (project) {
-            this.$store.commit('SET_PROJECT', project);
-            this.screen = 'Project';
-        },
-        exportSite: function () {
-            this.screen = 'Export';
         },
         handleCrumb: function (crumb) {
             for (var i = this.crumbs.length - 1; i >= 0; i--) {
@@ -139,6 +122,33 @@ module.exports = {
             }
 
             this.screen = crumb;
+        },
+
+        loggedIn: function () {
+            this.screen = null;
+            this.showProjects();
+        },
+        showProjects: function () {
+            var self = this;
+
+            this.$store.dispatch('loadProjects').then(function () {
+                self.screen = 'Projects';
+            });
+        },
+        selectProject: function (project) {
+            this.$store.commit('SET_PROJECT', project);
+            this.screen = 'Project';
+        },
+        exportContent: function () {
+            var self = this;
+
+            this.screen = null;
+            this.$store.dispatch('exportContent').then(function () {
+                self.screen = 'Export';
+            });
+        },
+        upload: function () {
+            console.log(arguments);
         }
     },
     created: function () {
@@ -155,7 +165,6 @@ module.exports = {
 
         if (savedSession) {
             this.$store.commit('SET_SESSION', savedSession);
-            return;
             this.showProjects();
         } else {
             this.screen = 'Login';

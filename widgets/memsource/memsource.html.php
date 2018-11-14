@@ -10,6 +10,7 @@
     }
 
     $pluginData = [
+        'endpoint' => panel()->urls->index . '/memsource',
         'languages' => $langs
     ];
 ?>

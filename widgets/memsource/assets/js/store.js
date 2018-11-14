@@ -1,5 +1,6 @@
 var Vue = require('vue');
 var Vuex = require('vuex');
+var axios = require('axios');
 var memsource = require('./modules/memsource');
 
 Vue.use(Vuex);
@@ -12,7 +13,8 @@ module.exports = new Vuex.Store({
         kirby: window.Memsource,
         session: null,
         loading: false,
-        project: null
+        project: null,
+        exportData: null
     },
     getters: {
         siteLanguage: function (state) {
@@ -42,6 +44,25 @@ module.exports = new Vuex.Store({
         },
         SET_PROJECT: function (state, value) {
             state.project = value;
+        },
+        SET_EXPORT_DATA: function (state, value) {
+            state.exportData = value;
+        }
+    },
+    actions: {
+        exportContent: function (context) {
+            context.commit('SET_LOADING', true);
+
+            return axios.get(context.state.kirby.endpoint + '/export').then(function (response) {
+                var data = Object.freeze(response.data); // large object, good idea to freeze
+
+                context.commit('SET_EXPORT_DATA', data);
+                context.commit('SET_LOADING', false);
+                return Promise.resolve();
+            }).catch(function (error) {
+                context.commit('SET_LOADING', false);
+                return Promise.reject(error);
+            });
         }
     }
 });
