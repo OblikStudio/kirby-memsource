@@ -67,6 +67,10 @@
     .fade-leave-active {
         transition: opacity $transition-leave;
     }
+
+    button {
+        user-select: none;
+    }
 }
 </style>
 
@@ -188,8 +192,13 @@ module.exports = {
                 self.screen = 'Project';
             });
         },
-        upload: function () {
-            console.log(arguments);
+        upload: function (data) {
+            this.$store.dispatch('createJob', {
+                data: this.$store.state.exportData,
+                projectId: this.$store.state.project.id,
+                language: data.language,
+                filename: data.filename
+            });
         }
     },
     created: function () {

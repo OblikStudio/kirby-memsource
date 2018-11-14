@@ -17,6 +17,18 @@ module.exports = new Vuex.Store({
         exportData: null
     },
     getters: {
+        availableLanguages: function (state) {
+            var values = [],
+                projectLangs = state.project.targetLangs;
+
+            state.kirby.languages.forEach(function (lang) {
+                if (!lang.isDefault && projectLangs.indexOf(lang.locale) >= 0) {
+                    values.push(lang);
+                }
+            });
+
+            return values;
+        },
         siteLanguage: function (state) {
             var lang = null;
 

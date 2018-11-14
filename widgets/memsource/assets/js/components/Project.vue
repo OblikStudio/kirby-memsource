@@ -23,8 +23,24 @@
             <Info v-for="warning in warnings" type="warning">
                 {{ warning }}
             </Info>
-            <button class="btn btn-rounded btn-action" @click="$emit('export')">Export</button>
-            <button class="btn btn-rounded btn-positive" @click="$emit('importJob')">Import</button>
+
+            <button
+                class="btn btn-rounded btn-action"
+                @click="$emit('export')"
+                :disabled="!$store.getters.availableLanguages.length"
+                :class="{
+                    'btn-disabled': !$store.getters.availableLanguages.length
+                }"
+            >
+                Export
+            </button>
+
+            <button
+                class="btn btn-rounded btn-positive"
+                @click="$emit('importJob')"
+            >
+                Import
+            </button>
         </div>
     </div>
 </template>

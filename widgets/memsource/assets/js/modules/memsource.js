@@ -65,6 +65,10 @@ module.exports = {
                 context.commit('SET_LOADING', false);
                 return Promise.reject(error);
             });
+        },
+        createJob: function (context, payload) {
+            // https://cloud.memsource.com/web/api2/v1/projects/{projectUid}/jobs
+            console.log('create job', payload);
         }
     }
 };

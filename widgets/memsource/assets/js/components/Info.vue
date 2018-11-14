@@ -4,8 +4,7 @@
 .ms-info {
     min-height: 2.75em;
     margin-bottom: 1.5em;
-    padding: 0.5em;
-    padding-left: 40px;
+    padding: 0.5em 0.9em 0.5em 40px;
     position: relative;
 
     font-size: 1em;

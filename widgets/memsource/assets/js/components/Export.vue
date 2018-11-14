@@ -19,8 +19,8 @@
             }
         }
 
-    button {
-        margin-top: 1.5em;
+    label {
+        text-align: left;
     }
 }
 </style>
@@ -36,21 +36,22 @@
         </div>
 
         <form @submit="submit">
-            <label class="label" for="ms-export-options">Create job for:</label>
-            <div class="field-content">
+            <label class="label" for="ms-form-langs">Create job for:</label>
+            <div class="field field-content">
                 <div class="input input-with-selectbox" :class="{
                     'input-is-focused': isFocused
                 }">
                     <div class="selectbox-wrapper">
                         <select
-                            id="ms-export-options"
+                            id="ms-form-langs"
                             class="selectbox"
                             @focus="isFocused = true"
                             @blur="isFocused = false"
-                            v-model="exportLanguages"
+                            required="true"
+                            v-model="language"
                         >
                             <option
-                                v-for="option in exportOptions"
+                                v-for="option in exportLanguage"
                                 :key="option.value"
                                 :value="option.value"
                             >
@@ -62,6 +63,19 @@
                 <div class="field-icon">
                     <i class="icon fa fa-chevron-down"></i>
                 </div>
+            </div>
+
+            <label class="label" for="ms-form-filename">Job filename:</label>
+            <div class="field field-content">
+                <input
+                    id="ms-form-filename"
+                    class="input"
+                    type="text"
+                    name="filename"
+                    placeholder="Filename"
+                    required="true"
+                    v-model="filename"
+                >
             </div>
 
             <button class="btn btn-rounded btn-action">Upload</button>
@@ -106,24 +120,28 @@ module.exports = {
         return {
             stats: [],
             isFocused: false,
-            exportLanguages: '_all'
+            language: '_all',
+            filename: 'kirby-site'
         };
     },
     computed: {
-        exportOptions: function () {
-            var values = [
-                {
+        exportLanguage: function () {
+            var values = [],
+                options = this.$store.getters.availableLanguages;
+
+            if (options.length) {
+                values.push({
                     value: '_all',
                     text: 'All'
-                }
-            ];
-
-            this.$store.state.kirby.languages.forEach(function (lang) {
-                values.push({
-                    value: lang.locale,
-                    text: lang.name
                 });
-            });
+
+                options.forEach(function (lang) {
+                    values.push({
+                        value: lang.locale,
+                        text: lang.name
+                    });
+                });
+            }
 
             return values;
         }
@@ -132,7 +150,10 @@ module.exports = {
         submit: function (event) {
             event.preventDefault();
 
-            this.$emit('upload', this.exportLanguages);
+            this.$emit('upload', {
+                language: this.language,
+                filename: this.filename
+            });
         },
         updateExportStats: function (data) {
             var stats = getExportStats(data);
