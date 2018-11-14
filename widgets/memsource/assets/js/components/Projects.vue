@@ -26,13 +26,6 @@
                 text-align: left;
             }
 
-                .lang-container {
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    height: 100%;
-                }
-
                 .lang {
                     line-height: 1;
                     font-family: monospace;
@@ -43,11 +36,30 @@
                     }
                 }
 
-                .targets {
-                    float: right;
-                    line-height: 1;
-                    margin-right: 0.4em;
+                .lang-container {
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    height: 100%;
                 }
+
+                .dashboard-item-text {
+                    display: inline-flex;
+                    justify-content: space-between;
+                }
+
+                    .project-name {
+                        flex: 0 1 auto;
+                        margin-right: 0.75em;
+                        overflow: hidden;
+                        text-overflow: ellipsis;
+                    }
+
+                    .targets {
+                        max-width: 75%;
+                        line-height: 1;
+                        margin-right: 0.4em;
+                    }
         }
 }
 </style>
@@ -69,13 +81,18 @@
                             </span>
                         </span>
                         <p class="dashboard-item-text">
-                            <span>{{ project.name }}</span>
+                            <span class="project-name">
+                                {{ project.name }}
+                            </span>
 
                             <span class="targets" title="Target languages">
-                                <span v-for="lang in project.targetLangs" :class="{
-                                    lang: true,
-                                    'is-valid': isLanguageSupported(lang)
-                                }">
+                                <span
+                                    class="lang"
+                                    v-for="lang in project.targetLangs"
+                                    :class="{
+                                        'is-valid': isLanguageSupported(lang)
+                                    }"
+                                >
                                     {{ lang }}
                                 </span>
                             </span>
