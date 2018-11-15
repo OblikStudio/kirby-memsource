@@ -1,5 +1,4 @@
 var axios = require('axios');
-var get = require('lodash.get');
 var freeze = require('deep-freeze-node');
 
 function apiRequest (context, options) {
@@ -67,7 +66,7 @@ module.exports = {
             return apiRequest(context, {
                 url: '/projects'
             }).then(function (response) {
-                var projects = get(response, 'data.content');
+                var projects = response.data.content;
 
                 if (projects) {
                     context.commit('MS_SET_PROJECTS', projects);
@@ -101,7 +100,7 @@ module.exports = {
             return apiRequest(context, {
                 url: '/projects/' + payload.projectId + '/jobs'
             }).then(function (response) {
-                var jobs = get(response, 'data.content');
+                var jobs = response.data.content;
 
                 if (jobs) {
                     context.commit('MS_SET_JOBS', jobs);
