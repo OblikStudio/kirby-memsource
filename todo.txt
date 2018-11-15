@@ -1,0 +1,1 @@
+- add message for when the site is not multi-lingual
