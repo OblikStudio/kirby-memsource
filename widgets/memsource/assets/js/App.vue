@@ -222,12 +222,29 @@ module.exports = {
             this.screen = 'Import';
         },
         importJob: function () {
-            var self = this;
+            var self = this,
+                targetLanguage = this.$store.state.job.targetLang,
+                targetLanguageCode = null;
+
+            // Convert language locale back to language code because that's
+            // what Kirby uses internally in its API.
+            this.$store.getters.availableLanguages.forEach(function (lang) {
+                if (lang.locale === targetLanguage) {
+                    targetLanguageCode = lang.code;
+                }
+            });
+
+            if (!targetLanguageCode) {
+                return self.alerts.push({
+                    type: 'error',
+                    text: 'Language code of "' + targetLanguage + '" not found!'
+                });
+            }
 
             this.$store.dispatch('importJob', {
                 projectId: this.$store.state.project.id,
                 jobId: this.$store.state.job.uid,
-                language: this.$store.state.job.targetLang
+                language: targetLanguageCode
             }).then(function (response) {
                 self.alerts.push({
                     type: 'success',
