@@ -1,2 +1,3 @@
 - add message for when the site is not multi-lingual
-- split components and views in separate folders
+- remove lodash
+- add warning for when the current language is not the source one and you try to export

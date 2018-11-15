@@ -116,44 +116,24 @@ var $buttonContent = $button.find('span');
 
 module.exports = {
 	components: {
+		Login: require('./views/Login.vue'),
+        Projects: require('./views/Projects.vue'),
+        Project: require('./views/Project.vue'),
+        Export: require('./views/Export.vue'),
+        Jobs: require('./views/Jobs.vue'),
+        Import: require('./views/Import.vue'),
+
         Crumbs: require('./components/Crumbs.vue'),
-        Info: require('./components/Info.vue'),
-		Login: require('./components/Login.vue'),
-        Projects: require('./components/Projects.vue'),
-        Project: require('./components/Project.vue'),
-        Export: require('./components/Export.vue'),
-        Jobs: require('./components/Jobs.vue'),
-        Import: require('./components/Import.vue')
+        Info: require('./components/Info.vue')
 	},
     data: function () {
         return {
             alerts: [],
             crumbs: [],
-            screen: null,
-            error: null
+            screen: null
         };
     },
     methods: {
-        openUserScreen: function () {
-            console.log('open user');
-            this.$store.commit('SET_LOADING', !this.$store.state.loading);
-        },
-        handleCrumb: function (crumb) {
-            for (var i = this.crumbs.length - 1; i >= 0; i--) {
-                var isClicked = (this.crumbs[i].id === crumb);
-
-                if (!isClicked || this.screen !== crumb) {
-                    this.crumbs.splice(i, 1);
-                }
-
-                if (isClicked) {
-                    break;
-                }
-            }
-
-            this.screen = crumb;
-        },
-
         logIn: function (data) {
             var self = this;
 
@@ -190,18 +170,18 @@ module.exports = {
             this.$store.dispatch('exportContent').then(function () {
                 self.screen = 'Export';
             }).catch(function (error) {
+                self.screen = 'Project';
                 self.alerts.push({
                     type: 'error',
                     text: self.getErrorMessage(error)
                 });
-                self.screen = 'Project';
             });
         },
         upload: function (data) {
             var self = this;
 
             this.$store.dispatch('createJob', {
-                data: this.$store.state.exportData,
+                data: this.$store.state.pluginApi.exportData,
                 projectId: this.$store.state.project.id,
                 language: data.language,
                 filename: data.filename
@@ -259,6 +239,26 @@ module.exports = {
                     text: self.getErrorMessage(error)
                 });
             });
+        },
+
+        openUserScreen: function () {
+            console.log('open user');
+            this.$store.commit('SET_LOADING', !this.$store.state.loading);
+        },
+        handleCrumb: function (crumb) {
+            for (var i = this.crumbs.length - 1; i >= 0; i--) {
+                var isClicked = (this.crumbs[i].id === crumb);
+
+                if (!isClicked || this.screen !== crumb) {
+                    this.crumbs.splice(i, 1);
+                }
+
+                if (isClicked) {
+                    break;
+                }
+            }
+
+            this.screen = crumb;
         }
     },
     created: function () {

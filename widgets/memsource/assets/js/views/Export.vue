@@ -92,7 +92,7 @@ function getExportStats (data) {
 
 module.exports = {
     components: {
-        Stats: require('./Stats.vue')
+        Stats: require('../components/Stats.vue')
     },
     data: function () {
         return {
@@ -163,7 +163,7 @@ module.exports = {
         }
     },
     created: function () {
-        var content = this.$store.state.exportData;
+        var content = this.$store.state.pluginApi.exportData;
         this.updateExportStats(content);
     }
 };

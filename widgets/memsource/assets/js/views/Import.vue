@@ -25,7 +25,7 @@
 <script>
 module.exports = {
     components: {
-        Stats: require('./Stats.vue')
+        Stats: require('../components/Stats.vue')
     },
     computed: {
         job: function () {

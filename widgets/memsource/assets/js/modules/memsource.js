@@ -5,7 +5,7 @@ var freeze = require('deep-freeze-node');
 function apiRequest (context, options) {
     context.commit('SET_LOADING', true);
 
-    return context.getters.api(options).then(function (value) {
+    return context.getters.memsourceApiClient(options).then(function (value) {
         context.commit('SET_LOADING', false);
         return Promise.resolve(value);
     }).catch(function (reason) {
@@ -31,7 +31,7 @@ module.exports = {
                 }
             }
         },
-        api: function (state, getters) {
+        memsourceApiClient: function (state, getters) {
             return axios.create({
                 baseURL: 'https://cloud.memsource.com/web/api2/v1',
                 method: 'get',
@@ -113,9 +113,6 @@ module.exports = {
         downloadJob: function (context, payload) {
             return apiRequest(context, {
                 url: '/projects/' + payload.projectId + '/jobs/' + payload.jobId + '/targetFile'
-            }).then(function (response) {
-                console.log(response.data);
-                return Promise.resolve(response.data);
             });
         }
     }

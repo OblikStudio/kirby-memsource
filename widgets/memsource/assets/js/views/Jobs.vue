@@ -36,7 +36,7 @@
 <script>
 module.exports = {
     components: {
-        Info: require('./Info.vue')
+        Info: require('../components/Info.vue')
     }
 };
 </script>

@@ -29,10 +29,6 @@
             </div>
         </div>
 
-        <Info v-if="error" type="error">
-            {{ error }}
-        </Info>
-
         <button class="btn btn-rounded btn-positive">Authorize</button>
     </form>
 </template>
@@ -40,18 +36,18 @@
 <script>
 module.exports = {
     components: {
-        Info: require('./Info.vue')
+        Info: require('../components/Info.vue')
     },
     data: function () {
         return {
             username: null,
-            password: null,
-            error: null
+            password: null
         };
     },
     methods: {
         submit: function (event) {
             event.preventDefault();
+
             this.$emit('logIn', {
                 username: this.username,
                 password: this.password

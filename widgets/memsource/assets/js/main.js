@@ -1,8 +1,8 @@
 var Vue = require('vue');
 var store = require('./store');
-var mixin = require('./mixin');
+var general = require('./mixins/general');
 
-Vue.mixin(mixin);
+Vue.mixin(general);
 
 window.model = new Vue({
 	el: '.memsource-widget',
