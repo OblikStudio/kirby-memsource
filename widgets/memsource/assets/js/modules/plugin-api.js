@@ -44,8 +44,6 @@ module.exports = {
                 projectId: payload.projectId,
                 jobId: payload.jobId
             }).then(function (response) {
-                console.log('import', payload.language, response.data);
-
                 return apiRequest(context, {
                     url: '/import',
                     method: 'put',

@@ -14,7 +14,7 @@ module.exports = new Vuex.Store({
         memsource: memsource
     },
     state: {
-        kirby: window.Memsource,
+        kirby: freeze(window.Memsource),
         session: null,
         loading: false,
         project: null,

@@ -1,2 +1,1 @@
-- add message for when the site is not multi-lingual
 - add warning for when the current language is not the source one and you try to export
