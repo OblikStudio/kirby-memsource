@@ -228,7 +228,7 @@ module.exports = {
 
             // Convert language locale back to language code because that's
             // what Kirby uses internally in its API.
-            this.$store.getters.availableLanguages.forEach(function (lang) {
+            this.$store.state.kirby.languages.forEach(function (lang) {
                 if (lang.locale === targetLanguage) {
                     targetLanguageCode = lang.code;
                 }

@@ -21,7 +21,7 @@
                                 <span
                                     class="lang"
                                     :class="{
-                                        'is-valid': ($store.getters.siteLanguage.locale === project.sourceLang)
+                                        'is-valid': ($store.getters.activeLanguage.locale === project.sourceLang)
                                     }"
                                 >
                                     {{ project.sourceLang }}
@@ -38,7 +38,7 @@
                                     v-for="lang in project.targetLangs"
                                     class="lang"
                                     :class="{
-                                        'is-valid': isLanguageSupported(lang)
+                                        'is-valid': isLanguageAvailable(lang)
                                     }"
                                 >
                                     {{ lang }}

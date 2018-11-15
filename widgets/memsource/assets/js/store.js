@@ -26,7 +26,7 @@ module.exports = new Vuex.Store({
                 projectLangs = state.project.targetLangs;
 
             state.kirby.languages.forEach(function (lang) {
-                if (!lang.isDefault && projectLangs.indexOf(lang.locale) >= 0) {
+                if (!lang.isActive && projectLangs.indexOf(lang.locale) >= 0) {
                     values.push(lang);
                 }
             });
@@ -34,15 +34,14 @@ module.exports = new Vuex.Store({
             return values;
         },
         siteLanguage: function (state) {
-            var lang = null;
-
-            state.kirby.languages.forEach(function (item) {
-                if (item.isDefault) {
-                    lang = item;
-                }
-            });
-
-            return lang;
+            return state.kirby.languages.reduce(function (search, item) {
+                return search || (item.isDefault ? item : null);
+            }, null);
+        },
+        activeLanguage: function (state) {
+            return state.kirby.languages.reduce(function (search, item) {
+                return search || (item.isActive ? item : null);
+            }, null);
         }
     },
     mutations: {

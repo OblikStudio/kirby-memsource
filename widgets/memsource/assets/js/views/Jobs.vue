@@ -8,7 +8,7 @@
                             <span class="lang-container">
                                 <span :class="{
                                     lang: true,
-                                    'is-valid': isLanguageSupported(job.targetLang)
+                                    'is-valid': languageExistsInKirby(job.targetLang)
                                 }">
                                     {{ job.targetLang }}
                                 </span>

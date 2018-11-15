@@ -14,16 +14,16 @@
 
 <template>
     <div class="ms-project ms-wrapper">
-        <Info v-for="warning in warnings" type="warning">
-            {{ warning }}
+        <Info v-for="alert in alerts" :type="alert.type">
+            {{ alert.text }}
         </Info>
 
         <button
             class="btn btn-rounded btn-action"
             @click="$emit('export')"
-            :disabled="!$store.getters.availableLanguages.length"
+            :disabled="!canExport"
             :class="{
-                'btn-disabled': !$store.getters.availableLanguages.length
+                'btn-disabled': !canExport
             }"
         >
             Export
@@ -32,6 +32,10 @@
         <button
             class="btn btn-rounded btn-positive"
             @click="$emit('listJobs')"
+            :disabled="!canImport"
+            :class="{
+                'btn-disabled': !canImport
+            }"
         >
             Import
         </button>
@@ -39,17 +43,48 @@
 </template>
 
 <script>
+const FATAL_ERRORS = {
+    export: [
+        'ACTIVE_MISMATCH',
+        'NO_MATCHING'
+    ],
+    import: [
+        'NO_MATCHING'
+    ]
+};
+
 module.exports = {
     components: {
         Info: require('../components/Info.vue')
     },
+    methods: {
+        fatalAlertRaised: function (namespace) {
+            var found = false;
+
+            this.alerts.forEach(function (alert) {
+                if (FATAL_ERRORS[namespace].indexOf(alert.id) >= 0) {
+                    found = true;
+                }
+            });
+
+            return found;
+        }
+    },
     computed: {
-        warnings: function () {
+        canExport: function () {
+            return !this.fatalAlertRaised('export');
+        },
+        canImport: function () {
+            return !this.fatalAlertRaised('import');
+        },
+        alerts: function () {
             var self = this,
                 values = [],
                 project = this.$store.state.project,
                 siteLanguage = this.$store.getters.siteLanguage,
-                kirbyLanguages = this.$store.state.kirby.languages;
+                activeLanguage = this.$store.getters.activeLanguage,
+                kirbyLanguages = this.$store.state.kirby.languages,
+                availableLanguages = this.$store.getters.availableLanguages;
 
             var missingFromKirby = [];
             project.targetLangs.forEach(function (lang) {
@@ -68,21 +103,46 @@ module.exports = {
 
             var missingFromMemsource = [];
             kirbyLanguages.forEach(function (kirbyLang) {
-                if (!kirbyLang.isDefault && project.targetLangs.indexOf(kirbyLang.locale) < 0) {
+                if (!kirbyLang.isActive && project.targetLangs.indexOf(kirbyLang.locale) < 0) {
                     missingFromMemsource.push(kirbyLang.locale);
                 }
             });
 
-            if (siteLanguage.locale !== project.sourceLang) {
-                values.push('Site language "' + siteLanguage.locale + '" does not match project source language "' + project.sourceLang + '"!');
+            if (activeLanguage.locale !== project.sourceLang) {
+                values.push({
+                    id: 'ACTIVE_MISMATCH',
+                    type: 'error',
+                    text: 'Active language "' + activeLanguage.locale + '" does not match project source language "' + project.sourceLang + '"!'
+                });
             }
 
             if (missingFromKirby.length) {
-                values.push('Missing languages in Kirby: ' + missingFromKirby.join(', ') + '!');
+                values.push({
+                    type: 'warning',
+                    text: 'Missing languages in Kirby: ' + missingFromKirby.join(', ') + '!'
+                });
             }
 
             if (missingFromMemsource.length) {
-                values.push('Missing languages in Memsource: ' + missingFromMemsource.join(', ') + '!');
+                values.push({
+                    type: 'warning',
+                    text: 'Missing target languages in project: ' + missingFromMemsource.join(', ') + '!'
+                });
+            }
+
+            if (!availableLanguages.length) {
+                values.push({
+                    id: 'NO_MATCHING',
+                    type: 'error',
+                    text: 'No matching languages!'
+                });
+            }
+
+            if (siteLanguage.locale !== activeLanguage.locale) {
+                values.push({
+                    type: 'info',
+                    text: 'You\'ll be exporting the site in "' + activeLanguage.locale + '" which is not the main site language.'
+                });
             }
 
             return values;
