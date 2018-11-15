@@ -1,6 +1,5 @@
 <?php
 
-require_once(__DIR__ . DS . 'vendor' . DS . 'autoload.php');
 require_once(__DIR__ . DS . 'src' . DS . 'BlueprintReader.php');
 require_once(__DIR__ . DS . 'src' . DS . 'Exporter.php');
 require_once(__DIR__ . DS . 'src' . DS . 'Importer.php');

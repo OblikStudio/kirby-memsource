@@ -52,7 +52,7 @@
                         >
                             <option
                                 v-for="option in exportLanguage"
-                                :key="option.value"
+                                :key="option.text"
                                 :value="option.value"
                             >
                                 {{ option.text}}
@@ -120,7 +120,7 @@ module.exports = {
         return {
             stats: [],
             isFocused: false,
-            language: '_all',
+            language: null,
             filename: 'kirby-site'
         };
     },
@@ -130,10 +130,16 @@ module.exports = {
                 options = this.$store.getters.availableLanguages;
 
             if (options.length) {
-                values.push({
-                    value: '_all',
-                    text: 'All'
-                });
+                if (options.length > 1) {
+                    var locales = options.map(function (lang) {
+                        return lang.locale;
+                    });
+
+                    values.push({
+                        value: locales,
+                        text: 'All'
+                    });
+                }
 
                 options.forEach(function (lang) {
                     values.push({
@@ -141,6 +147,10 @@ module.exports = {
                         text: lang.name
                     });
                 });
+            }
+
+            if (values.length) {
+                this.language = values[0].value;
             }
 
             return values;
