@@ -1,7 +1,13 @@
+var dateFormat = require('dateformat');
+
 module.exports = {
     methods: {
+        dateFormat: dateFormat,
         plural: function (value, text) {
             return value + ' ' + text + (value != 1 ? 's' : '');
+        },
+        capitalize: function (text) {
+            return text.substr(0, 1).toUpperCase() + text.substr(1).toLowerCase();
         },
         isLanguageSupported: function (input) {
             var supported = false;

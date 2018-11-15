@@ -1,9 +1,23 @@
 var axios = require('axios');
 var get = require('lodash.get');
+var freeze = require('deep-freeze-node');
+
+function apiRequest (context, options) {
+    context.commit('SET_LOADING', true);
+
+    return context.getters.api(options).then(function (value) {
+        context.commit('SET_LOADING', false);
+        return Promise.resolve(value);
+    }).catch(function (reason) {
+        context.commit('SET_LOADING', false);
+        return Promise.reject(reason);
+    });
+}
 
 module.exports = {
     state: {
         projects: [],
+        jobs: []
     },
     getters: {
         token: function (state, getters, rootState) {
@@ -29,14 +43,15 @@ module.exports = {
     },
     mutations: {
         MS_SET_PROJECTS: function (state, data) {
-            state.projects = data;
+            state.projects = freeze(data);
+        },
+        MS_SET_JOBS: function (state, data) {
+            state.jobs = freeze(data);
         }
     },
     actions: {
         logIn: function (context, data) {
-            context.commit('SET_LOADING', true);
-
-            return context.getters.api({
+            return apiRequest(context, {
                 url: '/auth/login',
                 method: 'post',
                 data: {
@@ -45,17 +60,11 @@ module.exports = {
                 }
             }).then(function (response) {
                 context.commit('SET_SESSION', response.data);
-                context.commit('SET_LOADING', false);
                 return Promise.resolve();
-            }).catch(function (error) {
-                context.commit('SET_LOADING', false);
-                return Promise.reject(error);
             });
         },
         loadProjects: function (context) {
-            context.commit('SET_LOADING', true);
-
-            return context.getters.api({
+            return apiRequest(context, {
                 url: '/projects'
             }).then(function (response) {
                 var projects = get(response, 'data.content');
@@ -64,11 +73,7 @@ module.exports = {
                     context.commit('MS_SET_PROJECTS', projects);
                 }
 
-                context.commit('SET_LOADING', false);
-                return Promise.resolve();
-            }).catch(function (error) {
-                context.commit('SET_LOADING', false);
-                return Promise.reject(error);
+                return Promise.resolve(response);
             });
         },
         createJob: function (context, payload) {
@@ -81,9 +86,7 @@ module.exports = {
                 targetLangs: targetLanguages
             };
 
-            context.commit('SET_LOADING', true);
-
-            return context.getters.api({
+            return apiRequest(context, {
                 url: '/projects/' + payload.projectId + '/jobs',
                 method: 'post',
                 headers: {
@@ -92,12 +95,27 @@ module.exports = {
                     'Content-Disposition': 'filename*=UTF-8\'\'' + filename
                 },
                 data: payload.data
+            });
+        },
+        listJobs: function (context, payload) {
+            return apiRequest(context, {
+                url: '/projects/' + payload.projectId + '/jobs'
             }).then(function (response) {
-                context.commit('SET_LOADING', false);
+                var jobs = get(response, 'data.content');
+
+                if (jobs) {
+                    context.commit('MS_SET_JOBS', jobs);
+                }
+
                 return Promise.resolve(response);
-            }).catch(function (error) {
-                context.commit('SET_LOADING', false);
-                return Promise.reject(error);
+            });
+        },
+        downloadJob: function (context, payload) {
+            return apiRequest(context, {
+                url: '/projects/' + payload.projectId + '/jobs/' + payload.jobId + '/targetFile'
+            }).then(function (response) {
+                console.log(response.data);
+                return Promise.resolve(response.data);
             });
         }
     }

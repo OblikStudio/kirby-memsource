@@ -1,15 +1,9 @@
 <style lang="scss">
 @import 'vars';
+@import 'main';
 
 .memsource-widget {
     position: relative;
-
-    .ms-wrapper {
-        max-width: 16em;
-        margin-left: auto;
-        margin-right: auto;
-        text-align: center;
-    }
 
     .ms-view {
         display: flex;
@@ -65,23 +59,6 @@
             transition: opacity $transition-enter;
         }
     }
-
-    .fade-enter,
-    .fade-leave-to {
-        opacity: 0;
-    }
-
-    .fade-enter-active {
-        transition: opacity $transition-enter;
-    }
-
-    .fade-leave-active {
-        transition: opacity $transition-leave;
-    }
-
-    button {
-        user-select: none;
-    }
 }
 </style>
 
@@ -99,6 +76,9 @@
                         @selectProject="selectProject"
                         @export="exportContent"
                         @upload="upload"
+                        @listJobs="listJobs"
+                        @openJob="openJob"
+                        @import="importJob"
                     ></component>
                 </transition>
             </div>
@@ -141,7 +121,9 @@ module.exports = {
 		Login: require('./components/Login.vue'),
         Projects: require('./components/Projects.vue'),
         Project: require('./components/Project.vue'),
-        Export: require('./components/Export.vue')
+        Export: require('./components/Export.vue'),
+        Jobs: require('./components/Jobs.vue'),
+        Import: require('./components/Import.vue')
 	},
     data: function () {
         return {
@@ -176,7 +158,6 @@ module.exports = {
             var self = this;
 
             this.$store.dispatch('logIn', data).then(function () {
-                self.screen = null;
                 self.showProjects();
             }).catch(function (error) {
                 self.alerts.push({
@@ -188,6 +169,7 @@ module.exports = {
         showProjects: function () {
             var self = this;
 
+            this.screen = null;
             this.$store.dispatch('loadProjects').catch(function (error) {
                 self.alerts.push({
                     type: 'error',
@@ -233,6 +215,44 @@ module.exports = {
                         text: 'Successfully created ' + self.plural(jobs.length, 'job') + '!'
                     });
                 }
+            }).catch(function (error) {
+                self.alerts.push({
+                    type: 'error',
+                    text: self.getErrorMessage(error)
+                });
+            });
+        },
+        listJobs: function () {
+            var self = this;
+
+            this.screen = null;
+            this.$store.dispatch('listJobs', {
+                projectId: this.$store.state.project.id
+            }).catch(function (error) {
+                self.alerts.push({
+                    type: 'error',
+                    text: self.getErrorMessage(error)
+                });
+            }).then(function (response) {
+                self.screen = 'Jobs';
+            });
+        },
+        openJob: function (job) {
+            this.$store.commit('SET_JOB', job);
+            this.screen = 'Import';
+        },
+        importJob: function () {
+            var self = this;
+
+            this.$store.dispatch('importJob', {
+                projectId: this.$store.state.project.id,
+                jobId: this.$store.state.job.uid,
+                language: this.$store.state.job.targetLang
+            }).then(function (response) {
+                self.alerts.push({
+                    type: 'success',
+                    text: 'Successfully imported job!'
+                });
             }).catch(function (error) {
                 self.alerts.push({
                     type: 'error',

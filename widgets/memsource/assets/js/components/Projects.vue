@@ -1,6 +1,4 @@
 <style lang="scss">
-@import 'vars';
-
 .ms-projects {
     &.ms-wrapper {
         max-width: 25em;
@@ -9,59 +7,6 @@
     .dashboard-box {
         margin-bottom: 0;
     }
-
-        .project {
-            transition: background 0.1s ease;
-
-            &:hover {
-                background: #f2f2f2;
-            }
-
-            button {
-                width: 100%;
-                background: none;
-                border: none;
-                appearance: none;
-                outline: none;
-                cursor: pointer;
-                text-align: left;
-            }
-
-                .lang {
-                    line-height: 1;
-                    font-family: monospace;
-                    color: $color-error;
-
-                    &.is-valid {
-                        color: $color-success-dark;
-                    }
-                }
-
-                .lang-container {
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    height: 100%;
-                }
-
-                .dashboard-item-text {
-                    display: inline-flex;
-                    justify-content: space-between;
-                }
-
-                    .project-name {
-                        flex: 0 1 auto;
-                        margin-right: 0.75em;
-                        overflow: hidden;
-                        text-overflow: ellipsis;
-                    }
-
-                    .targets {
-                        max-width: 75%;
-                        line-height: 1;
-                        margin-right: 0.4em;
-                    }
-        }
 }
 </style>
 
@@ -69,27 +14,29 @@
     <dir class="ms-projects ms-wrapper">
         <div v-if="$store.state.memsource.projects.length" class="dashboard-box">
             <ul class="dashboard-items">
-                <li v-for="project in $store.state.memsource.projects" class="dashboard-item project">
+                <li v-for="project in $store.state.memsource.projects" class="dashboard-item">
                     <button @click="$emit('selectProject', project)">
                         <span class="dashboard-item-icon dashboard-item-icon-with-border" title="Source language">
                             <span class="lang-container">
-                                <span :class="{
-                                    lang: true,
-                                    'is-valid': ($store.getters.siteLanguage.locale === project.sourceLang)
-                                }">
+                                <span
+                                    class="lang"
+                                    :class="{
+                                        'is-valid': ($store.getters.siteLanguage.locale === project.sourceLang)
+                                    }"
+                                >
                                     {{ project.sourceLang }}
                                 </span>
                             </span>
                         </span>
                         <p class="dashboard-item-text">
-                            <span class="project-name">
+                            <span class="title">
                                 {{ project.name }}
                             </span>
 
-                            <span class="targets" title="Target languages">
+                            <span class="item-languages" title="Target languages">
                                 <span
-                                    class="lang"
                                     v-for="lang in project.targetLangs"
+                                    class="lang"
                                     :class="{
                                         'is-valid': isLanguageSupported(lang)
                                     }"

@@ -1,20 +1,5 @@
 <style lang="scss">
 .ms-export {
-    .stats {
-        margin-bottom: 1.5em;
-    }
-
-        .stat {
-            display: flex;
-            align-items: center;
-            margin: 0.3em 0;
-
-            hr {
-                flex: 1 0 auto;
-                margin: 2px 0.8em 0;
-            }
-        }
-
     label {
         text-align: left;
     }
@@ -23,13 +8,7 @@
 
 <template>
     <div class="ms-export ms-wrapper">
-        <div class="stats">
-            <div v-for="stat in stats" :key="stat.title" class="stat">
-                <span>{{ stat.title }}</span>
-                <hr>
-                <span>{{ stat.value.toLocaleString() }}</span>
-            </div>
-        </div>
+        <Stats :items="stats"></Stats>
 
         <form @submit="submit">
             <label class="label" for="ms-form-langs">Create job for:</label>
@@ -112,6 +91,9 @@ function getExportStats (data) {
 }
 
 module.exports = {
+    components: {
+        Stats: require('./Stats.vue')
+    },
     data: function () {
         return {
             stats: [],
@@ -167,15 +149,15 @@ module.exports = {
             this.stats = [
                 {
                     title: 'Pages',
-                    value: stats.pages
+                    value: stats.pages.toLocaleString()
                 },
                 {
                     title: 'Strings',
-                    value: stats.strings
+                    value: stats.strings.toLocaleString()
                 },
                 {
                     title: 'Characters',
-                    value: stats.chars
+                    value: stats.chars.toLocaleString()
                 }
             ];
         }

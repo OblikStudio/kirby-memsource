@@ -31,7 +31,7 @@
 
         <button
             class="btn btn-rounded btn-positive"
-            @click="$emit('importJob')"
+            @click="$emit('listJobs')"
         >
             Import
         </button>

@@ -1,1 +1,2 @@
 - add message for when the site is not multi-lingual
+- split components and views in separate folders
