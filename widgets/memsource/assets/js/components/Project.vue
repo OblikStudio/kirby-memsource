@@ -1,10 +1,5 @@
 <style lang="scss">
 .ms-project {
-    .wrapper {
-        max-width: 20em;
-        margin: 0 auto;
-    }
-
     button {
         display: block;
         min-width: 8em;
@@ -18,30 +13,28 @@
 </style>
 
 <template>
-    <div class="ms-project">
-        <div class="wrapper">
-            <Info v-for="warning in warnings" type="warning">
-                {{ warning }}
-            </Info>
+    <div class="ms-project ms-wrapper">
+        <Info v-for="warning in warnings" type="warning">
+            {{ warning }}
+        </Info>
 
-            <button
-                class="btn btn-rounded btn-action"
-                @click="$emit('export')"
-                :disabled="!$store.getters.availableLanguages.length"
-                :class="{
-                    'btn-disabled': !$store.getters.availableLanguages.length
-                }"
-            >
-                Export
-            </button>
+        <button
+            class="btn btn-rounded btn-action"
+            @click="$emit('export')"
+            :disabled="!$store.getters.availableLanguages.length"
+            :class="{
+                'btn-disabled': !$store.getters.availableLanguages.length
+            }"
+        >
+            Export
+        </button>
 
-            <button
-                class="btn btn-rounded btn-positive"
-                @click="$emit('importJob')"
-            >
-                Import
-            </button>
-        </div>
+        <button
+            class="btn btn-rounded btn-positive"
+            @click="$emit('importJob')"
+        >
+            Import
+        </button>
     </div>
 </template>
 

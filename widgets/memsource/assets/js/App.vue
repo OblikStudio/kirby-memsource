@@ -4,32 +4,43 @@
 .memsource-widget {
     position: relative;
 
+    .ms-wrapper {
+        max-width: 16em;
+        margin-left: auto;
+        margin-right: auto;
+        text-align: center;
+    }
+
     .ms-view {
         display: flex;
         align-items: center;
         height: 15em;
         margin-bottom: 0.5em;
-        position: relative;
         overflow: auto;
     }
 
-        .ms-screen-wrapper {
+        .ms-view-wrapper {
             width: 100%;
             max-height: 100%;
-            padding-bottom: 1em;
         }
 
-        .ms-error {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-flow: column nowrap;
-            position: absolute;
-                top: 0;
-                left: 0;
+    .ms-alert {
+        display: flex;
+        align-items: center;
+        width: 100%;
+        height: 100%;
+        position: absolute;
+            top: 0;
+            left: 0;
+
+        text-align: center;
+        background: rgba(#fff, 0.95);
+        overflow: auto;
+    }
+
+        .ms-alert-wrapper {
             width: 100%;
-            height: 100%;
-            background: rgba(#fff, 0.95);
+            max-height: 100%;
         }
 
     .loading-overlay {
@@ -79,7 +90,7 @@
         <Crumbs :entries="crumbs" @click="handleCrumb"></Crumbs>
 
         <div class="ms-view">
-            <div class="ms-screen-wrapper">
+            <div class="ms-view-wrapper">
                 <transition name="fade" mode="out-in">
                     <component
                         :is="screen"
@@ -91,21 +102,23 @@
                     ></component>
                 </transition>
             </div>
+        </div>
 
-            <transition name="fade">
-                <div v-if="error" class="ms-error">
-                    <Info type="error">
-                        {{ error }}
+        <transition name="fade">
+            <div v-if="alerts.length" class="ms-alert">
+                <div class="ms-alert-wrapper ms-wrapper">
+                    <Info v-for="alert in alerts" :type="alert.type">
+                        {{ alert.text }}
                     </Info>
                     <button
                         class="btn btn-rounded"
-                        @click="error = null"
+                        @click="alerts = []"
                     >
                         Close
                     </button>
                 </div>
-            </transition>
-        </div>
+            </div>
+        </transition>
 
         <transition name="fade">
             <div v-if="$store.state.loading" class="loading-overlay">
@@ -132,6 +145,7 @@ module.exports = {
 	},
     data: function () {
         return {
+            alerts: [],
             crumbs: [],
             screen: null,
             error: null
@@ -165,14 +179,20 @@ module.exports = {
                 self.screen = null;
                 self.showProjects();
             }).catch(function (error) {
-                self.error = self.getErrorMessage(error);
+                self.alerts.push({
+                    type: 'error',
+                    text: self.getErrorMessage(error)
+                });
             });
         },
         showProjects: function () {
             var self = this;
 
             this.$store.dispatch('loadProjects').catch(function (error) {
-                self.error = self.getErrorMessage(error);
+                self.alerts.push({
+                    type: 'error',
+                    text: self.getErrorMessage(error)
+                });
             }).then(function () {
                 self.screen = 'Projects';
             });
@@ -188,16 +208,36 @@ module.exports = {
             this.$store.dispatch('exportContent').then(function () {
                 self.screen = 'Export';
             }).catch(function (error) {
-                self.error = self.getErrorMessage(error);
+                self.alerts.push({
+                    type: 'error',
+                    text: self.getErrorMessage(error)
+                });
                 self.screen = 'Project';
             });
         },
         upload: function (data) {
+            var self = this;
+
             this.$store.dispatch('createJob', {
                 data: this.$store.state.exportData,
                 projectId: this.$store.state.project.id,
                 language: data.language,
                 filename: data.filename
+            }).then(function (response) {
+                var data = response.data,
+                    jobs = (data && data.jobs);
+
+                if (jobs && jobs.length) {
+                    self.alerts.push({
+                        type: 'success',
+                        text: 'Successfully created ' + self.plural(jobs.length, 'job') + '!'
+                    });
+                }
+            }).catch(function (error) {
+                self.alerts.push({
+                    type: 'error',
+                    text: self.getErrorMessage(error)
+                });
             });
         }
     },
@@ -262,12 +302,13 @@ module.exports = {
                 $button.css('display', (user) ? 'block' : 'none');
             }
         },
-        "$store.getters.token": {
-            immediate: true,
-            handler: function (value, oldval) {
-                if (value === null) {
-                    this.screen = 'Login';
-                }
+        "$store.getters.token": function (value, oldval) {
+            if (typeof value !== 'string') {
+                this.alerts.push({
+                    type: 'info',
+                    text: 'Your session expired, please log in again.'
+                });
+                this.screen = 'Login';
             }
         }
     }

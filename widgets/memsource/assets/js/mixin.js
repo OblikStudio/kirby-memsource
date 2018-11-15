@@ -1,5 +1,8 @@
 module.exports = {
     methods: {
+        plural: function (value, text) {
+            return value + ' ' + text + (value != 1 ? 's' : '');
+        },
         isLanguageSupported: function (input) {
             var supported = false;
 

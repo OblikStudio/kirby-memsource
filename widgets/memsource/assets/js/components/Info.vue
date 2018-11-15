@@ -10,8 +10,10 @@
     font-size: 1em;
     text-align: left;
     line-height: 1.4;
-    border: 2px solid;
+
     background: #fff;
+    border: 2px solid $color-info;
+    color: $color-info;
 
     &.error {
         border-color: $color-error;
@@ -21,6 +23,11 @@
     &.warning {
         border-color: $color-warning;
         color: $color-warning;
+    }
+
+    &.success {
+        border-color: $color-success;
+        color: $color-success;
     }
 
     i {
@@ -33,20 +40,24 @@
             top: 0;
             left: 0;
 
-        font-size: 1.2em;
+        font-size: 14px;
     }
 }
 </style>
 
 <template>
-    <div :class="{
-        'ms-info': true,
-        [type]: true
-    }">
-        <i :class="{
-            fa: true,
-            [icon]: true
-        }"></i>
+    <div
+        class="ms-info"
+        :class="{
+            [type]: true
+        }"
+    >
+        <i
+            class="fa"
+            :class="{
+                [icon]: true
+            }"
+        ></i>
         <slot></slot>
     </div>
 </template>
@@ -59,6 +70,7 @@ module.exports = {
             switch (this.type) {
                 case 'error': return 'fa-exclamation-circle';
                 case 'warning': return 'fa-exclamation-triangle';
+                case 'success': return 'fa-check-circle';
                 default: return 'fa-info-circle';
             }
         }

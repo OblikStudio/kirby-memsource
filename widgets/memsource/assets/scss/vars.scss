@@ -2,7 +2,8 @@ $color-success: #8dae28;
 $color-success-dark: #699a27;
 $color-error: #b3000a;
 $color-warning: #e28716;
-$color-action: #1394c5;
+$color-info: #1394c5;
+$color-action: $color-info;
 
 $transition-leave: 0.1s ease-out;
 $transition-enter: 0.3s ease;

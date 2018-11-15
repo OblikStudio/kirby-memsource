@@ -1,9 +1,5 @@
 <style lang="scss">
 .ms-export {
-    max-width: 16em;
-    margin: 0 auto;
-    text-align: center;
-
     .stats {
         margin-bottom: 1.5em;
     }
@@ -26,7 +22,7 @@
 </style>
 
 <template>
-    <div class="ms-export">
+    <div class="ms-export ms-wrapper">
         <div class="stats">
             <div v-for="stat in stats" :key="stat.title" class="stat">
                 <span>{{ stat.title }}</span>
@@ -65,14 +61,14 @@
                 </div>
             </div>
 
-            <label class="label" for="ms-form-filename">Job filename:</label>
+            <label class="label" for="ms-form-filename">Job name:</label>
             <div class="field field-content">
                 <input
                     id="ms-form-filename"
                     class="input"
                     type="text"
                     name="filename"
-                    placeholder="Filename"
+                    placeholder="Name"
                     required="true"
                     v-model="filename"
                 >

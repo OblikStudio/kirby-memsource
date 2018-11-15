@@ -1,13 +1,5 @@
-<style lang="scss">
-.ms-form {
-    max-width: 16em;
-    text-align: center;
-    margin: 0 auto;
-}
-</style>
-
 <template>
-    <form class="ms-form" @submit="submit">
+    <form class="ms-form ms-wrapper" @submit="submit">
         <div class="field field-content">
             <input
                 class="input"

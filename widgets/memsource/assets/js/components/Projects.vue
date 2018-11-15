@@ -2,8 +2,9 @@
 @import 'vars';
 
 .ms-projects {
-    max-width: 25em;
-    margin: 0 auto;
+    &.ms-wrapper {
+        max-width: 25em;
+    }
 
     .dashboard-box {
         margin-bottom: 0;
@@ -65,7 +66,7 @@
 </style>
 
 <template>
-    <dir class="ms-projects">
+    <dir class="ms-projects ms-wrapper">
         <div v-if="$store.state.memsource.projects.length" class="dashboard-box">
             <ul class="dashboard-items">
                 <li v-for="project in $store.state.memsource.projects" class="dashboard-item project">
