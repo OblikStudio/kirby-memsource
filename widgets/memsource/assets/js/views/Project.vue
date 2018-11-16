@@ -45,7 +45,7 @@
 <script>
 const FATAL_ERRORS = {
     export: [
-        'ACTIVE_MISMATCH',
+        'SOURCE_MISMATCH',
         'NO_MATCHING'
     ],
     import: [
@@ -59,15 +59,9 @@ module.exports = {
     },
     methods: {
         fatalAlertRaised: function (namespace) {
-            var found = false;
-
-            this.alerts.forEach(function (alert) {
-                if (FATAL_ERRORS[namespace].indexOf(alert.id) >= 0) {
-                    found = true;
-                }
+            return this.alerts.find(function (alert) {
+                return FATAL_ERRORS[namespace].indexOf(alert.id) >= 0;
             });
-
-            return found;
         }
     },
     computed: {
@@ -82,39 +76,42 @@ module.exports = {
                 values = [],
                 project = this.$store.state.project,
                 siteLanguage = this.$store.getters.siteLanguage,
-                activeLanguage = this.$store.getters.activeLanguage,
-                kirbyLanguages = this.$store.state.kirby.languages,
-                availableLanguages = this.$store.getters.availableLanguages;
+                availableLanguages = this.$store.getters.availableLanguages,
+                sourceLanguage = this.$store.getters.sourceLanguage,
+                targetLanguages = this.$store.getters.targetLanguages,
+                targetLanguagesMatching = this.$store.getters.targetLanguagesMatching;
 
-            var missingFromKirby = [];
-            project.targetLangs.forEach(function (lang) {
-                var found = false;
-
-                kirbyLanguages.forEach(function (kirbyLang) {
-                    if (kirbyLang.locale === lang) {
-                        found = true;
-                    }
-                });
-
-                if (!found) {
-                    missingFromKirby.push(lang);
-                }
-            });
-
-            var missingFromMemsource = [];
-            kirbyLanguages.forEach(function (kirbyLang) {
-                if (!kirbyLang.isActive && project.targetLangs.indexOf(kirbyLang.locale) < 0) {
-                    missingFromMemsource.push(kirbyLang.locale);
-                }
-            });
-
-            if (activeLanguage.locale !== project.sourceLang) {
+            if (sourceLanguage.locale !== project.sourceLang) {
                 values.push({
-                    id: 'ACTIVE_MISMATCH',
+                    id: 'SOURCE_MISMATCH',
                     type: 'error',
-                    text: 'Active language "' + activeLanguage.locale + '" does not match project source language "' + project.sourceLang + '"!'
+                    text: 'Active language "' + sourceLanguage.locale + '" does not match project source language "' + project.sourceLang + '"!'
                 });
             }
+
+            if (!targetLanguagesMatching.length) {
+                values.push({
+                    id: 'NO_MATCHING',
+                    type: 'error',
+                    text: 'No matching languages!'
+                });
+            }
+
+            if (values.length) {
+                return values;
+            }
+
+            var missingFromKirby = project.targetLangs.filter(function (projectLang) {
+                return !availableLanguages.find(function (kirbyLang) {
+                    return kirbyLang.locale === projectLang;
+                });
+            });
+
+            var missingFromMemsource = targetLanguages.filter(function (targetLang) {
+                return project.targetLangs.indexOf(targetLang.locale) < 0;
+            }).map(function (lang) {
+                return lang.locale;
+            });
 
             if (missingFromKirby.length) {
                 values.push({
@@ -126,22 +123,14 @@ module.exports = {
             if (missingFromMemsource.length) {
                 values.push({
                     type: 'warning',
-                    text: 'Missing target languages in project: ' + missingFromMemsource.join(', ') + '!'
+                    text: 'Missing target languages in Memsource: ' + missingFromMemsource.join(', ') + '!'
                 });
             }
 
-            if (!availableLanguages.length) {
-                values.push({
-                    id: 'NO_MATCHING',
-                    type: 'error',
-                    text: 'No matching languages!'
-                });
-            }
-
-            if (siteLanguage.locale !== activeLanguage.locale) {
+            if (siteLanguage.locale !== sourceLanguage.locale) {
                 values.push({
                     type: 'info',
-                    text: 'You\'ll be exporting the site in "' + activeLanguage.locale + '" which is not the main site language.'
+                    text: 'You\'ll be exporting the site in "' + sourceLanguage.locale + '" which is not the main site language.'
                 });
             }
 

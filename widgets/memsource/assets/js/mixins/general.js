@@ -9,28 +9,6 @@ module.exports = {
         capitalize: function (text) {
             return text.substr(0, 1).toUpperCase() + text.substr(1).toLowerCase();
         },
-        isLanguageAvailable: function (input) {
-            var value = false;
-
-            this.$store.state.kirby.languages.forEach(function (lang) {
-                if (!lang.isActive && lang.locale === input) {
-                    value = true;
-                }
-            });
-
-            return value;
-        },
-        languageExistsInKirby: function (input) {
-            var value = false;
-
-            this.$store.state.kirby.languages.forEach(function (lang) {
-                if (lang.locale === input) {
-                    value = true;
-                }
-            });
-
-            return value;
-        },
         getErrorMessage: function (error, defaultMessage) {
             var data = (error.response && error.response.data),
                 message = null;

@@ -40,6 +40,8 @@ module.exports = {
             });
         },
         importJob: function (context, payload) {
+            console.log('payload', payload);
+            
             return context.dispatch('downloadJob', {
                 projectId: payload.projectId,
                 jobId: payload.jobId

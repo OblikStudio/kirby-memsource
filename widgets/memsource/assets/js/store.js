@@ -22,26 +22,34 @@ module.exports = new Vuex.Store({
     },
     getters: {
         availableLanguages: function (state) {
-            var values = [],
-                projectLangs = state.project.targetLangs;
-
-            state.kirby.languages.forEach(function (lang) {
-                if (!lang.isActive && projectLangs.indexOf(lang.locale) >= 0) {
-                    values.push(lang);
-                }
+            return state.kirby.languages || [];
+        },
+        siteLanguage: function (state, getters) {
+            return getters.availableLanguages.find(function (lang) {
+                return lang.isDefault;
             });
+        },
+        sourceLanguage: function (state, getters) {
+            return getters.availableLanguages.find(function (lang) {
+                return lang.isActive;
+            });
+        },
+        sourceLanguageMatching: function (state, getters) {
+            var projectLang = (state.project && state.project.sourceLang);
 
-            return values;
+            return getters.sourceLanguage.locale === projectLang;
         },
-        siteLanguage: function (state) {
-            return state.kirby.languages.reduce(function (search, item) {
-                return search || (item.isDefault ? item : null);
-            }, null);
+        targetLanguages: function (state, getters) {
+            return getters.availableLanguages.filter(function (lang) {
+                return lang !== getters.sourceLanguage;
+            });
         },
-        activeLanguage: function (state) {
-            return state.kirby.languages.reduce(function (search, item) {
-                return search || (item.isActive ? item : null);
-            }, null);
+        targetLanguagesMatching: function (state, getters) {
+            var projectLangs = (state.project && state.project.targetLangs) || [];
+
+            return getters.targetLanguages.filter(function (lang) {
+                return projectLangs.indexOf(lang.locale) >= 0;
+            });
         }
     },
     mutations: {

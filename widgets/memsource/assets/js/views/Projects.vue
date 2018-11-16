@@ -12,16 +12,16 @@
 
 <template>
     <dir class="ms-projects ms-wrapper">
-        <div v-if="$store.state.memsource.projects.length" class="dashboard-box">
+        <div v-if="projects.length" class="dashboard-box">
             <ul class="dashboard-items">
-                <li v-for="project in $store.state.memsource.projects" class="dashboard-item">
+                <li v-for="project in projects" class="dashboard-item">
                     <button @click="$emit('selectProject', project)">
                         <span class="dashboard-item-icon dashboard-item-icon-with-border" title="Source language">
                             <span class="lang-container">
                                 <span
                                     class="lang"
                                     :class="{
-                                        'is-valid': ($store.getters.activeLanguage.locale === project.sourceLang)
+                                        'is-valid': (sourceLanguage === project.sourceLang)
                                     }"
                                 >
                                     {{ project.sourceLang }}
@@ -38,7 +38,7 @@
                                     v-for="lang in project.targetLangs"
                                     class="lang"
                                     :class="{
-                                        'is-valid': isLanguageAvailable(lang)
+                                        'is-valid': isTargetLanguage(lang)
                                     }"
                                 >
                                     {{ lang }}
@@ -59,6 +59,24 @@
 module.exports = {
     components: {
         Info: require('../components/Info.vue')
+    },
+    computed: {
+        projects: function () {
+            return this.$store.state.memsource.projects;
+        },
+        sourceLanguage: function () {
+            return this.$store.getters.sourceLanguage.locale;
+        },
+        targetLanguages: function () {
+            return this.$store.getters.targetLanguages;
+        }
+    },
+    methods: {
+        isTargetLanguage: function (input) {
+            return this.targetLanguages.find(function (lang) {
+                return lang.locale === input;
+            });
+        }
     }
 };
 </script>

@@ -1,3 +1,14 @@
+@import 'vars';
+
+.btn-action {
+    border-color: $color-action;
+    color: $color-action;
+
+    &:hover, &:focus {
+        background: $color-action;
+    }
+}
+
 .memsource-widget {
     button {
         user-select: none;

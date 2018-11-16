@@ -1,14 +1,14 @@
 <template>
     <div class="ms-wrapper">
-        <div v-if="$store.state.memsource.jobs.length" class="dashboard-box">
+        <div v-if="jobs.length" class="dashboard-box">
             <ul class="dashboard-items">
-                <li v-for="job in $store.state.memsource.jobs" class="dashboard-item job">
+                <li v-for="job in jobs" class="dashboard-item job">
                     <button @click="$emit('openJob', job)">
                         <span class="dashboard-item-icon dashboard-item-icon-with-border" title="Target language">
                             <span class="lang-container">
                                 <span :class="{
                                     lang: true,
-                                    'is-valid': languageExistsInKirby(job.targetLang)
+                                    'is-valid': isKirbyLanguage(job.targetLang)
                                 }">
                                     {{ job.targetLang }}
                                 </span>
@@ -37,6 +37,18 @@
 module.exports = {
     components: {
         Info: require('../components/Info.vue')
+    },
+    computed: {
+        jobs: function () {
+            return this.$store.state.memsource.jobs;
+        }
+    },
+    methods: {
+        isKirbyLanguage: function (input) {
+            return this.$store.getters.availableLanguages.find(function (lang) {
+                return lang.locale === input;
+            });
+        }
     }
 };
 </script>

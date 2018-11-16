@@ -35,9 +35,6 @@
 
 <script>
 module.exports = {
-    components: {
-        Info: require('../components/Info.vue')
-    },
     data: function () {
         return {
             username: null,

@@ -8,12 +8,3 @@ $color-action: $color-info;
 $transition-leave: 0.1s ease-out;
 $transition-enter: 0.3s ease;
 $transition-loader: 0.3s ease 0.2s;
-
-.btn-action {
-    border-color: $color-action;
-    color: $color-action;
-
-    &:hover, &:focus {
-        background: $color-action;
-    }
-}

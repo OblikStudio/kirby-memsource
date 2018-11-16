@@ -105,7 +105,7 @@ module.exports = {
     computed: {
         exportLanguage: function () {
             var values = [],
-                options = this.$store.getters.availableLanguages;
+                options = this.$store.getters.targetLanguagesMatching;
 
             if (options.length) {
                 if (options.length > 1) {

@@ -1,5 +1,4 @@
 <style lang="scss">
-@import 'vars';
 @import 'main';
 
 .memsource-widget {
@@ -186,8 +185,7 @@ module.exports = {
                 language: data.language,
                 filename: data.filename
             }).then(function (response) {
-                var data = response.data,
-                    jobs = (data && data.jobs);
+                var jobs = (response.data && response.data.jobs);
 
                 if (jobs && jobs.length) {
                     self.alerts.push({
@@ -223,28 +221,30 @@ module.exports = {
         },
         importJob: function () {
             var self = this,
-                targetLanguage = this.$store.state.job.targetLang,
-                targetLanguageCode = null;
+                job = this.$store.state.job,
+                project = this.$store.state.project,
+                availableLanguages = this.$store.getters.availableLanguages,
+                jobLanguage = job.targetLang;
 
-            // Convert language locale back to language code because that's
-            // what Kirby uses internally in its API.
-            this.$store.state.kirby.languages.forEach(function (lang) {
-                if (lang.locale === targetLanguage) {
-                    targetLanguageCode = lang.code;
-                }
+            var importLanguage = availableLanguages.find(function (lang) {
+                return lang.locale === jobLanguage;
             });
 
-            if (!targetLanguageCode) {
+            if (importLanguage) {
+                // Convert language locale back to language code because
+                // that's what Kirby uses internally in its API.
+                importLanguage = importLanguage.code;
+            } else {
                 return self.alerts.push({
                     type: 'error',
-                    text: 'Language code of "' + targetLanguage + '" not found!'
+                    text: 'Language "' + jobLanguage + '" not found!'
                 });
             }
 
             this.$store.dispatch('importJob', {
-                projectId: this.$store.state.project.id,
-                jobId: this.$store.state.job.uid,
-                language: targetLanguageCode
+                projectId: project.id,
+                jobId: job.uid,
+                language: importLanguage
             }).then(function (response) {
                 self.alerts.push({
                     type: 'success',
@@ -260,7 +260,6 @@ module.exports = {
 
         openUserScreen: function () {
             console.log('open user');
-            this.$store.commit('SET_LOADING', !this.$store.state.loading);
         },
         handleCrumb: function (crumb) {
             for (var i = this.crumbs.length - 1; i >= 0; i--) {
