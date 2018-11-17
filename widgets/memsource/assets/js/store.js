@@ -3,6 +3,7 @@ var Vuex = require('vuex');
 var axios = require('axios');
 var freeze = require('deep-freeze-node');
 
+var session = require('./modules/session');
 var pluginApi = require('./modules/plugin-api');
 var memsource = require('./modules/memsource');
 
@@ -15,7 +16,7 @@ module.exports = new Vuex.Store({
     },
     state: {
         kirby: freeze(window.Memsource),
-        session: null,
+        session: session.load(),
         loading: false,
         project: null,
         job: null
@@ -53,17 +54,12 @@ module.exports = new Vuex.Store({
         }
     },
     mutations: {
-        SET_SESSION: function (state, data) {
-            state.session = freeze(data);
-
-            try {
-                localStorage.memsourceSession = JSON.stringify(data);
-            } catch (e) {
-                console.warn(e);
-            }
-        },
         SET_LOADING: function (state, value) {
             state.loading = value;
+        },
+        SET_SESSION: function (state, data) {
+            state.session = freeze(data);
+            session.save(data);
         },
         SET_PROJECT: function (state, value) {
             state.project = freeze(value);

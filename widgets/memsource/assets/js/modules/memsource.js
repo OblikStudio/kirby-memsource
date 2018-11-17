@@ -19,27 +19,14 @@ module.exports = {
         jobs: []
     },
     getters: {
-        token: function (state, getters, rootState) {
-            var session = rootState.session;
+        memsourceApiClient: function (state, getters, rootState) {
+            var token = (rootState.session && rootState.session.token);
 
-            if (session) {
-                var expireDate = new Date(session.expires);
-
-                if (Date.now() < expireDate) {
-                    return session.token;
-                } else {
-                    return false;
-                }
-            }
-
-            return null;
-        },
-        memsourceApiClient: function (state, getters) {
             return axios.create({
                 baseURL: 'https://cloud.memsource.com/web/api2/v1',
                 method: 'get',
                 params: {
-                    token: getters.token
+                    token: token
                 }
             });
         }

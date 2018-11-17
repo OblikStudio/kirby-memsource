@@ -111,6 +111,7 @@
 </template>
 
 <script>
+var whenExpires = require('./modules/expires');
 var $button = $('#memsource-widget h2 a')
 var $buttonContent = $button.find('span');
 
@@ -153,11 +154,8 @@ module.exports = {
             });
         },
         logOut: function () {
-            var self = this;
-
-            this.$store.dispatch('logOut').then(function () {
-                self.screen = 'Login';
-            });
+            this.screen = 'Login';
+            this.$store.dispatch('logOut');
         },
         showProjects: function () {
             var self = this;
@@ -289,24 +287,13 @@ module.exports = {
         }
     },
     created: function () {
-        var self = this,
-            savedSession = null;
-
-        try {
-            if (localStorage.memsourceSession) {
-                savedSession = JSON.parse(localStorage.memsourceSession);
-            }
-        } catch (e) {
-            console.warn(e);
-        }
-
-        if (savedSession) {
-            this.$store.commit('SET_SESSION', savedSession);
+        if (this.$store.state.session) {
             this.showProjects();
         } else {
             this.screen = 'Login';
         }
 
+        var self = this;
         $button.on('click', function (event) {
             event.preventDefault();
 
@@ -357,13 +344,23 @@ module.exports = {
                 $button.css('display', (user) ? 'block' : 'none');
             }
         },
-        "$store.getters.token": function (value, oldval) {
-            if (value === false) {
-                this.alerts.push({
-                    type: 'info',
-                    text: 'Your session expired, please log in again.'
-                });
-                this.screen = 'Login';
+        "$store.state.session.expires": {
+            immediate: true,
+            handler: function (value) {
+                var self = this;
+
+                if (value) {
+                    whenExpires('session', value).then(function () {
+                        self.screen = 'Login';
+
+                        self.$store.dispatch('logOut').then(function () {
+                            self.alerts.push({
+                                type: 'info',
+                                text: 'Your session expired, please log in again.'
+                            });
+                        }); 
+                    });
+                }
             }
         }
     }
