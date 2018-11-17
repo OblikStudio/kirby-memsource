@@ -4,7 +4,20 @@ namespace Memsource;
 use Yaml;
 
 class Importer {
+	public static function clean ($data) {
+		foreach ($data as $key => $value) {
+			if (is_array($value)) {
+				$data[$key] = static::clean($value);
+			} else if (empty($value)) {
+				unset($data[$key]);
+			}
+		}
+
+		return $data;
+	}
+
 	public static function updatePage ($page, $data, $lang) {
+		$data = static::clean($data);
 		$currentData = $page->content($lang)->data();
 		$normalizedData = array();
 
