@@ -17,11 +17,15 @@ module.exports = new Vuex.Store({
     state: {
         kirby: freeze(window.Memsource),
         session: session.load(),
+        loaders: 0,
         loading: false,
         project: null,
         job: null
     },
     getters: {
+        isLoading: function (state) {
+            return state.loaders > 0;
+        },
         availableLanguages: function (state) {
             return state.kirby.languages || [];
         },
@@ -66,6 +70,9 @@ module.exports = new Vuex.Store({
         },
         SET_JOB: function (state, value) {
             state.job = freeze(value);
+        },
+        MODIFY_LOADERS: function (state, value) {
+            state.loaders += (value === 'add') ? 1 : -1;
         }
     },
     actions: {

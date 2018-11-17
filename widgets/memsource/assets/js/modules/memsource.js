@@ -1,25 +1,13 @@
 var axios = require('axios');
 var freeze = require('deep-freeze-node');
 
-function apiRequest (context, options) {
-    context.commit('SET_LOADING', true);
-
-    return context.getters.memsourceApiClient(options).then(function (value) {
-        context.commit('SET_LOADING', false);
-        return Promise.resolve(value);
-    }).catch(function (reason) {
-        context.commit('SET_LOADING', false);
-        return Promise.reject(reason);
-    });
-}
-
 module.exports = {
     state: {
         projects: [],
         jobs: []
     },
     getters: {
-        memsourceApiClient: function (state, getters, rootState) {
+        msClient: function (state, getters, rootState) {
             var token = (rootState.session && rootState.session.token);
 
             return axios.create({
@@ -41,7 +29,7 @@ module.exports = {
     },
     actions: {
         logIn: function (context, data) {
-            return apiRequest(context, {
+            return context.getters.msClient({
                 url: '/auth/login',
                 method: 'post',
                 data: {
@@ -54,7 +42,7 @@ module.exports = {
             });
         },
         loadProjects: function (context) {
-            return apiRequest(context, {
+            return context.getters.msClient({
                 url: '/projects'
             }).then(function (response) {
                 var projects = response.data.content;
@@ -76,7 +64,7 @@ module.exports = {
                 targetLangs: targetLanguages
             };
 
-            return apiRequest(context, {
+            return context.getters.msClient({
                 url: '/projects/' + payload.projectId + '/jobs',
                 method: 'post',
                 headers: {
@@ -88,7 +76,7 @@ module.exports = {
             });
         },
         listJobs: function (context, payload) {
-            return apiRequest(context, {
+            return context.getters.msClient({
                 url: '/projects/' + payload.projectId + '/jobs'
             }).then(function (response) {
                 var jobs = response.data.content;
@@ -101,7 +89,7 @@ module.exports = {
             });
         },
         downloadJob: function (context, payload) {
-            return apiRequest(context, {
+            return context.getters.msClient({
                 url: '/projects/' + payload.projectId + '/jobs/' + payload.jobId + '/targetFile'
             });
         }

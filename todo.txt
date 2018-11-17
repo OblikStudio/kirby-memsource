@@ -1,1 +1,0 @@
-- improve loading screen when login->projects and download_job->import by using a counter that increments/decrements on every promise

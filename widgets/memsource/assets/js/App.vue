@@ -101,7 +101,7 @@
         </transition>
 
         <transition name="fade">
-            <div v-if="$store.state.loading" class="loading-overlay">
+            <div v-if="$store.getters.isLoading" class="loading-overlay">
                 <div class="loading-content">
                     &hellip;
                 </div>
@@ -141,17 +141,47 @@ module.exports = {
         };
     },
     methods: {
+        loaderPromise: function (promise) {
+            var self = this;
+            this.$store.commit('MODIFY_LOADERS', 'add');
+
+            promise.then(function (value) {
+                self.$store.commit('MODIFY_LOADERS', 'remove');
+                return Promise.resolve(value);
+            }).catch(function (reason) {
+                self.$store.commit('MODIFY_LOADERS', 'remove');
+                return Promise.reject(reason);
+            });
+        },
+        handleCrumb: function (crumb) {
+            for (var i = this.crumbs.length - 1; i >= 0; i--) {
+                var isClicked = (this.crumbs[i].id === crumb);
+
+                if (!isClicked || this.screen !== crumb) {
+                    this.crumbs.splice(i, 1);
+                }
+
+                if (isClicked) {
+                    break;
+                }
+            }
+
+            this.screen = crumb;
+        },
+
         logIn: function (data) {
             var self = this;
 
-            this.$store.dispatch('logIn', data).then(function () {
-                self.showProjects();
-            }).catch(function (error) {
-                self.alerts.push({
-                    type: 'error',
-                    text: self.getErrorMessage(error)
-                });
-            });
+            this.loaderPromise(
+                this.$store.dispatch('logIn', data).then(function () {
+                    self.showProjects();
+                }).catch(function (error) {
+                    self.alerts.push({
+                        type: 'error',
+                        text: self.getErrorMessage(error)
+                    });
+                })
+            );
         },
         logOut: function () {
             this.screen = 'Login';
@@ -161,14 +191,16 @@ module.exports = {
             var self = this;
 
             this.screen = null;
-            this.$store.dispatch('loadProjects').catch(function (error) {
-                self.alerts.push({
-                    type: 'error',
-                    text: self.getErrorMessage(error)
-                });
-            }).then(function () {
-                self.screen = 'Projects';
-            });
+            this.loaderPromise(
+                this.$store.dispatch('loadProjects').catch(function (error) {
+                    self.alerts.push({
+                        type: 'error',
+                        text: self.getErrorMessage(error)
+                    });
+                }).then(function () {
+                    self.screen = 'Projects';
+                })
+            ); 
         },
         selectProject: function (project) {
             this.$store.commit('SET_PROJECT', project);
@@ -178,54 +210,60 @@ module.exports = {
             var self = this;
 
             this.screen = null;
-            this.$store.dispatch('exportContent').then(function () {
-                self.screen = 'Export';
-            }).catch(function (error) {
-                self.screen = 'Project';
-                self.alerts.push({
-                    type: 'error',
-                    text: self.getErrorMessage(error)
-                });
-            });
+            this.loaderPromise(
+                this.$store.dispatch('exportContent').then(function () {
+                    self.screen = 'Export';
+                }).catch(function (error) {
+                    self.screen = 'Project';
+                    self.alerts.push({
+                        type: 'error',
+                        text: self.getErrorMessage(error)
+                    });
+                })
+            );
         },
         upload: function (data) {
             var self = this;
 
-            this.$store.dispatch('createJob', {
-                data: this.$store.state.pluginApi.exportData,
-                projectId: this.$store.state.project.id,
-                language: data.language,
-                filename: data.filename
-            }).then(function (response) {
-                var jobs = (response.data && response.data.jobs);
+            this.loaderPromise(
+                this.$store.dispatch('createJob', {
+                    data: this.$store.state.pluginApi.exportData,
+                    projectId: this.$store.state.project.id,
+                    language: data.language,
+                    filename: data.filename
+                }).then(function (response) {
+                    var jobs = (response.data && response.data.jobs);
 
-                if (jobs && jobs.length) {
+                    if (jobs && jobs.length) {
+                        self.alerts.push({
+                            type: 'success',
+                            text: 'Successfully created ' + self.plural(jobs.length, 'job') + '!'
+                        });
+                    }
+                }).catch(function (error) {
                     self.alerts.push({
-                        type: 'success',
-                        text: 'Successfully created ' + self.plural(jobs.length, 'job') + '!'
+                        type: 'error',
+                        text: self.getErrorMessage(error)
                     });
-                }
-            }).catch(function (error) {
-                self.alerts.push({
-                    type: 'error',
-                    text: self.getErrorMessage(error)
-                });
-            });
+                })
+            );
         },
         listJobs: function () {
             var self = this;
 
             this.screen = null;
-            this.$store.dispatch('listJobs', {
-                projectId: this.$store.state.project.id
-            }).catch(function (error) {
-                self.alerts.push({
-                    type: 'error',
-                    text: self.getErrorMessage(error)
-                });
-            }).then(function (response) {
-                self.screen = 'Jobs';
-            });
+            this.loaderPromise(
+                this.$store.dispatch('listJobs', {
+                    projectId: this.$store.state.project.id
+                }).catch(function (error) {
+                    self.alerts.push({
+                        type: 'error',
+                        text: self.getErrorMessage(error)
+                    });
+                }).then(function (response) {
+                    self.screen = 'Jobs';
+                })
+            );
         },
         openJob: function (job) {
             this.$store.commit('SET_JOB', job);
@@ -253,37 +291,23 @@ module.exports = {
                 });
             }
 
-            this.$store.dispatch('importJob', {
-                projectId: project.id,
-                jobId: job.uid,
-                language: importLanguage
-            }).then(function (response) {
-                self.alerts.push({
-                    type: 'success',
-                    text: 'Successfully imported job!'
-                });
-            }).catch(function (error) {
-                self.alerts.push({
-                    type: 'error',
-                    text: self.getErrorMessage(error)
-                });
-            });
-        },
-
-        handleCrumb: function (crumb) {
-            for (var i = this.crumbs.length - 1; i >= 0; i--) {
-                var isClicked = (this.crumbs[i].id === crumb);
-
-                if (!isClicked || this.screen !== crumb) {
-                    this.crumbs.splice(i, 1);
-                }
-
-                if (isClicked) {
-                    break;
-                }
-            }
-
-            this.screen = crumb;
+            this.loaderPromise(
+                this.$store.dispatch('importJob', {
+                    projectId: project.id,
+                    jobId: job.uid,
+                    language: importLanguage
+                }).then(function (response) {
+                    self.alerts.push({
+                        type: 'success',
+                        text: 'Successfully imported job!'
+                    });
+                }).catch(function (error) {
+                    self.alerts.push({
+                        type: 'error',
+                        text: self.getErrorMessage(error)
+                    });
+                })
+            );
         }
     },
     created: function () {
