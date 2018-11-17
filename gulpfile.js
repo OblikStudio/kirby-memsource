@@ -3,7 +3,6 @@ var gulp = require('gulp');
 var gulpif = require('gulp-if');
 
 var bro = require('gulp-bro');
-var uglify = require('gulp-uglify');
 var sourcemaps = require('gulp-sourcemaps');
 
 const OPTIONS = {
@@ -21,15 +20,27 @@ const PATHS = {
     }
 };
 
+var transforms;
+if (OPTIONS.production) {
+    transforms = [
+        'vueify',
+        ['envify', { global: true }],
+        ['uglifyify', { global: true }]
+    ];
+} else {
+    transforms = [
+        'vueify'
+    ];
+}
+
 function compileScripts () {
     return gulp.src(PATHS.scripts.src)
         .pipe(gulpif(!OPTIONS.production, sourcemaps.init()))
         .pipe(bro({
             debug : !OPTIONS.production,
-            transform: ['vueify']
+            transform: transforms
         }))
         .pipe(gulpif(!OPTIONS.production, sourcemaps.write()))
-        .pipe(gulpif(OPTIONS.production, uglify()))
         .pipe(gulp.dest(PATHS.scripts.dest));
 }
 
@@ -38,4 +49,5 @@ gulp.task('watch', function () {
     gulp.watch(PATHS.scripts.watch, ['scripts']);
 });
 
+gulp.task('build', ['scripts']);
 gulp.task('default', ['watch']);
