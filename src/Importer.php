@@ -17,21 +17,26 @@ class Importer {
 	}
 
 	public static function updatePage ($page, $data, $lang) {
+		// Clean the input data so that empty strings won't overwrite the non-
+		// empty default language values later.
 		$data = static::clean($data);
+
 		$currentData = $page->content($lang)->data();
 		$normalizedData = array();
 
-		// Normalize data by getting field values and parsing YAML when needed.
-		foreach ($data as $key => $value) {
-			if (!empty($currentData[$key])) {
-				$normalizedData[$key] = $currentData[$key]->value();
+		// Make up an array with the current data and normalize it by parsing
+		// YAML and extracting field values.
+		foreach ($currentData as $key => $field) {
+			$normalizedData[$key] = $field->value();
 
-				if (is_array($value)) {
-					// If the translated value is an array, that means this
-					// field was a structure when it was exported, so it must
-					// still be a structure and should be parsed.
+			if (!empty($data[$key]) && is_array($data[$key])) {
+				// If the translated value is an array, that means this
+				// field was a structure when it was exported, so it must
+				// still be a structure and should be parsed.
+
+				try {
 					$normalizedData[$key] = Yaml::read($normalizedData[$key]);
-				}
+				} catch (\Exception $e) {}
 			}
 		}
 

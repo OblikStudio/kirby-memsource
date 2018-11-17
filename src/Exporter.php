@@ -17,20 +17,22 @@ class Exporter {
 	}
 
 	private static function blueprintTranslatableFields ($data, &$result = array()) {
-		foreach ($data['fields'] as $key => $value) {
-			$fieldId = str_replace(array('-', ' '), '_', strtolower(trim($key))); // from Kirby core
-			$isTranslatable = static::isFieldTranslatable($value);
+		if (!empty($data['fields'])) {
+			foreach ($data['fields'] as $key => $value) {
+				$fieldId = str_replace(array('-', ' '), '_', strtolower(trim($key))); // from Kirby core
+				$isTranslatable = static::isFieldTranslatable($value);
 
-			if ($isTranslatable && !empty($value['fields'])) {
-				if (!empty($value['type']) && $value['type'] === 'structure') {
-					// Store `structure` fields in a new array.
-					$result[$fieldId] = static::blueprintTranslatableFields($value);
+				if ($isTranslatable && !empty($value['fields'])) {
+					if (!empty($value['type']) && $value['type'] === 'structure') {
+						// Store `structure` fields in a new array.
+						$result[$fieldId] = static::blueprintTranslatableFields($value);
+					} else {
+						// Store primitive fields in the flattened array.
+						static::blueprintTranslatableFields($value, $result);
+					}
 				} else {
-					// Store primitive fields in the flattened array.
-					static::blueprintTranslatableFields($value, $result);
+					$result[$fieldId] = $isTranslatable;
 				}
-			} else {
-				$result[$fieldId] = $isTranslatable;
 			}
 		}
 
