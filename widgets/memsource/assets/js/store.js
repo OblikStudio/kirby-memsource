@@ -71,5 +71,14 @@ module.exports = new Vuex.Store({
         SET_JOB: function (state, value) {
             state.job = freeze(value);
         }
+    },
+    actions: {
+        logOut: function (context) {
+            context.commit('SET_SESSION', null);
+            context.commit('SET_PROJECT', []);
+            context.commit('SET_JOB', []);
+            context.commit('MS_SET_PROJECTS', []);
+            context.commit('MS_SET_JOBS', []);
+        }
     }
 });

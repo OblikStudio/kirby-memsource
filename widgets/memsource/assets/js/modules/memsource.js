@@ -27,8 +27,12 @@ module.exports = {
 
                 if (Date.now() < expireDate) {
                     return session.token;
+                } else {
+                    return false;
                 }
             }
+
+            return null;
         },
         memsourceApiClient: function (state, getters) {
             return axios.create({

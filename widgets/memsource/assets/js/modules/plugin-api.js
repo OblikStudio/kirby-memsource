@@ -39,9 +39,7 @@ module.exports = {
                 return Promise.resolve(response);
             });
         },
-        importJob: function (context, payload) {
-            console.log('payload', payload);
-            
+        importJob: function (context, payload) {            
             return context.dispatch('downloadJob', {
                 projectId: payload.projectId,
                 jobId: payload.jobId

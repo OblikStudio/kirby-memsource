@@ -72,6 +72,7 @@
                         :is="screen"
                         class="ms-screen"
                         @logIn="logIn"
+                        @logOut="logOut"
                         @selectProject="selectProject"
                         @export="exportContent"
                         @upload="upload"
@@ -113,9 +114,15 @@
 var $button = $('#memsource-widget h2 a')
 var $buttonContent = $button.find('span');
 
+const CRUMB_RESET_VIEWS = [
+    'Login',
+    'User'
+];
+
 module.exports = {
 	components: {
-		Login: require('./views/Login.vue'),
+        Login: require('./views/Login.vue'),
+		User: require('./views/User.vue'),
         Projects: require('./views/Projects.vue'),
         Project: require('./views/Project.vue'),
         Export: require('./views/Export.vue'),
@@ -143,6 +150,13 @@ module.exports = {
                     type: 'error',
                     text: self.getErrorMessage(error)
                 });
+            });
+        },
+        logOut: function () {
+            var self = this;
+
+            this.$store.dispatch('logOut').then(function () {
+                self.screen = 'Login';
             });
         },
         showProjects: function () {
@@ -258,9 +272,6 @@ module.exports = {
             });
         },
 
-        openUserScreen: function () {
-            console.log('open user');
-        },
         handleCrumb: function (crumb) {
             for (var i = this.crumbs.length - 1; i >= 0; i--) {
                 var isClicked = (this.crumbs[i].id === crumb);
@@ -298,7 +309,12 @@ module.exports = {
 
         $button.on('click', function (event) {
             event.preventDefault();
-            self.openUserScreen();
+
+            if (self.screen !== 'User') {
+                self.screen = 'User';
+            } else {
+                self.screen = 'Projects';
+            }
         });
     },
     watch: {
@@ -308,7 +324,10 @@ module.exports = {
                 var crumbId = value,
                     crumbText = value;
 
-                if (value === 'Login' || oldValue === 'Login') {
+                if (
+                    CRUMB_RESET_VIEWS.indexOf(value) >= 0 ||
+                    CRUMB_RESET_VIEWS.indexOf(oldValue) >= 0
+                ) {
                     this.crumbs = [];
                 }
 
@@ -339,7 +358,7 @@ module.exports = {
             }
         },
         "$store.getters.token": function (value, oldval) {
-            if (typeof value !== 'string') {
+            if (value === false) {
                 this.alerts.push({
                     type: 'info',
                     text: 'Your session expired, please log in again.'
