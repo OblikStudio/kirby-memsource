@@ -46,7 +46,7 @@
             top: 0;
             left: 0;
 
-        font-size: 2em;
+        font-size: 18px;
         background: #fff;
         user-select: none;
 
@@ -103,7 +103,7 @@
         <transition name="fade">
             <div v-if="$store.getters.isLoading" class="loading-overlay">
                 <div class="loading-content">
-                    &hellip;
+                    {{ $store.state.loadingStatus }}&hellip;
                 </div>
             </div>
         </transition>
@@ -111,7 +111,7 @@
 </template>
 
 <script>
-var whenExpires = require('./modules/expires');
+var whenExpired = require('when-expired');
 var $button = $('#memsource-widget h2 a')
 var $buttonContent = $button.find('span');
 
@@ -143,6 +143,7 @@ module.exports = {
     methods: {
         loaderPromise: function (promise) {
             var self = this;
+
             this.$store.commit('MODIFY_LOADERS', 'add');
 
             promise.then(function (value) {
@@ -172,6 +173,8 @@ module.exports = {
         logIn: function (data) {
             var self = this;
 
+            this.$store.commit('SET_LOADING_STATUS', 'Logging in');
+
             this.loaderPromise(
                 this.$store.dispatch('logIn', data).then(function () {
                     self.showProjects();
@@ -191,6 +194,8 @@ module.exports = {
             var self = this;
 
             this.screen = null;
+            this.$store.commit('SET_LOADING_STATUS', 'Listing projects');
+
             this.loaderPromise(
                 this.$store.dispatch('loadProjects').catch(function (error) {
                     self.alerts.push({
@@ -210,6 +215,8 @@ module.exports = {
             var self = this;
 
             this.screen = null;
+            this.$store.commit('SET_LOADING_STATUS', 'Exporting');
+
             this.loaderPromise(
                 this.$store.dispatch('exportContent').then(function () {
                     self.screen = 'Export';
@@ -225,12 +232,33 @@ module.exports = {
         upload: function (data) {
             var self = this;
 
+            this.$store.commit('SET_LOADING_STATUS', 'Listing import settings');
+
             this.loaderPromise(
-                this.$store.dispatch('createJob', {
-                    data: this.$store.state.pluginApi.exportData,
-                    projectId: this.$store.state.project.id,
-                    language: data.language,
-                    filename: data.filename
+                this.$store.dispatch('listImportSettings').then(function (settings) {
+                    if (settings) {
+                        self.$store.commit('SET_LOADING_STATUS', 'Fetching import settings');
+                        return self.$store.dispatch('getImportSettings', settings.uid);
+                    } else {
+                        self.$store.commit('SET_LOADING_STATUS', 'Creating import settings');
+                        return self.$store.dispatch('createImportSettings');
+                    }
+                }).then(function (settings) {
+                    console.info('Import settings:', settings);
+
+                    self.alerts.push({
+                        type: 'info',
+                        text: 'Loaded import settings: ' + settings.name
+                    });
+
+                    self.$store.commit('SET_LOADING_STATUS', 'Creating jobs');
+                    return self.$store.dispatch('createJob', {
+                        data: self.$store.state.pluginApi.exportData,
+                        projectId: self.$store.state.project.id,
+                        importSettingsId: settings.uid,
+                        language: data.language,
+                        filename: data.filename
+                    });
                 }).then(function (response) {
                     var jobs = (response.data && response.data.jobs);
 
@@ -252,6 +280,8 @@ module.exports = {
             var self = this;
 
             this.screen = null;
+            this.$store.commit('SET_LOADING_STATUS', 'Listing jobs');
+
             this.loaderPromise(
                 this.$store.dispatch('listJobs', {
                     projectId: this.$store.state.project.id
@@ -291,6 +321,7 @@ module.exports = {
                 });
             }
 
+            this.$store.commit('SET_LOADING_STATUS', 'Importing job');
             this.loaderPromise(
                 this.$store.dispatch('importJob', {
                     projectId: project.id,
@@ -374,7 +405,7 @@ module.exports = {
                 var self = this;
 
                 if (value) {
-                    whenExpires('session', value).then(function () {
+                    whenExpired('session', value).then(function () {
                         self.screen = 'Login';
 
                         self.$store.dispatch('logOut').then(function () {

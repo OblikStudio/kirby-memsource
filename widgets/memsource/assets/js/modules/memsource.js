@@ -1,6 +1,15 @@
 var axios = require('axios');
 var freeze = require('deep-freeze-node');
 
+var IMPORT_SETTINGS = {
+    name: 'kirby_0_1_0',
+    fileImportSettings: {
+        json: {
+            tagRegexp: '(?=[^\\]])\\((?:br|sprite)+:.*?\\)|(\\%[a-zA-Z]\\b)'
+        }
+    }
+};
+
 module.exports = {
     state: {
         projects: [],
@@ -54,6 +63,40 @@ module.exports = {
                 return Promise.resolve(response);
             });
         },
+        listImportSettings: function (context) {
+            return context.getters.msClient({
+                url: '/importSettings'
+            }).then(function (response) {
+                var items = (response.data && response.data.content),
+                    settings = null;
+
+                if (Array.isArray(items)) {
+                    items.forEach(function (item) {
+                        if (item.name === IMPORT_SETTINGS.name) {
+                            settings = item;
+                        }
+                    })
+                }
+
+                return Promise.resolve(settings);
+            });
+        },
+        getImportSettings: function (context, uid) {
+            return context.getters.msClient({
+                url: '/importSettings/' + uid
+            }).then(function (response) {
+                return Promise.resolve(response.data);
+            });
+        },
+        createImportSettings: function (context) {
+            return context.getters.msClient({
+                url: '/importSettings',
+                method: 'post',
+                data: IMPORT_SETTINGS
+            }).then(function (response) {
+                return Promise.resolve(response.data);
+            });
+        },
         createJob: function (context, payload) {
             var filename = payload.filename + '.json';
             var targetLanguages = (Array.isArray(payload.language))
@@ -61,7 +104,10 @@ module.exports = {
                 : [payload.language];
 
             var memsourceHeader = {
-                targetLangs: targetLanguages
+                targetLangs: targetLanguages,
+                importSettings: {
+                    uid: payload.importSettingsId
+                }
             };
 
             return context.getters.msClient({

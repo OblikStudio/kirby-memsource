@@ -33,7 +33,9 @@
     "envify": "^4.1.0",
     "uglifyify": "^5.0.1",
     "vue": "^2.5.17",
-    "vuex": "^3.0.1"
+    "vueify": "^9.4.1",
+    "vuex": "^3.0.1",
+    "when-expired": "^0.1.0"
   },
   "devDependencies": {
     "gulp": "^3.9.1",

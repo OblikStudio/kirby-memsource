@@ -18,7 +18,7 @@ module.exports = new Vuex.Store({
         kirby: freeze(window.Memsource),
         session: session.load(),
         loaders: 0,
-        loading: false,
+        loadingStatus: null,
         project: null,
         job: null
     },
@@ -73,6 +73,13 @@ module.exports = new Vuex.Store({
         },
         MODIFY_LOADERS: function (state, value) {
             state.loaders += (value === 'add') ? 1 : -1;
+
+            if (state.loaders === 0) {
+                state.loadingStatus = null;
+            }
+        },
+        SET_LOADING_STATUS: function (state, value) {
+            state.loadingStatus = value;
         }
     },
     actions: {
