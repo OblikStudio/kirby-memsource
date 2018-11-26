@@ -1,12 +1,12 @@
 <?php
 
-kirby()->set('widget', 'memsource', __DIR__ . DS . 'widgets' . DS . 'memsource');
-
-require_once(__DIR__ . DS . 'src' . DS . 'BlueprintReader.php');
-require_once(__DIR__ . DS . 'src' . DS . 'Exporter.php');
-require_once(__DIR__ . DS . 'src' . DS . 'Importer.php');
-
 if (function_exists('panel')) {
+    kirby()->set('widget', 'memsource', __DIR__ . DS . 'widgets' . DS . 'memsource');
+
+    require_once(__DIR__ . DS . 'src' . DS . 'BlueprintReader.php');
+    require_once(__DIR__ . DS . 'src' . DS . 'Exporter.php');
+    require_once(__DIR__ . DS . 'src' . DS . 'Importer.php');
+
     panel()->routes([
         [
             'pattern' => 'memsource/export',
