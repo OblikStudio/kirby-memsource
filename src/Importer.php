@@ -4,95 +4,95 @@ namespace Memsource;
 use Yaml;
 
 class Importer {
-	private $lang = null;
+    private $lang = null;
 
-	public static function clean ($data) {
-		foreach ($data as $key => $value) {
-			if (is_array($value)) {
-				$data[$key] = static::clean($value);
-			} else if (empty($value)) {
-				unset($data[$key]);
-			}
-		}
+    public static function clean ($data) {
+        foreach ($data as $key => $value) {
+            if (is_array($value)) {
+                $data[$key] = static::clean($value);
+            } else if (empty($value)) {
+                unset($data[$key]);
+            }
+        }
 
-		return $data;
-	}
+        return $data;
+    }
 
-	public function updatePage ($page, $data) {
-		// Clean the input data so that empty strings won't overwrite the non-
-		// empty default language values later.
-		$data = static::clean($data);
+    public function updatePage ($page, $data) {
+        // Clean the input data so that empty strings won't overwrite the non-
+        // empty default language values later.
+        $data = static::clean($data);
 
-		$currentData = $page->content($this->lang)->data();
-		$normalizedData = array();
+        $currentData = $page->content($this->lang)->data();
+        $normalizedData = array();
 
-		// Make up an array with the current data and normalize it by parsing
-		// YAML and extracting field values.
-		foreach ($currentData as $key => $field) {
-			$normalizedData[$key] = $field->value();
+        // Make up an array with the current data and normalize it by parsing
+        // YAML and extracting field values.
+        foreach ($currentData as $key => $field) {
+            $normalizedData[$key] = $field->value();
 
-			if (!empty($data[$key]) && is_array($data[$key])) {
-				// If the translated value is an array, that means this
-				// field was a structure when it was exported, so it must
-				// still be a structure and should be parsed.
+            if (!empty($data[$key]) && is_array($data[$key])) {
+                // If the translated value is an array, that means this
+                // field was a structure when it was exported, so it must
+                // still be a structure and should be parsed.
 
-				try {
-					$normalizedData[$key] = Yaml::read($normalizedData[$key]);
-				} catch (\Exception $e) {}
-			}
-		}
+                try {
+                    $normalizedData[$key] = Yaml::read($normalizedData[$key]);
+                } catch (\Exception $e) {}
+            }
+        }
 
-		$mergedData = array_replace_recursive($normalizedData, $data);
+        $mergedData = array_replace_recursive($normalizedData, $data);
 
-		// Encode all arrays back to YAML because that's how Kirby stores
-		// them. If they are not pased, an empty value will be saved.
-		foreach ($mergedData as $key => $value) {
-			if (is_array($value)) {
-				$mergedData[$key] = Yaml::encode($mergedData[$key]);
-			}
-		}
+        // Encode all arrays back to YAML because that's how Kirby stores
+        // them. If they are not pased, an empty value will be saved.
+        foreach ($mergedData as $key => $value) {
+            if (is_array($value)) {
+                $mergedData[$key] = Yaml::encode($mergedData[$key]);
+            }
+        }
 
-		$page->update($mergedData, $this->lang);
-	}
+        $page->update($mergedData, $this->lang);
+    }
 
-	public function importPages ($data) {
-		foreach ($data as $pageId => $value) {
-			$page = null;
+    public function importPages ($data) {
+        foreach ($data as $pageId => $value) {
+            $page = null;
 
-			if ($pageId === '$site') {
-				$page = site();
-			} else {
-				$page = site()->children()->find($pageId);
-			}
+            if ($pageId === '$site') {
+                $page = site();
+            } else {
+                $page = site()->children()->find($pageId);
+            }
 
-			if ($page) {
-				$this->updatePage($page, $value, $this->lang);
-			}
-		}
-	}
+            if ($page) {
+                $this->updatePage($page, $value, $this->lang);
+            }
+        }
+    }
 
-	public function importVariables ($data) {
-		$dir = kirby()->roots()->languages();
+    public function importVariables ($data) {
+        $dir = kirby()->roots()->languages();
 
-		if (!is_dir($dir)) {
-			mkdir($dir);
-		}
+        if (!is_dir($dir)) {
+            mkdir($dir);
+        }
 
-		$file = $dir . DS . $this->lang . '.yml';
-		$encoded = Yaml::encode($data);
+        $file = $dir . DS . $this->lang . '.yml';
+        $encoded = Yaml::encode($data);
 
-		file_put_contents($file, $encoded);
-	}
+        file_put_contents($file, $encoded);
+    }
 
-	public function import ($data, $lang) {
-		$this->lang = $lang;
+    public function import ($data, $lang) {
+        $this->lang = $lang;
 
-		if (isset($data['pages'])) {
-			$this->importPages($data['pages']);
-		}
+        if (isset($data['pages'])) {
+            $this->importPages($data['pages']);
+        }
 
-		if (isset($data['variables'])) {
-			$this->importVariables($data['variables']);
-		}
-	}
+        if (isset($data['variables'])) {
+            $this->importVariables($data['variables']);
+        }
+    }
 }
