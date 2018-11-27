@@ -13,9 +13,17 @@ if (function_exists('panel')) {
             'method' => 'GET',
             'action' => function () {
                 $exporter = new Memsource\Exporter;
-                $siteData = $exporter->export();
+                $content = $exporter->export();
 
-                return response::json($siteData);
+                $data = [
+                    'data' => $content
+                ];
+
+                if (count($exporter::$alerts) > 0) {
+                    $data['alerts'] = $exporter::$alerts;
+                }
+
+                return response::json($data);
             }
         ],
         [
