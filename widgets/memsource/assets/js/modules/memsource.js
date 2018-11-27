@@ -5,6 +5,7 @@ var IMPORT_SETTINGS = {
     name: 'kirby_0_1_0',
     fileImportSettings: {
         json: {
+            htmlSubFilter: false,
             tagRegexp: '(?=[^\\]])\\((?:br|sprite)+:.*?\\)|(\\%[a-zA-Z]\\b)'
         }
     }
