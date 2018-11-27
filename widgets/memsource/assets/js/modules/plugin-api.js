@@ -23,8 +23,8 @@ module.exports = {
             return context.getters.pluginClient({
                 url: '/export'
             }).then(function (response) {
-                context.commit('SET_EXPORT_DATA', response.data);
-                return Promise.resolve(response);
+                context.commit('SET_EXPORT_DATA', response.data.content);
+                return Promise.resolve(response.data);
             });
         },
         importJob: function (context, payload) {            

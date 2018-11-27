@@ -13,10 +13,10 @@ if (function_exists('panel')) {
             'method' => 'GET',
             'action' => function () {
                 $exporter = new Memsource\Exporter;
-                $content = $exporter->export();
+                $data = $exporter->export();
 
                 $data = [
-                    'data' => $content
+                    'content' => $data
                 ];
 
                 if (count($exporter::$alerts) > 0) {

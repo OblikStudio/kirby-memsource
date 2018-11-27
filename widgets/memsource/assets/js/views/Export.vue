@@ -85,7 +85,7 @@ function countObjectData (object) {
 
 function getExportStats (data) {
     var stats = countObjectData(data);
-    stats.pages = Object.keys(data).length;
+    stats.pages = Object.keys(data.pages).length;
 
     return stats;
 }

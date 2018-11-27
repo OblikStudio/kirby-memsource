@@ -218,8 +218,12 @@ module.exports = {
             this.$store.commit('SET_LOADING_STATUS', 'Exporting');
 
             this.loaderPromise(
-                this.$store.dispatch('exportContent').then(function () {
+                this.$store.dispatch('exportContent').then(function (data) {
                     self.screen = 'Export';
+
+                    if (data.alerts) {
+                        self.alerts = self.alerts.concat(data.alerts);
+                    }
                 }).catch(function (error) {
                     self.screen = 'Project';
                     self.alerts.push({

@@ -15,6 +15,9 @@
     border: 2px solid $color-info;
     color: $color-info;
 
+    overflow: hidden;
+    text-overflow: ellipsis;
+
     &.error {
         border-color: $color-error;
         color: $color-error;
