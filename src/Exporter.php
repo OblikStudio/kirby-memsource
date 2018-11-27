@@ -4,8 +4,10 @@ namespace Memsource;
 use Yaml;
 
 class Exporter {
-	public static $alerts = [];
 	public static $ignored_fields = ['line', 'tabs', 'image', 'date', 'toggle', 'headline'];
+
+	public $data = [];
+	public $alerts = [];
 
 	private static function isFieldTranslatable ($field) {
 		if (isset($field['translate']) && $field['translate'] == false) {
@@ -19,7 +21,7 @@ class Exporter {
 		return true;
 	}
 
-	private static function blueprintTranslatableFields ($data, &$result = []) {
+	private function blueprintTranslatableFields ($data, &$result = []) {
 		if (!empty($data['fields'])) {
 			foreach ($data['fields'] as $key => $value) {
 				$fieldId = str_replace(array('-', ' '), '_', strtolower(trim($key))); // from Kirby core
@@ -28,10 +30,10 @@ class Exporter {
 				if ($isTranslatable && !empty($value['fields'])) {
 					if (!empty($value['type']) && $value['type'] === 'structure') {
 						// Store `structure` fields in a new array.
-						$result[$fieldId] = static::blueprintTranslatableFields($value);
+						$result[$fieldId] = $this->blueprintTranslatableFields($value);
 					} else {
 						// Store primitive fields in the flattened array.
-						static::blueprintTranslatableFields($value, $result);
+						$this->blueprintTranslatableFields($value, $result);
 					}
 				} else {
 					$result[$fieldId] = $isTranslatable;
@@ -42,7 +44,7 @@ class Exporter {
 		return $result;
 	}
 
-	private static function exportObject ($fields, $translatable, $id) {
+	private function exportObject ($fields, $translatable, $id) {
 		$data = [];
 
 		foreach ($translatable as $key => $value) {
@@ -55,7 +57,7 @@ class Exporter {
 					$fieldData = $fields[$key]->yaml();
 
 					foreach ($fieldData as $entry) {
-						$exportedChild = static::exportObject($entry, $value, "$id:$key");
+						$exportedChild = $this->exportObject($entry, $value, "$id:$key");
 
 						if (!empty($exportedChild)) {
 							array_push($data[$key], $exportedChild);
@@ -77,7 +79,7 @@ class Exporter {
 					if (json_encode($fieldValue)) {
 						$data[$key] = $fieldValue;
 					} else {
-						array_push(static::$alerts, [
+						array_push($this->alerts, [
 							'type' => 'warning',
 							'text' => "Could not encode: $id:$key"
 						]);
@@ -89,28 +91,28 @@ class Exporter {
 		return $data;
 	}
 
-	public static function exportPage ($page, &$data = []) {
+	public function exportPage ($page, &$data = []) {
 		$reader = new BlueprintReader;
 		$id = $page->isSite() ? '$site' : $page->id();
 
 		if (!empty($id)) {
 			$blueprint = $reader->get($page->template());
-			$translatable = static::blueprintTranslatableFields($blueprint);
-			$data[$id] = static::exportObject($page->content()->data(), $translatable, $id);
+			$translatable = $this->blueprintTranslatableFields($blueprint);
+			$data[$id] = $this->exportObject($page->content()->data(), $translatable, $id);
 		}
 
 		$children = $page->children();
 		if (count($children) > 0) {
 			foreach ($children as $key => $child) {
-				static::exportPage($child, $data);
+				$this->exportPage($child, $data);
 			}
 		}
 		
 		return $data;
 	}
 
-	public static function exportLanguageVars ($lang) {
-		$file = kirby()->roots()->languages() . DS . $lang . '.yml';
+	public function exportLanguageVars () {
+		$file = kirby()->roots()->languages() . DS . $this->lang . '.yml';
 
 		if (file_exists($file)) {
 			$contents = file_get_contents($file);
@@ -120,12 +122,20 @@ class Exporter {
 	    }   
 	}
 
-	public static function export () {
-		$data = [
-			'pages' => static::exportPage(site()),
-			'variables' => static::exportLanguageVars(site()->language()->code())
-		];
+	public function export () {
+		$this->lang = site()->language()->code();
 
-		return $data;
+		$pages = $this->exportPage(site());
+		$vars = $this->exportLanguageVars();
+
+		if (count($pages) > 0) {
+			$this->data['pages'] = $pages;
+		}
+
+		if ($vars) {
+			$this->data['variables'] = $vars;
+		}
+
+		return $this->data;
 	}
 }

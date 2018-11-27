@@ -4,6 +4,8 @@ namespace Memsource;
 use Yaml;
 
 class Importer {
+	private $lang = null;
+
 	public static function clean ($data) {
 		foreach ($data as $key => $value) {
 			if (is_array($value)) {
@@ -16,12 +18,12 @@ class Importer {
 		return $data;
 	}
 
-	public static function updatePage ($page, $data, $lang) {
+	public function updatePage ($page, $data) {
 		// Clean the input data so that empty strings won't overwrite the non-
 		// empty default language values later.
 		$data = static::clean($data);
 
-		$currentData = $page->content($lang)->data();
+		$currentData = $page->content($this->lang)->data();
 		$normalizedData = array();
 
 		// Make up an array with the current data and normalize it by parsing
@@ -50,10 +52,10 @@ class Importer {
 			}
 		}
 
-		$page->update($mergedData, $lang);
+		$page->update($mergedData, $this->lang);
 	}
 
-	public static function import($data, $lang) {
+	public function importPages ($data) {
 		foreach ($data as $pageId => $value) {
 			$page = null;
 
@@ -64,8 +66,33 @@ class Importer {
 			}
 
 			if ($page) {
-				static::updatePage($page, $value, $lang);
+				$this->updatePage($page, $value, $this->lang);
 			}
+		}
+	}
+
+	public function importVariables ($data) {
+		$dir = kirby()->roots()->languages();
+
+		if (!is_dir($dir)) {
+			mkdir($dir);
+		}
+
+		$file = $dir . DS . $this->lang . '.yml';
+		$encoded = Yaml::encode($data);
+
+		file_put_contents($file, $encoded);
+	}
+
+	public function import ($data, $lang) {
+		$this->lang = $lang;
+
+		if (isset($data['pages'])) {
+			$this->importPages($data['pages']);
+		}
+
+		if (isset($data['variables'])) {
+			$this->importVariables($data['variables']);
 		}
 	}
 }

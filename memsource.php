@@ -13,14 +13,14 @@ if (function_exists('panel')) {
             'method' => 'GET',
             'action' => function () {
                 $exporter = new Memsource\Exporter;
-                $data = $exporter->export();
+                $content = $exporter->export();
 
                 $data = [
-                    'content' => $data
+                    'content' => $content
                 ];
 
-                if (count($exporter::$alerts) > 0) {
-                    $data['alerts'] = $exporter::$alerts;
+                if (count($exporter->alerts) > 0) {
+                    $data['alerts'] = $exporter->alerts;
                 }
 
                 return response::json($data);
@@ -36,7 +36,7 @@ if (function_exists('panel')) {
                 if (!$input) {
                     return response::json([
                         'status' => 'error',
-                        'errorDescription' => 'No input data.'
+                        'errorDescription' => 'Could not parse data.'
                     ], 400);
                 } else if (empty($input['data']) || empty($input['language'])) {
                     return response::json([
