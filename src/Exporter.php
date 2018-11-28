@@ -77,7 +77,7 @@ class Exporter {
                     }
 
                     if (json_encode($fieldValue)) {
-                        $data[$key] = $fieldValue;
+                        $data[$key] = KirbytagXML::replace($fieldValue);
                     } else {
                         array_push($this->alerts, [
                             'type' => 'warning',

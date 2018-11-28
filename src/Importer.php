@@ -18,6 +18,18 @@ class Importer {
         return $data;
     }
 
+    public static function revertKirbytagXML ($data) {
+        foreach ($data as $key => $value) {
+            if (is_array($value)) {
+                $data[$key] = static::revertKirbytagXML($value);
+            } else if (is_string($value)) {
+                $data[$key] = KirbytagXML::revert($value);
+            }
+        }
+
+        return $data;
+    }
+
     public function updatePage ($page, $data) {
         // Clean the input data so that empty strings won't overwrite the non-
         // empty default language values later.
@@ -52,7 +64,7 @@ class Importer {
             }
         }
 
-        $page->update($mergedData, $this->lang);
+        $page->update(static::revertKirbytagXML($mergedData), $this->lang);
     }
 
     public function importPages ($data) {
