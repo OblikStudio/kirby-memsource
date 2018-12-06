@@ -10,8 +10,16 @@ class Importer {
         foreach ($data as $key => $value) {
             if (is_array($value)) {
                 $data[$key] = static::clean($value);
-            } else if (empty($value)) {
-                unset($data[$key]);
+
+                if (count($data[$key]) === 0) {
+                    unset($data[$key]);
+                }
+            } else {
+                $hasPrintableChars = preg_match('/[^[:cntrl:]\s]/', $value);
+
+                if (empty($value) || !$hasPrintableChars) {
+                    unset($data[$key]);
+                }
             }
         }
 
@@ -34,6 +42,10 @@ class Importer {
         // Clean the input data so that empty strings won't overwrite the non-
         // empty default language values later.
         $data = static::clean($data);
+
+        if (count($data) === 0) {
+            return; // nothing to update
+        }
 
         $currentData = $page->content($this->lang)->data();
         $normalizedData = array();
