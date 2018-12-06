@@ -258,7 +258,7 @@ module.exports = {
                     self.$store.commit('SET_LOADING_STATUS', 'Creating jobs');
                     return self.$store.dispatch('createJob', {
                         data: self.$store.state.pluginApi.exportData,
-                        projectId: self.$store.state.project.id,
+                        projectId: self.$store.state.project.uid,
                         importSettingsId: settings.uid,
                         language: data.language,
                         filename: data.filename
