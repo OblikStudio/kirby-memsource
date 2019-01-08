@@ -111,6 +111,10 @@ class Importer {
     public function import ($data, $lang) {
         $this->lang = $lang;
 
+        if (isset($data['content'])) {
+            $data = $data['content'];
+        }
+
         if (isset($data['pages'])) {
             $this->importPages($data['pages']);
         }
