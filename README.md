@@ -54,6 +54,9 @@ A plugin for [Kirby CMS](https://getkirby.com/) that can be used to export the s
 11. Click "Import" to update your site's content.
 12. Your site is translated.
 
+## Tips
+- You can open the `/panel/memsource/export` route of your project in a browser to see your site's exported content in JSON format.
+
 ## Notes
 - This plugin is used for the translation of a fairly large website and it has worked flawlessly so far. The localization team is also very happy with the results.
 - There is currently no support for the translation of files (their alt text, for example). This might be added at some point in the future.
