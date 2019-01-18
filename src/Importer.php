@@ -47,7 +47,11 @@ class Importer {
             return; // nothing to update
         }
 
-        $currentData = $page->content($this->lang)->data();
+        // Using defaultLang instead of $this->lang to get the original
+        // content of the language. That's because it's not guaranteed that
+        // the current translated content will be synced with the default
+        // language one, especially with structured fields (proven).
+        $currentData = $page->content($this->defaultLang->code)->data();
         $normalizedData = array();
 
         // Make up an array with the current data and normalize it by parsing
@@ -110,6 +114,7 @@ class Importer {
 
     public function import ($data, $lang) {
         $this->lang = $lang;
+        $this->defaultLang = site()->defaultLanguage();
 
         if (isset($data['content'])) {
             $data = $data['content'];
