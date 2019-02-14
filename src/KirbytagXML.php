@@ -68,7 +68,17 @@ class KirbytagXML {
 
     public static function revert ($text) {
         return preg_replace_callback('!<kirby.*?(?:<\/kirby>|\/>)!', function ($matches) {
-            $xml = simplexml_load_string($matches[0]);
+            $tag = $matches[0];
+
+            if (!empty($tag)) {
+                // Escape HTML characters in kirby tag content due to self-
+                // closing tags like `<br>` that break the parser.
+                $tag = preg_replace_callback('!(<kirby[^>]*>)(.*)(<\/kirby>|\/>)!', function ($matches) {
+                    return $matches[1] . htmlspecialchars($matches[2]) . $matches[3];
+                }, $tag);
+            }
+
+            $xml = simplexml_load_string($tag);
             $xmlContent = $xml->__toString();
             $kirbyContent = '';
 
