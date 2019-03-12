@@ -3,6 +3,9 @@
 include_once 'class/Exporter.php';
 
 Kirby::plugin('oblik/memsource', [
+  'options' => [
+    'foo' => 'variables.php'
+  ],
   'api' => [
     'routes' => [
       [
