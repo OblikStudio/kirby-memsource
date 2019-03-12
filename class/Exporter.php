@@ -4,8 +4,20 @@ namespace Memsource;
 class Exporter {
   public $language = null;
 
+  public function isFieldTranslatable ($blueprint) {
+    $isTranslate = $blueprint['translate'] ?? true;
+    $isFiles = $blueprint['type'] === 'files';
+    $isPages = $blueprint['type'] === 'pages';
+
+    return (
+      $isTranslate &&
+      !$isFiles &&
+      !$isPages
+    );
+  }
+
   public function extractFieldData ($blueprint, $input) {
-    if (isset($blueprint['translate']) && $blueprint['translate'] == false) {
+    if (!$this->isFieldTranslatable($blueprint)) {
       return null;
     }
 
@@ -18,14 +30,16 @@ class Exporter {
       foreach ($content as $index => $entry) {
         $childData = [];
 
-        foreach ($blueprint['fields'] as $name => $field) {
-          $fieldValue = $this->extractFieldData(
-            $field,
-            $entry[strtolower($name)]
-          );
+        foreach ($blueprint['fields'] as $fieldName => $fieldBlueprint) {
+          $fieldKey = strtolower($fieldName);
 
-          if (!empty($fieldValue)) {
-            $childData[$name] = $fieldValue;
+          if (isset($entry[$fieldKey])) {
+            $fieldValue = $entry[$fieldKey];
+            $extractedValue = $this->extractFieldData($fieldBlueprint, $fieldValue);
+
+            if (!empty($extractedValue)) {
+              $childData[$fieldName] = $extractedValue;
+            }
           }
         }
 
@@ -33,19 +47,17 @@ class Exporter {
           $data[$index] = $childData;
         }
       }
-
-      return $data;
     } else {
-      return $isFieldInstance ? $input->value() : $input;
+      $data = $isFieldInstance ? $input->value() : $input;
     }
+
+    return $data;
   }
 
-  public function extractPageContent ($page) {
+  public function extractEntity ($entity) {
     $data = [];
-    $files = [];
-
-    $content = $page->content($this->language);
-    $fieldBlueprints = $page->blueprint()->fields();
+    $content = $entity->content($this->language);
+    $fieldBlueprints = $entity->blueprint()->fields();
 
     foreach ($fieldBlueprints as $fieldName => $fieldBlueprint) {
       $field = $content->$fieldName();
@@ -59,12 +71,23 @@ class Exporter {
       }
     }
 
+    return $data;
+  }
+
+  public function extractPageContent ($page) {
+    $data = $this->extractEntity($page);
+    $files = [];
+
     foreach ($page->files() as $file) {
-      $files[$file->id()] = $file->content($this->language)->toArray();
+      $fileData = $this->extractEntity($file);
+
+      if (!empty($fileData)) {
+        $files[$file->id()] = $fileData;
+      }
     }
 
     return [
-      'data' => $data,
+      'content' => $data,
       'files' => $files
     ];
   }
@@ -73,18 +96,21 @@ class Exporter {
     $pages = [];
     $files = [];
 
-    $site = $this->extractPageContent(site());
+    $siteData = $this->extractPageContent(site());
+    $files = array_replace($files, $siteData['files']);
 
     foreach (site()->index() as $page) {
-      $pages[$page->id()] = $page->content($language)->toArray();
+      $pageData = $this->extractPageContent($page);
 
-      foreach ($page->files() as $file) {
-        $files[$file->id()] = $file->content($language)->toArray();
+      if (!empty($pageData['content'])) {
+        $pages[$page->id()] = $pageData['content'];
       }
+
+      $files = array_replace($files, $pageData['files']);
     }
 
     return [
-      'site' => $site,
+      'site' => $siteData['content'],
       'pages' => $pages,
       'files' => $files
     ];
