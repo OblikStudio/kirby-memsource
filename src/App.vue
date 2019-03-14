@@ -5,6 +5,7 @@
       :is="screen"
       @loggedIn="showProjects"
       @upload="uploadToProject"
+      @export="exportSite"
     ></component>
   </k-view>
 </template>
@@ -16,16 +17,20 @@ import whenExpired from 'when-expired'
 import store from './store'
 import Login from './views/Login.vue'
 import Projects from './views/Projects.vue'
+import Export from './views/Export.vue'
+import Upload from './views/Upload.vue'
 
 export default {
   store,
   components: {
     Login,
-    Projects
+    Projects,
+    Export,
+    Upload
   },
   data () {
     return {
-      screen: null
+      screen: 'Export'
     }
   },
   methods: {
@@ -34,16 +39,25 @@ export default {
         console.log(error)
       }).then(() => {
         console.log('projects')
-        this.screen = 'Projects'
+        this.screen = 'Export'
       })
     },
     uploadToProject (data) {
-      console.log('upload', data)
+      this.$store.commit('SET_PROJECT', data)
+      this.screen = 'Export'
+    },
+    exportSite (options) {
+      this.$store.dispatch('exportContent', options).then(data => {
+        console.log('exported', data)
+        this.screen = 'Upload'
+      }).catch(err => {
+        console.log(err.response.data)
+      })
     }
   },
   created: function () {
     if (this.$store.state.session) {
-      this.showProjects()
+      // this.showProjects()
     } else {
       this.screen = 'Login'
     }

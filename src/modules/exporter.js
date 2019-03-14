@@ -3,13 +3,16 @@ import freeze from 'deep-freeze-node'
 
 export default {
   state: {
-    exportData: null
+    exportData: {}
   },
   getters: {
-    pluginClient: function (state, getters, rootState) {
+    exporterClient: function (state, getters, rootState) {
       return axios.create({
         baseURL: panel.api,
-        method: 'get'
+        method: 'get',
+        headers: {
+          'X-CSRF': panel.csrf
+        }
       })
     }
   },
@@ -19,11 +22,12 @@ export default {
     }
   },
   actions: {
-    exportContent: function (context) {
-      return context.getters.pluginClient({
-        url: '/export'
+    exportContent: function (context, payload) {
+      return context.getters.exporterClient({
+        url: '/export',
+        params: payload
       }).then(function (response) {
-        context.commit('SET_EXPORT_DATA', response.data.content)
+        context.commit('SET_EXPORT_DATA', response.data)
         return Promise.resolve(response.data)
       })
     },
@@ -32,7 +36,7 @@ export default {
         projectId: payload.projectId,
         jobId: payload.jobId
       }).then(function (response) {
-        return context.getters.pluginClient({
+        return context.getters.exporterClient({
           url: '/import',
           method: 'put',
           data: JSON.stringify({

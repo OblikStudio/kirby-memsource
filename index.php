@@ -1,11 +1,6 @@
 <?php
 
-include_once 'class/Exporter.php';
-
 Kirby::plugin('oblik/memsource', [
-  'options' => [
-    'foo' => 'variables.php'
-  ],
   'api' => [
     'routes' => [
       [
@@ -25,13 +20,6 @@ Kirby::plugin('oblik/memsource', [
           }
 
           return $langs;
-        }
-      ],
-      [
-        'pattern' => 'memsource/export',
-        'action' => function () {
-          $exporter = new Memsource\Exporter();
-          return $exporter->export();
         }
       ]
     ]

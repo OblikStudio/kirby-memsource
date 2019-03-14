@@ -4,15 +4,15 @@ import axios from 'axios'
 import freeze from 'deep-freeze-node'
 
 import * as session from './modules/session'
-import pluginApi from './modules/plugin-api'
+import exporter from './modules/exporter'
 import memsource from './modules/memsource'
 
 Vue.use(Vuex)
 
 export default new Vuex.Store({
   modules: {
-    pluginApi: pluginApi,
-    memsource: memsource
+    exporter,
+    memsource
   },
   state: {
     languages: [],
