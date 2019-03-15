@@ -14,14 +14,12 @@
 import axios from 'axios'
 import whenExpired from 'when-expired'
 
-import store from './store'
 import Login from './views/Login.vue'
 import Projects from './views/Projects.vue'
 import Export from './views/Export.vue'
 import Upload from './views/Upload.vue'
 
 export default {
-  store,
   components: {
     Login,
     Projects,
@@ -54,6 +52,10 @@ export default {
         console.log(err.response || err)
       })
     }
+  },
+  beforeCreate () {
+    var Vuex = this.$root.constructor._installedPlugins.find(entry => !!entry.Store)
+    this.$store = require('./store')(Vuex)
   },
   created: function () {
     if (this.$store.state.session) {

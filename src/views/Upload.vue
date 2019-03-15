@@ -6,31 +6,36 @@
       </li>
     </ul>
 
-    <div v-if="data && data.pages" class="k-list">
-      <div v-for="(page, key) in data.pages" class="k-list-item">
-        <p class="k-list-item-text">
-          {{ key }}
-        </p>
+    <section v-for="(group, key) in data" class="k-section k-list">
+      <header>
+        <h2 class="k-headline">{{ key }}</h2>
+      </header>
 
-        <k-button @click="deletePage(key)" icon="trash" alt="Delete"></k-button>
-      </div>
-    </div>
+      <k-grid>
+        <k-column width="1/3" v-for="(item, key) in group" class="k-list-item">
+          <p class="k-list-item-text">{{ key }}</p>
+
+          <div class="k-list-item-options">
+            <k-button @click="$delete(group, key)" icon="trash" alt="Delete"></k-button>
+          </div>
+        </k-column>
+      </k-grid>
+    </section>
 
     <k-input
-    type="checkboxes"
-    v-model="value"
-    :options="[
-        { value: 'a', text: 'Option A' },
-        { value: 'b', text: 'Option B' },
-        { value: 'c', text: 'Option c' },
-        { value: 'd', text: 'Option d' }
-    ]"
-    :required="true"
-    :min="2"
-    :max="5"
-    :columns="5"
-/>
-
+      type="checkboxes"
+      v-model="value"
+      :options="[
+          { value: 'a', text: 'Option A' },
+          { value: 'b', text: 'Option B' },
+          { value: 'c', text: 'Option c' },
+          { value: 'd', text: 'Option d' }
+      ]"
+      :required="true"
+      :min="2"
+      :max="5"
+      :columns="5"
+    />
   </div>
 </template>
 
@@ -66,13 +71,6 @@ function countObjectData (data) {
 }
 
 export default {
-  data () {
-    return {
-      page: null,
-      variables: true,
-      value: 'a'
-    }
-  },
   computed: {
     data () {
       return this.$store.state.exporter.exportData
@@ -105,15 +103,24 @@ export default {
     },
     deletePage (key) {
       this.$delete(this.data.pages, key)
-      // var clone = cloneDeep(this.data)
-      // delete clone.pages[key]
-      // this.$store.commit('SET_EXPORT_DATA', clone)
     }
   }
 }
 </script>
 
 <style lang="scss" scoped>
+.k-section/deep/ {
+  .k-grid {
+    margin-bottom: -2px;
+    margin-right: -2px;
+  }
+
+    .k-list-item {
+      margin-bottom: 2px;
+      margin-right: 2px;
+    }
+}
+
 /deep/ {
   .stats {
     margin-bottom: 1rem;
@@ -130,6 +137,19 @@ export default {
       display: inline-block;
       width: 33.33%;
       margin-bottom: 1rem;
+    }
+  }
+}
+
+header {
+  margin-bottom: 0.75rem;
+}
+
+.k-list-item {
+  &:not(:hover) {
+    .k-list-item-options {
+      width: 0;
+      overflow: hidden;
     }
   }
 }

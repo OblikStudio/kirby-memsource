@@ -1,5 +1,5 @@
-import axios from 'axios'
-import freeze from 'deep-freeze-node'
+var axios = require('axios')
+var freeze = require('deep-freeze-node')
 
 var IMPORT_SETTINGS = {
   name: 'kirby_1',
@@ -11,7 +11,7 @@ var IMPORT_SETTINGS = {
   }
 }
 
-export default {
+module.exports = {
   state: {
     projects: [],
     jobs: []

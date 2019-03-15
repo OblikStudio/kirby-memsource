@@ -6,6 +6,14 @@
     margin-bottom: 1rem;
 }
 
+.k-section[data-v-0ecd383b] .k-grid {
+  margin-bottom: -2px;
+  margin-right: -2px;
+}
+.k-section[data-v-0ecd383b] .k-list-item {
+  margin-bottom: 2px;
+  margin-right: 2px;
+}
 [data-v-0ecd383b] .stats {
   margin-bottom: 1rem;
 }
@@ -18,6 +26,13 @@
   display: inline-block;
   width: 33.33%;
   margin-bottom: 1rem;
+}
+header[data-v-0ecd383b] {
+  margin-bottom: 0.75rem;
+}
+.k-list-item:not(:hover) .k-list-item-options[data-v-0ecd383b] {
+  width: 0;
+  overflow: hidden;
 }
 
 .k-view[data-v-7ba5bd90] {

@@ -1,4 +1,4 @@
-export function load () {
+exports.load = function () {
   var value = null
 
   try {
@@ -17,7 +17,7 @@ export function load () {
   return value
 }
 
-export function save (data) {
+exports.save = function (data) {
   try {
     localStorage.memsourceSession = JSON.stringify(data)
   } catch (e) {
