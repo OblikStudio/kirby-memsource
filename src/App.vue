@@ -51,7 +51,7 @@ export default {
         console.log('exported', data)
         this.screen = 'Upload'
       }).catch(err => {
-        console.log(err.response.data)
+        console.log(err.response || err)
       })
     }
   },

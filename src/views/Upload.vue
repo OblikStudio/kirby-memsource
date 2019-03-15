@@ -35,7 +35,7 @@
 </template>
 
 <script>
-import merge from 'lodash/merge'
+import cloneDeep from 'lodash/cloneDeep'
 
 function countObjectData (data) {
   var stats = {
@@ -75,12 +75,10 @@ export default {
   },
   computed: {
     data () {
-      var data = merge({}, this.$store.state.exporter.exportData)
-      console.log('data computed', data)
-      return data
+      return this.$store.state.exporter.exportData
     },
     stats () {
-      if (!this.data) {
+      if (!this.data || !this.data.pages) {
         return null
       }
 
@@ -106,10 +104,10 @@ export default {
       })
     },
     deletePage (key) {
-      console.log(this.data)
       this.$delete(this.data.pages, key)
-      this.$store.commit('SET_EXPORT_DATA', this.data)
-      // console.log('delete', key, this.data)
+      // var clone = cloneDeep(this.data)
+      // delete clone.pages[key]
+      // this.$store.commit('SET_EXPORT_DATA', clone)
     }
   }
 }
