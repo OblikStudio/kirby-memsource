@@ -13,7 +13,7 @@ Kirby::plugin('oblik/memsource', [
             array_push($langs, [
               'name' => $lang->name(),
               'code' => $lang->code(),
-              'locale' => strtolower($lang->locale()),
+              'locale' => $lang->locale(),
               'isDefault' => $lang->isDefault(),
               'isActive' => $lang->code() === $activeLang->code()
             ]);

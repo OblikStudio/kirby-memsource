@@ -1,5 +1,5 @@
-import axios from 'axios'
-import freeze from 'deep-freeze-node'
+var axios = require('axios')
+var freeze = require('deep-freeze-node')
 
 var IMPORT_SETTINGS = {
   name: 'kirby_1',
@@ -11,7 +11,7 @@ var IMPORT_SETTINGS = {
   }
 }
 
-export default {
+module.exports = {
   state: {
     projects: [],
     jobs: []
@@ -99,14 +99,19 @@ export default {
         return Promise.resolve(response.data)
       })
     },
+    fetchImportSettings: function (context) {
+      return context.dispatch('listImportSettings').then(settings => {
+        if (settings) {
+          return context.dispatch('getImportSettings', settings.uid)
+        } else {
+          return context.dispatch('createImportSettings')
+        }
+      })
+    },
     createJob: function (context, payload) {
-      var filename = payload.filename + '.json'
-      var targetLanguages = (Array.isArray(payload.language))
-        ? payload.language
-        : [payload.language]
-
+      var filename = payload.name + '.json'
       var memsourceHeader = {
-        targetLangs: targetLanguages,
+        targetLangs: payload.languages,
         importSettings: {
           uid: payload.importSettingsId
         }

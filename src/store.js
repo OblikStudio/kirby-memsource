@@ -1,15 +1,10 @@
-import Vue from 'vue'
-import Vuex from 'vuex'
-import axios from 'axios'
-import freeze from 'deep-freeze-node'
+var axios = require('axios')
+var freeze = require('deep-freeze-node')
+var session = require('./modules/session')
+var exporter = require('./modules/exporter')
+var memsource = require('./modules/memsource')
 
-import * as session from './modules/session'
-import exporter from './modules/exporter'
-import memsource from './modules/memsource'
-
-Vue.use(Vuex)
-
-export default new Vuex.Store({
+module.exports = Vuex => new Vuex.Store({
   modules: {
     exporter,
     memsource

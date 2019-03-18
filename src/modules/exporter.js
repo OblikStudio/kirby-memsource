@@ -1,9 +1,9 @@
-import axios from 'axios'
-import freeze from 'deep-freeze-node'
-import Vue from 'vue'
-import cloneDeep from 'lodash/cloneDeep'
+var axios = require('axios')
+var freeze = require('deep-freeze-node')
+var Vue = require('vue')
+var cloneDeep = require('lodash/cloneDeep')
 
-export default {
+module.exports = {
   state: {
     exportData: null,
   },
@@ -20,7 +20,6 @@ export default {
   },
   mutations: {
     SET_EXPORT_DATA: function (state, value) {
-      // console.log('export', state.exportData.pages === value.pages)
       state.exportData = cloneDeep(value)
     }
   },
