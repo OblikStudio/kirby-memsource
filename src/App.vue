@@ -5,11 +5,7 @@
         Memsource
       </k-header>
 
-      <div>
-        <p v-for="crumb in crumbs" @click="openCrumb(crumb)">
-          {{ crumb.text }}
-        </p>
-      </div>
+      <Crumbs :entries="crumbs" @click="openCrumb"></Crumbs>
 
       <component
         :is="screen"
@@ -46,6 +42,7 @@ import whenExpired from 'when-expired'
 
 import mixin from './mixins/main'
 
+import Crumbs from './comps/Crumbs.vue'
 import Login from './views/Login.vue'
 import Projects from './views/Projects.vue'
 import Export from './views/Export.vue'
@@ -60,6 +57,7 @@ export default {
     mixin
   ],
   components: {
+    Crumbs,
     Login,
     Projects,
     Export,
@@ -74,8 +72,10 @@ export default {
   },
   methods: {
     openCrumb: function (crumb) {
-      this.crumbs.splice(this.crumbs.indexOf(crumb))
-      this.screen = crumb.value
+      if (crumb.value !== this.screen) {
+        this.crumbs.splice(this.crumbs.indexOf(crumb))
+        this.screen = crumb.value
+      }
     },
     showProjects () {
       this.$store.dispatch('loadProjects').catch(function (error) {
