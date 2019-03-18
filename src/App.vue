@@ -1,9 +1,16 @@
 <template>
   <div>
     <k-view>
-      <k-header>Memsource
-        <span @click="alerts.push({type: 'info', text: 'foobar'})">test</span>
+      <k-header>
+        Memsource
       </k-header>
+
+      <div>
+        <p v-for="crumb in crumbs" @click="openCrumb(crumb)">
+          {{ crumb.text }}
+        </p>
+      </div>
+
       <component
         :is="screen"
         @loggedIn="showProjects"
@@ -44,6 +51,10 @@ import Projects from './views/Projects.vue'
 import Export from './views/Export.vue'
 import Upload from './views/Upload.vue'
 
+const CRUMB_RESET_VIEWS = [
+  'Login'
+]
+
 export default {
   mixins: [
     mixin
@@ -57,16 +68,15 @@ export default {
   data () {
     return {
       screen: null,
-      alerts: [{
-        text: 'foo',
-        type: 'warning'
-      },{
-        text: 'foofa',
-        type: 'positive'
-      }]
+      alerts: [],
+      crumbs: []
     }
   },
   methods: {
+    openCrumb: function (crumb) {
+      this.crumbs.splice(this.crumbs.indexOf(crumb))
+      this.screen = crumb.value
+    },
     showProjects () {
       this.$store.dispatch('loadProjects').catch(function (error) {
         console.log(error)
@@ -139,6 +149,33 @@ export default {
     })
   },
   watch: {
+    screen: {
+      immediate: true,
+      handler: function (value, oldValue) {
+        var crumbId = value
+        var crumbText = value
+
+        if (
+          CRUMB_RESET_VIEWS.indexOf(value) >= 0 ||
+          CRUMB_RESET_VIEWS.indexOf(oldValue) >= 0
+        ) {
+          this.crumbs = []
+        }
+
+        if (!value) {
+          return // don't add crumb when screen is set to null
+        }
+
+        if (value === 'Project') {
+          crumbText = this.$store.state.project.name
+        }
+
+        this.crumbs.push({
+          value: crumbId,
+          text: crumbText
+        })
+      }
+    },
     "$store.state.session.expires": {
       immediate: true,
       handler: value => {
