@@ -1,46 +1,80 @@
 <template>
   <div>
-    <ul v-if="stats" class="stats">
+    <ul v-if="stats" class="ms-stats">
       <li v-for="(value, name) in stats">
         {{ name }}: <strong>{{ value }}</strong>
       </li>
     </ul>
 
-    <section v-for="(group, key) in data" class="k-section k-list">
+    <div class="ms-export-data">
+      <section v-for="(group, key) in displayData" class="k-section k-list">
+        <header>
+          <h2 class="k-headline">
+            {{ key }}
+          </h2>
+        </header>
+
+        <k-grid>
+          <k-column width="1/3" v-for="(item, key) in group" class="k-list-item">
+            <p class="k-list-item-text">{{ key }}</p>
+
+            <div class="k-list-item-options">
+              <k-button @click="$delete(group, key)" icon="trash" alt="Delete"></k-button>
+            </div>
+          </k-column>
+        </k-grid>
+      </section>
+    </div>
+
+    <section class="k-section">
       <header>
-        <h2 class="k-headline">{{ key }}</h2>
+        <h2 class="k-headline">Target Languages</h2>
       </header>
 
-      <k-grid>
-        <k-column width="1/3" v-for="(item, key) in group" class="k-list-item">
-          <p class="k-list-item-text">{{ key }}</p>
+      <k-input
+        type="checkboxes"
+        v-model="selectedLangs"
+        :options="languageOptions"
+        :required="true"
+      />
 
-          <div class="k-list-item-options">
-            <k-button @click="$delete(group, key)" icon="trash" alt="Delete"></k-button>
-          </div>
-        </k-column>
-      </k-grid>
+      <k-button icon="check" @click="toggleLanguages">
+        Toggle all
+      </k-button>
     </section>
 
-    <k-input
-      type="checkboxes"
-      v-model="value"
-      :options="[
-          { value: 'a', text: 'Option A' },
-          { value: 'b', text: 'Option B' },
-          { value: 'c', text: 'Option c' },
-          { value: 'd', text: 'Option d' }
-      ]"
-      :required="true"
-      :min="2"
-      :max="5"
-      :columns="5"
-    />
+    <section class="k-section">
+      <header>
+        <h2 class="k-headline">Job Name</h2>
+      </header>
+
+      <k-input
+        theme="field"
+        type="text"
+        v-model="jobName"
+        :required="true"
+      />
+
+      <k-button class="k-field-help" icon="refresh" @click="generateName">
+        Generate
+      </k-button>
+    </section>
+
+    <k-button @click="upload" class="ms-upload" icon="upload">
+      Upload
+    </k-button>
   </div>
 </template>
 
 <script>
+import dateFormat from 'dateformat'
 import cloneDeep from 'lodash/cloneDeep'
+
+import Wordgen from '../modules/wordgen'
+
+var wordgen = new Wordgen({
+  length: 6
+})
 
 function countObjectData (data) {
   var stats = {
@@ -71,9 +105,26 @@ function countObjectData (data) {
 }
 
 export default {
+  data () {
+    return {
+      selectedLangs: [],
+      jobName: null
+    }
+  },
   computed: {
     data () {
       return this.$store.state.exporter.exportData
+    },
+    displayData () {
+      var data = {}
+
+      for (var k in this.data) {
+        if (Object.keys(this.data[k]).length) {
+          data[k] = this.data[k]
+        }
+      }
+
+      return data
     },
     stats () {
       if (!this.data || !this.data.pages) {
@@ -92,18 +143,43 @@ export default {
         Words: stats.words,
         Characters: stats.chars
       }
+    },
+    languageOptions () {
+      return this.$store.state.languages
+        .filter(lang => !lang.isDefault)
+        .map(lang => {
+          return {
+            value: lang.locale,
+            text: `${ lang.name } (${ lang.locale })`
+          }
+        })
     }
   },
   methods: {
-    submit () {
-      this.$emit('export', {
-        page: this.page || null,
-        variables: this.variables
-      })
+    toggleLanguages () {
+      var hasUntoggled = !!this.languageOptions.find(
+        option => this.selectedLangs.indexOf(option.value) < 0
+      )
+
+      if (hasUntoggled) {
+        this.selectedLangs = this.languageOptions.map(lang => lang.value)
+      } else {
+        this.selectedLangs = []
+      }
     },
-    deletePage (key) {
-      this.$delete(this.data.pages, key)
+    generateName () {
+      this.jobName = (wordgen.generate() + dateFormat(new Date(), `-mmm-dd`)).toLowerCase()
+    },
+    upload () {
+      this.$emit('uploadJobs', {
+        languages: this.selectedLangs,
+        jobName: this.jobName
+      })
     }
+  },
+  created () {
+    this.toggleLanguages()
+    this.generateName()
   }
 }
 </script>
@@ -122,7 +198,7 @@ export default {
 }
 
 /deep/ {
-  .stats {
+  .ms-stats {
     margin-bottom: 1rem;
 
     li {
@@ -136,7 +212,7 @@ export default {
     li {
       display: inline-block;
       width: 33.33%;
-      margin-bottom: 1rem;
+      margin-bottom: 0.75rem;
     }
   }
 }
@@ -152,5 +228,20 @@ header {
       overflow: hidden;
     }
   }
+}
+
+.ms-export-data {
+  margin-bottom: 2rem;
+}
+
+.ms-upload {
+  display: flex;
+  align-items: center;
+  margin: 2rem auto 0;
+  padding: 0.75rem 1.5rem;
+
+  background: #17b7ff;
+  color: white;
+  border-radius: 2px;
 }
 </style>

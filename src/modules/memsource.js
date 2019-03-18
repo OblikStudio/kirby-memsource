@@ -99,14 +99,19 @@ module.exports = {
         return Promise.resolve(response.data)
       })
     },
+    fetchImportSettings: function (context) {
+      return context.dispatch('listImportSettings').then(settings => {
+        if (settings) {
+          return context.dispatch('getImportSettings', settings.uid)
+        } else {
+          return context.dispatch('createImportSettings')
+        }
+      })
+    },
     createJob: function (context, payload) {
-      var filename = payload.filename + '.json'
-      var targetLanguages = (Array.isArray(payload.language))
-        ? payload.language
-        : [payload.language]
-
+      var filename = payload.name + '.json'
       var memsourceHeader = {
-        targetLangs: targetLanguages,
+        targetLangs: payload.languages,
         importSettings: {
           uid: payload.importSettingsId
         }
