@@ -1,12 +1,12 @@
 <template>
-  <h3 class="ms-crumbs">
-    <button
-      v-for="crumb in entries"
-      @click="$emit('click', crumb)"
-    >
-      {{ crumb.text }}
-    </button>
-  </h3>
+  <div class="ms-crumbs">
+    <template v-for="(crumb, index) in crumbs">
+      <span v-if="index === 0">{{ crumb.text }}</span>
+      <button v-else @click="$emit('click', crumb)">
+        {{ crumb.text }}
+      </button>
+    </template>
+  </div>
 </template>
 
 <script>
@@ -15,31 +15,30 @@ export default {
     entries: {
       type: Array
     }
+  },
+  computed: {
+    crumbs () {
+      return this.entries.slice().reverse()
+    }
   }
 }
 </script>
 
 <style lang="scss" scoped>
 .ms-crumbs {
-  display: flex;
-  justify-content: center;
-  min-height: 1em;
-  margin: 1.5em 0;
-  text-align: center;
-
   button {
-    display: flex;
-    font-weight: bold;
+    display: inline-flex;
+    font-size: 16px;
+    line-height: 1;
+    outline: none;
 
-    & + button {
-      &:before {
-        content: '→';
-        margin: 0 6px;
-        color: #000;
-        font-size: 15px;
-        user-select: none;
-        opacity: 0.5;
-      }
+    &:before {
+      content: '←';
+      margin: 0 8px;
+      color: #000;
+      font-size: 1em;
+      user-select: none;
+      opacity: 0.5;
     }
 
     &:hover, &:focus {

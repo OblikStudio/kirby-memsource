@@ -2,10 +2,8 @@
   <div>
     <k-view>
       <k-header>
-        Memsource
+        <Crumbs :entries="crumbs" @click="openCrumb"></Crumbs>
       </k-header>
-
-      <Crumbs :entries="crumbs" @click="openCrumb"></Crumbs>
 
       <component
         :is="screen"
@@ -13,6 +11,8 @@
         @upload="uploadToProject"
         @export="exportSite"
         @uploadJobs="uploadJobs"
+        @download="listJobs"
+        @importJobs="importJobs"
       ></component>
     </k-view>
 
@@ -47,6 +47,7 @@ import Login from './views/Login.vue'
 import Projects from './views/Projects.vue'
 import Export from './views/Export.vue'
 import Upload from './views/Upload.vue'
+import Jobs from './views/Jobs.vue'
 
 const CRUMB_RESET_VIEWS = [
   'Login'
@@ -61,7 +62,8 @@ export default {
     Login,
     Projects,
     Export,
-    Upload
+    Upload,
+    Jobs
   },
   data () {
     return {
@@ -125,6 +127,24 @@ export default {
           text: error
         })
       })
+    },
+    listJobs (project) {
+      console.log('Listing jobs')
+
+      this.$store.commit('SET_PROJECT', project)
+      this.$store.dispatch('listJobs', {
+        projectId: this.$store.state.project.id
+      }).catch(error => {
+        this.alerts.push({
+          type: 'error',
+          text: error
+        })
+      }).then(response => {
+        this.screen = 'Jobs'
+      })
+    },
+    importJobs (jobIds) {
+      console.log('import jobs', jobIds)
     }
   },
   beforeCreate () {
@@ -195,6 +215,25 @@ export default {
 
 <style lang="scss" scoped>
 $easeOutCubic: cubic-bezier(0.215, 0.61, 0.355, 1);
+
+/deep/ {
+  .ms-button {
+    display: flex;
+    align-items: center;
+    margin: 2rem auto 0;
+    padding: 0.75rem 1.5rem;
+    border-radius: 2px;
+    color: white;
+
+    &.ms-t1 {
+      background: #4271ae;
+    }
+
+    &.ms-t2 {
+      background: #5d800d;
+    }
+  }
+}
 
 .k-view {
   max-width: 50rem;

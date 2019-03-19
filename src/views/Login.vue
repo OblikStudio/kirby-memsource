@@ -31,8 +31,7 @@ export default {
 
 <style lang="scss" scoped>
 .form {
-  max-width: 20rem;
-  margin: 0 auto;
+  max-width: 18rem;
 
   .k-input {
     margin-bottom: 1rem;

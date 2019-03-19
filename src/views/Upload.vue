@@ -60,7 +60,7 @@
       </k-button>
     </section>
 
-    <k-button @click="upload" class="ms-upload" icon="upload">
+    <k-button @click="upload" class="ms-button ms-t1" icon="upload">
       Upload
     </k-button>
   </div>
@@ -232,16 +232,5 @@ header {
 
 .ms-export-data {
   margin-bottom: 2rem;
-}
-
-.ms-upload {
-  display: flex;
-  align-items: center;
-  margin: 2rem auto 0;
-  padding: 0.75rem 1.5rem;
-
-  background: #17b7ff;
-  color: white;
-  border-radius: 2px;
 }
 </style>

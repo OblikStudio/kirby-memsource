@@ -1,0 +1,134 @@
+<template>
+  <div>
+    <section class="k-section">
+      <label class="k-field-label">
+        Filter Jobs
+      </label>
+
+      <k-input
+        theme="field"
+        type="text"
+        v-model="query"
+        placeholder="Query"
+      />
+    </section>
+
+    <template v-if="filteredJobs.length">
+      <k-button
+        class="ms-select-all"
+        icon="check"
+        @click="toggleSelected"
+      ></k-button>
+
+      <div class="k-list">
+        <div v-for="job in filteredJobs" class="k-list-item">
+          <div class="k-list-item-image">
+            <span class="k-icon" data-back="black" title="Project ID">
+              <strong>{{ job.targetLang }}</strong>
+            </span>
+          </div>
+          
+          <p class="k-list-item-text" :title="(new Date(job.dateCreated)).toLocaleString()">
+            <em>{{ job.filename }}</em>
+            <small>{{ job.status }}</small>
+          </p>
+
+          <div class="k-list-item-options">
+            <label :for="job.uid" class="k-button">
+              <input :id="job.uid" v-model="selectedJobs" :value="job.uid" type="checkbox"/>
+            </label>
+          </div>
+        </div>
+      </div>
+    </template>
+
+    <p v-if="!jobs.length" class="ms-info">
+      <strong>No jobs in this project</strong>
+    </p>
+
+    <p v-if="filteredJobs.length < jobs.length" class="ms-info">
+      <strong>{{ jobs.length - filteredJobs.length }} hidden jobs</strong>
+    </p>
+
+    <k-button
+      v-if="selectedJobs.length"
+      class="ms-button ms-t2"
+      icon="import"
+      @click="$emit('importJobs', selectedJobs)"
+    >
+      Import {{ selectedJobs.length }} jobs
+    </k-button>
+  </div>
+</template>
+
+<script>
+export default {
+  data () {
+    return {
+      query: null,
+      selectedJobs: []
+    }
+  },
+  computed: {
+    jobs () {
+      return this.$store.state.memsource.jobs
+    },
+    filteredJobs () {
+      return this.jobs.filter(job => {
+        var matches = (!this.query || job.filename.indexOf(this.query) >= 0)
+        var selectedIndex = this.selectedJobs.indexOf(job.uid)
+        if (selectedIndex >= 0 && !matches) {
+          this.selectedJobs.splice(selectedIndex, 1)
+        }
+
+        return matches
+      })
+    }
+  },
+  methods: {
+    toggleSelected () {
+      if (this.selectedJobs.length !== this.filteredJobs.length) {
+        this.selectedJobs = this.filteredJobs.map(job => job.uid)
+      } else {
+        this.selectedJobs = []
+      }
+    }
+  }
+}
+</script>
+
+<style lang="scss" scoped>
+label {
+  display: flex;
+  align-items: center;
+
+  &.k-button,
+  & input {
+    cursor: pointer;
+  }
+}
+
+.ms-select-all {
+  display: block;
+  margin-top: -30px;
+  margin-left: auto;
+  padding: 11px;
+}
+
+.ms-info {
+  margin: 1rem 0;
+  text-align: center;
+}
+
+.k-list-item-text small {
+  margin-right: -10px;
+}
+
+.k-list-item-image {
+  width: 64px;
+
+  .k-icon {
+    width: auto;
+  }
+}
+</style>
