@@ -61,7 +61,6 @@ module.exports = {
           context.commit('MS_SET_PROJECTS', projects)
         }
 
-        console.log('prjs', projects)
         return Promise.resolve(response)
       })
     },
@@ -143,7 +142,20 @@ module.exports = {
     },
     downloadJob: function (context, payload) {
       return context.getters.msClient({
-        url: '/projects/' + payload.projectId + '/jobs/' + payload.jobId + '/targetFile'
+        url: `/projects/${ payload.projectId }/jobs/${ payload.jobId }/targetFile`
+      })
+    },
+    deleteJobs: (context, payload) => {
+      return context.getters.msClient({
+        url: `/projects/${ payload.projectId }/jobs/batch`,
+        method: 'delete',
+        data: {
+          jobs: payload.jobIds.map(id => {
+            return {
+              uid: id
+            }
+          })
+        }
       })
     }
   }

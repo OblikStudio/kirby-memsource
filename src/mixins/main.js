@@ -15,6 +15,13 @@ export default {
       }
 
       return 'An error occurred.'
+    },
+    isValidLanguage (input, target) {
+      input = input.toLowerCase()
+      target = target.toLowerCase()
+
+      // allow imports of en in en_us and vice-versa
+      return (target.indexOf(input) === 0 || input.indexOf(target) === 0)
     }
   }
 }

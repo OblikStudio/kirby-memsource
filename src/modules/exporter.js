@@ -1,14 +1,12 @@
-var axios = require('axios')
-var freeze = require('deep-freeze-node')
 var Vue = require('vue')
-var cloneDeep = require('lodash/cloneDeep')
+var axios = require('axios')
 
 module.exports = {
   state: {
     exportData: null,
   },
   getters: {
-    exporterClient: function (state, getters, rootState) {
+    exporterClient: () => {
       return axios.create({
         baseURL: panel.api,
         method: 'get',
@@ -19,32 +17,24 @@ module.exports = {
     }
   },
   mutations: {
-    SET_EXPORT_DATA: function (state, value) {
-      state.exportData = cloneDeep(value)
+    SET_EXPORT_DATA: (state, value) => {
+      state.exportData = value
     }
   },
   actions: {
-    exportContent: function (context, payload) {
+    exportContent: (context, payload) => {
       return context.getters.exporterClient({
         url: '/export',
         params: payload
-      }).then(function (response) {
-        context.commit('SET_EXPORT_DATA', response.data)
-        return Promise.resolve(response.data)
       })
     },
-    importJob: function (context, payload) {      
-      return context.dispatch('downloadJob', {
-        projectId: payload.projectId,
-        jobId: payload.jobId
-      }).then(function (response) {
-        return context.getters.exporterClient({
-          url: '/import',
-          method: 'put',
-          data: JSON.stringify({
-            data: response.data,
-            language: payload.language
-          })
+    importContent: (context, { language, content }) => {
+      return context.getters.exporterClient({
+        url: '/import',
+        method: 'post',
+        data: JSON.stringify({
+          language,
+          content
         })
       })
     }

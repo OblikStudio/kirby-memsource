@@ -1,18 +1,35 @@
 <template>
   <div>
     <k-view>
-      <k-header>
+      <k-header class="ms-header">
         <Crumbs :entries="crumbs" @click="openCrumb"></Crumbs>
+
+        <k-button
+          v-if="screen === 'User'"
+          icon="parent"
+          @click="previousScreen"
+        >
+          Back
+        </k-button>
+        <k-button
+          v-else-if="$store.getters.user"
+          icon="user"
+          @click="screen = 'User'"
+        >
+          {{ $store.getters.user.firstName }}
+        </k-button>
       </k-header>
 
       <component
         :is="screen"
-        @loggedIn="showProjects"
+        @logIn="logIn"
         @upload="uploadToProject"
         @export="exportSite"
         @uploadJobs="uploadJobs"
-        @download="listJobs"
+        @listJobs="listJobs"
         @importJobs="importJobs"
+        @deleteJobs="deleteJobs"
+        @logOut="logOut"
       ></component>
     </k-view>
 
@@ -21,7 +38,8 @@
         <div class="ms-alerts-pad">
           <div class="ms-alerts">
             <k-box
-              v-for="alert in alerts"
+              v-for="(alert, index) in alerts"
+              :key="index"
               :text="getError(alert.text)"
               :theme="alert.type"
             />
@@ -48,10 +66,7 @@ import Projects from './views/Projects.vue'
 import Export from './views/Export.vue'
 import Upload from './views/Upload.vue'
 import Jobs from './views/Jobs.vue'
-
-const CRUMB_RESET_VIEWS = [
-  'Login'
-]
+import User from './views/User.vue'
 
 export default {
   mixins: [
@@ -63,7 +78,8 @@ export default {
     Projects,
     Export,
     Upload,
-    Jobs
+    Jobs,
+    User
   },
   data () {
     return {
@@ -76,26 +92,52 @@ export default {
     openCrumb: function (crumb) {
       if (crumb.value !== this.screen) {
         this.crumbs.splice(this.crumbs.indexOf(crumb))
-        this.screen = crumb.value
+
+        if (crumb.value) {
+          this.screen = crumb.value
+        } else if (this.crumbs.length) {
+          this.openCrumb(this.crumbs[this.crumbs.length - 1])
+        }
       }
     },
-    showProjects () {
-      this.$store.dispatch('loadProjects').catch(function (error) {
-        console.log(error)
-      }).then(() => {
-        this.screen = 'Projects'
+    previousScreen: function () {
+      var crumb = this.crumbs[this.crumbs.length - 2]
+      if (crumb) {
+        this.openCrumb(crumb)
+      }
+    },
+    logIn (credentials) {
+      this.$store.dispatch('logIn', credentials).then(() => {
+        this.showProjects()
+      }).catch(error => {
+        this.alerts.push({
+          type: 'negative',
+          text: error
+        })
       })
     },
-    uploadToProject (data) {
-      this.$store.commit('SET_PROJECT', data)
+    showProjects () {
+      this.screen = 'Projects'
+      this.$store.dispatch('loadProjects').catch(function (error) {
+        this.alerts.push({
+          type: 'negative',
+          text: error
+        })
+      })
+    },
+    uploadToProject (project) {
+      this.$store.commit('SET_PROJECT', project)
       this.screen = 'Export'
     },
     exportSite (options) {
-      this.$store.dispatch('exportContent', options).then(data => {
-        console.log('exported', data)
+      this.$store.dispatch('exportContent', options).then(response => {
+        this.$store.commit('SET_EXPORT_DATA', response.data)
         this.screen = 'Upload'
-      }).catch(err => {
-        console.log(err.response || err)
+      }).catch(error => {
+        this.alerts.push({
+          type: 'negative',
+          text: error
+        })
       })
     },
     uploadJobs (options) {
@@ -129,8 +171,6 @@ export default {
       })
     },
     listJobs (project) {
-      console.log('Listing jobs')
-
       this.$store.commit('SET_PROJECT', project)
       this.$store.dispatch('listJobs', {
         projectId: this.$store.state.project.id
@@ -144,57 +184,104 @@ export default {
       })
     },
     importJobs (jobIds) {
-      console.log('import jobs', jobIds)
+      this.$store.state.memsource.jobs.forEach(job => {
+        if (jobIds.indexOf(job.uid) >= 0) {
+          this.importJob(job)
+        }
+      })
+    },
+    importJob: function (job) {
+      var project = this.$store.state.project
+      var languages = this.$store.getters.availableLanguages
+      var jobLanguage = job.targetLang
+      var importLanguage = languages.find(lang => this.isValidLanguage(jobLanguage, lang.code))
+
+      if (!importLanguage) {
+        return this.alerts.push({
+          type: 'negative',
+          text: `Could not import job ${ job.uid }, language ${ jobLanguage } is not valid.`
+        })
+      }
+
+      console.log('import job', job)
+      this.$store.dispatch('downloadJob', {
+        projectId: project.id,
+        jobId: job.uid
+      }).then(response => {
+        return this.$store.dispatch('importContent', {
+          language: importLanguage.code,
+          content: response.data
+        })
+      }).then(response => {
+        console.log('imported', response)
+        this.alerts.push({
+          type: 'positive',
+          text: `Successfully imported job in ${ importLanguage.name }!`
+        })
+      }).catch(error => {
+        this.alerts.push({
+          type: 'negative',
+          text: error
+        })
+      })
+    },
+    deleteJobs: function (jobIds) {
+      var project = this.$store.state.project
+
+      this.$store.dispatch('deleteJobs', {
+        projectId: project.id,
+        jobIds
+      }).then(response => {
+        return this.$store.dispatch('listJobs', {
+          projectId: project.id
+        })
+      }).then(response => {
+        this.alerts.push({
+          type: 'positive',
+          text: `Deleted ${ jobIds.length } jobs!`
+        })
+      }).catch(error => {
+        this.alerts.push({
+          type: 'negative',
+          text: error
+        })
+      })
+    },
+    logOut: function () {
+      this.screen = 'Login'
+      this.$store.dispatch('logOut')
     }
   },
   beforeCreate () {
     var Vuex = this.$root.constructor._installedPlugins.find(entry => !!entry.Store)
-    this.$store = require('./store')(Vuex)
+    this.$store = require('./store')(Vuex, this.$root.$store)
   },
   created: function () {
-    console.log('root', this.$root)
     if (this.$store.state.session) {
       this.showProjects()
     } else {
       this.screen = 'Login'
     }
-
-    axios({
-      url: panel.api + '/memsource/langs',
-      headers: {
-        'X-CSRF': panel.csrf
-      }
-    }).then(response => {
-      this.$store.commit('SET_LANGUAGES', response.data)
-    })
   },
   watch: {
-    screen: {
-      immediate: true,
-      handler: function (value, oldValue) {
-        var crumbId = value
-        var crumbText = value
+    screen (value, oldValue) {
+      var text = value
 
-        if (
-          CRUMB_RESET_VIEWS.indexOf(value) >= 0 ||
-          CRUMB_RESET_VIEWS.indexOf(oldValue) >= 0
-        ) {
-          this.crumbs = []
-        }
+      if (value === 'Login' || oldValue === 'Login') {
+        this.crumbs = []
+      }
 
-        if (!value) {
-          return // don't add crumb when screen is set to null
-        }
-
-        if (value === 'Project') {
-          crumbText = this.$store.state.project.name
-        }
-
+      if (oldValue === 'Projects' && this.$store.state.project) {
         this.crumbs.push({
-          value: crumbId,
-          text: crumbText
+          value: null,
+          text: this.$store.state.project.name
         })
       }
+
+      this.crumbs.push({
+        value,
+        text
+      })
     },
     "$store.state.session.expires": {
       immediate: true,
@@ -216,13 +303,29 @@ export default {
 <style lang="scss" scoped>
 $easeOutCubic: cubic-bezier(0.215, 0.61, 0.355, 1);
 
+.ms-header {
+  &/deep/ {
+    .k-headline {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .k-button {
+      margin-bottom: -0.5rem;
+    }
+  }
+}
+
 /deep/ {
   .ms-button {
     display: flex;
     align-items: center;
-    margin: 2rem auto 0;
+    justify-content: center;
     padding: 0.75rem 1.5rem;
     border-radius: 2px;
+
+    background: #16171a;
     color: white;
 
     &.ms-t1 {
@@ -231,6 +334,20 @@ $easeOutCubic: cubic-bezier(0.215, 0.61, 0.355, 1);
 
     &.ms-t2 {
       background: #5d800d;
+    }
+  }
+
+  .ms-actions {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    button {
+      min-width: 10em;
+
+      & + button {
+        margin-left: 2rem;
+      }
     }
   }
 }

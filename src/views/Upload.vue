@@ -6,25 +6,32 @@
       </li>
     </ul>
 
-    <div class="ms-export-data">
-      <section v-for="(group, key) in displayData" class="k-section k-list">
-        <header>
-          <h2 class="k-headline">
-            {{ key }}
-          </h2>
-        </header>
+    <section
+      v-for="(group, key) in displayData"
+      :key="key"
+      class="k-section k-list"
+    >
+      <header>
+        <h2 class="k-headline">
+          {{ key }}
+        </h2>
+      </header>
 
-        <k-grid>
-          <k-column width="1/3" v-for="(item, key) in group" class="k-list-item">
-            <p class="k-list-item-text">{{ key }}</p>
+      <k-grid>
+        <k-column
+          v-for="(item, key) in group"
+          :key="key"
+          width="1/3"
+          class="k-list-item"
+        >
+          <p class="k-list-item-text">{{ key }}</p>
 
-            <div class="k-list-item-options">
-              <k-button @click="$delete(group, key)" icon="trash" alt="Delete"></k-button>
-            </div>
-          </k-column>
-        </k-grid>
-      </section>
-    </div>
+          <div class="k-list-item-options">
+            <k-button @click="$delete(group, key)" icon="trash" alt="Delete"></k-button>
+          </div>
+        </k-column>
+      </k-grid>
+    </section>
 
     <section class="k-section">
       <header>
@@ -38,7 +45,7 @@
         :required="true"
       />
 
-      <k-button icon="check" @click="toggleLanguages">
+      <k-button v-if="languageOptions.length > 1" icon="check" @click="toggleLanguages">
         Toggle all
       </k-button>
     </section>
@@ -60,9 +67,19 @@
       </k-button>
     </section>
 
-    <k-button @click="upload" class="ms-button ms-t1" icon="upload">
-      Upload
-    </k-button>
+    <div class="ms-actions">
+      <k-button
+        class="ms-button"
+        icon="download"
+        @click="downloadExport"
+      >
+        Save as file
+      </k-button>
+
+      <k-button @click="upload" class="ms-button ms-t1" icon="upload">
+        Upload
+      </k-button>
+    </div>
   </div>
 </template>
 
@@ -145,23 +162,19 @@ export default {
       }
     },
     languageOptions () {
-      return this.$store.state.languages
-        .filter(lang => !lang.isDefault)
+      return this.$store.getters.availableLanguages
+        .filter(lang => !lang.default)
         .map(lang => {
           return {
-            value: lang.locale,
-            text: `${ lang.name } (${ lang.locale })`
+            value: lang.code,
+            text: `${ lang.name } (${ lang.code })`
           }
         })
     }
   },
   methods: {
     toggleLanguages () {
-      var hasUntoggled = !!this.languageOptions.find(
-        option => this.selectedLangs.indexOf(option.value) < 0
-      )
-
-      if (hasUntoggled) {
+      if (this.selectedLangs.length !== this.languageOptions.length) {
         this.selectedLangs = this.languageOptions.map(lang => lang.value)
       } else {
         this.selectedLangs = []
@@ -175,6 +188,19 @@ export default {
         languages: this.selectedLangs,
         jobName: this.jobName
       })
+    },
+    downloadExport () {
+      var data = this.$store.state.exporter.exportData
+      var part = JSON.stringify(data, null, 2)
+      var blob = new Blob([part], {
+        type: 'application/json'
+      })
+
+      var url = URL.createObjectURL(blob)
+      var anchor = document.createElement('a')
+      anchor.download = this.jobName
+      anchor.href = url
+      anchor.click()
     }
   },
   created () {
@@ -228,9 +254,5 @@ header {
       overflow: hidden;
     }
   }
-}
-
-.ms-export-data {
-  margin-bottom: 2rem;
 }
 </style>

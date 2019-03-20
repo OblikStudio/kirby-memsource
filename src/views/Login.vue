@@ -1,9 +1,46 @@
 <template>
-  <div class="form">
-    <k-input v-model="credentials.username" type="text" name="username" theme="field" icon="user" />
-    <k-input v-model="credentials.password" type="password" name="password" theme="field" icon="key" />
-    <k-button icon="check" @click="signIn">Login</k-button>
-  </div>
+  <form class="form" method="post" @submit="signIn">
+   <div class="k-input" data-theme="field">
+      <span class="k-input-element">
+        <input
+          v-model="credentials.username"
+          type="username"
+          id="ms-username"
+          name="ms-username"
+          class="k-text-input"
+          autocomplete="username"
+          placeholder="Username"
+        >
+      </span>
+      <label for="ms-username" class="k-input-icon">
+        <k-icon type="user"/>
+      </label>
+    </div>
+
+    <div class="k-input" data-theme="field">
+      <span class="k-input-element">
+        <input
+          v-model="credentials.password"
+          type="password"
+          id="ms-password"
+          name="ms-password"
+          class="k-text-input"
+          autocomplete="password"
+          placeholder="Password"
+        >
+      </span>
+      <label for="ms-password" class="k-input-icon">
+        <k-icon type="key"/>
+      </label>
+    </div>
+
+    <k-button
+      type="submit"
+      icon="check"
+    >
+      Login
+    </k-button>
+  </form>
 </template>
 
 <script>
@@ -17,13 +54,9 @@ export default {
     }
   },
   methods: {
-    signIn () {
-      this.$store.dispatch('logIn', this.credentials).then(() => {
-        console.log('loggedIn')
-        this.$emit('loggedIn')
-      }).catch(error => {
-         console.log(error)
-      })
+    signIn (event) {
+      event.preventDefault()
+      this.$emit('logIn', this.credentials)
     }
   }
 }

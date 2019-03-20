@@ -1,18 +1,20 @@
 <template>
-  <div>
-    <section class="k-section">
-      <label class="k-field-label">
-        Filter Jobs
-      </label>
+  <div class="k-fieldset" v-if="jobs.length">
+    <k-grid>
+      <k-column width="1/1">
+        <label class="k-field-label">
+          Filter Jobs
+        </label>
 
-      <k-input
-        theme="field"
-        type="text"
-        v-model="query"
-        placeholder="Query"
-      />
-    </section>
+        <k-input
+          theme="field"
+          type="text"
+          v-model="query"
+          placeholder="Query"
+        />
+      </k-column>
 
+    <k-column width="1/1">
     <template v-if="filteredJobs.length">
       <k-button
         class="ms-select-all"
@@ -23,7 +25,7 @@
       <div class="k-list">
         <div v-for="job in filteredJobs" class="k-list-item">
           <div class="k-list-item-image">
-            <span class="k-icon" data-back="black" title="Project ID">
+            <span class="k-icon" data-back="black" title="Target language">
               <strong>{{ job.targetLang }}</strong>
             </span>
           </div>
@@ -42,23 +44,34 @@
       </div>
     </template>
 
-    <p v-if="!jobs.length" class="ms-info">
-      <strong>No jobs in this project</strong>
-    </p>
-
     <p v-if="filteredJobs.length < jobs.length" class="ms-info">
       <strong>{{ jobs.length - filteredJobs.length }} hidden jobs</strong>
     </p>
+  </k-column>
 
-    <k-button
-      v-if="selectedJobs.length"
-      class="ms-button ms-t2"
-      icon="import"
-      @click="$emit('importJobs', selectedJobs)"
-    >
-      Import {{ selectedJobs.length }} jobs
-    </k-button>
+    <k-column width="1/1" class="ms-actions" v-if="selectedJobs.length">
+      <k-button
+        icon="trash"
+        :theme="confirmDelete ? 'negative' : null"
+        @click="deleteJobs"
+      >
+        {{ confirmDelete ? 'Delete?!' : 'Delete' }}
+      </k-button>
+
+      <k-button
+        class="ms-button ms-t2"
+        icon="import"
+        @click="$emit('importJobs', selectedJobs)"
+      >
+        Import {{ selectedJobs.length }} jobs
+      </k-button>
+    </k-column>
+
+  </k-grid>
   </div>
+  <p v-else class="ms-info">
+    <strong>No jobs in this project</strong>
+  </p>
 </template>
 
 <script>
@@ -66,11 +79,13 @@ export default {
   data () {
     return {
       query: null,
-      selectedJobs: []
+      selectedJobs: [],
+      confirmDelete: false
     }
   },
   computed: {
     jobs () {
+      this.selectedJobs = []
       return this.$store.state.memsource.jobs
     },
     filteredJobs () {
@@ -92,6 +107,16 @@ export default {
       } else {
         this.selectedJobs = []
       }
+    },
+    deleteJobs () {
+      if (this.confirmDelete) {
+        this.$emit('deleteJobs', this.selectedJobs)
+      } else {
+        this.confirmDelete = true
+        setTimeout(() => {
+          this.confirmDelete = false
+        }, 1500)
+      }
     }
   }
 }
@@ -110,7 +135,7 @@ label {
 
 .ms-select-all {
   display: block;
-  margin-top: -30px;
+  margin-top: -20px;
   margin-left: auto;
   padding: 11px;
 }
@@ -130,5 +155,11 @@ label {
   .k-icon {
     width: auto;
   }
+}
+
+.ms-delete {
+  display: block;
+  margin: 0.75rem auto;
+  opacity: 0.6;
 }
 </style>
