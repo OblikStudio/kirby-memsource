@@ -10,8 +10,8 @@ class Exporter {
     public $alerts = [];
 
     private static function isFieldTranslatable ($field) {
-        if (isset($field['memsource']) && $field['memsource'] == false) {
-            return false;
+        if (isset($field['memsource'])) {
+            return (bool)$field['memsource'];
         }
 
         if (isset($field['translate']) && $field['translate'] == false) {
