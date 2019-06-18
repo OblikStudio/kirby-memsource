@@ -162,9 +162,17 @@ export default {
       }
     },
     languageOptions () {
+      var targetLangs =  this.$store.state.project.targetLangs
+
       return this.$store.getters.availableLanguages
         .filter(lang => !lang.default)
         .map(lang => {
+          // Overwrite due to: https://forum.getkirby.com/t/language-locales-not-available-in-the-panel-front-end/14620
+          var target = targetLangs.find(code => code.indexOf(lang.code) === 0)
+          if (target) {
+            lang.code = target
+          }
+
           return {
             value: lang.code,
             text: `${ lang.name } (${ lang.code })`
