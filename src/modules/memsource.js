@@ -2,11 +2,10 @@ var axios = require('axios')
 var freeze = require('deep-freeze-node')
 
 var IMPORT_SETTINGS = {
-  name: 'kirby_1',
+  name: 'k3-1',
   fileImportSettings: {
     json: {
-      htmlSubFilter: false,
-      tagRegexp: '<[^>]+>|%[a-zA-Z]'
+      htmlSubFilter: true
     }
   }
 }
