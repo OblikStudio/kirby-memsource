@@ -7,7 +7,7 @@ export default {
 
       var response = (input.response && input.response.data)
       if (response) {
-        return `${ response.errorCode }: ${ response.errorDescription }`
+        return `${ response.errorCode || response.exception }: ${ response.errorDescription || response.message }`
       }
 
       if (typeof input.toString === 'function') {
