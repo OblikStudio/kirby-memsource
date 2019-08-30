@@ -1,36 +1,16 @@
 <template>
   <div>
     <ul v-if="stats" class="ms-stats">
-      <li v-for="(value, name) in stats">
+      <li v-for="(value, name) in stats" :key="name">
         {{ name }}: <strong>{{ value }}</strong>
       </li>
     </ul>
 
-    <section
-      v-for="(group, key) in displayData"
-      :key="key"
-      class="k-section k-list"
-    >
-      <header>
-        <h2 class="k-headline">
-          {{ key }}
-        </h2>
-      </header>
-
-      <k-grid>
-        <k-column
-          v-for="(item, key) in group"
-          :key="key"
-          width="1/3"
-          class="k-list-item"
-        >
-          <p class="k-list-item-text">{{ key }}</p>
-
-          <div class="k-list-item-options">
-            <k-button @click="$delete(group, key)" icon="trash" alt="Delete"></k-button>
-          </div>
-        </k-column>
-      </k-grid>
+    <section class="k-section">
+      <k-json-editor
+        v-model="$store.state.exporter.exportData"
+        label="Data"
+      ></k-json-editor>
     </section>
 
     <section class="k-section">
@@ -144,12 +124,12 @@ export default {
       return data
     },
     stats () {
-      if (!this.data || !this.data.pages) {
+      if (!this.data) {
         return null
       }
 
-      var pages = Object.keys(this.data.pages).length
-      var files = Object.keys(this.data.files).length
+      var pages = this.data.pages && Object.keys(this.data.pages).length
+      var files = this.data.files && Object.keys(this.data.files).length
       var stats = countObjectData(this.data)
 
       return {

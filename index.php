@@ -1,7 +1,9 @@
 <?php
 
 use Kirby\Cms\Pages;
+use Oblik\Outsource\Variables;
 use Oblik\Outsource\Exporter;
+use Oblik\Outsource\Importer;
 
 Kirby::plugin('oblik/memsource', [
     'options' => [
@@ -49,7 +51,7 @@ Kirby::plugin('oblik/memsource', [
 
                     $exporter = new Exporter([
                         'language' => $lang,
-                        'variables' => option('oblik.outsource.variables'),
+                        'variables' => Variables::class,
                         'blueprint' => option('oblik.outsource.blueprint'),
                         'fields' => array_replace_recursive(
                             option('oblik.outsource.fields'),
@@ -75,7 +77,15 @@ Kirby::plugin('oblik/memsource', [
                         throw new Exception('Missing content', 400);
                     }
     
-                    $importer = new Importer($input['language']);
+                    $importer = new Importer([
+                        'language' => $input['language'],
+                        'variables' => Variables::class,
+                        'blueprint' => option('oblik.outsource.blueprint'),
+                        'fields' => array_replace_recursive(
+                            option('oblik.outsource.fields'),
+                            option('oblik.memsource.outsource.fields')
+                        )
+                    ]);
                     return $importer->import($input['content']);
                 }
             ]
