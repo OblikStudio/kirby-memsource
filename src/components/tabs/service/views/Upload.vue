@@ -67,7 +67,7 @@
 import dateFormat from 'dateformat'
 import cloneDeep from 'lodash/cloneDeep'
 
-import Wordgen from '../modules/wordgen'
+import Wordgen from '@/modules/wordgen'
 
 var wordgen = new Wordgen({
   length: 6

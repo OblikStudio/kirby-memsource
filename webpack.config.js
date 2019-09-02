@@ -7,6 +7,11 @@ module.exports = {
     filename: 'index.js',
     path: __dirname
   },
+  resolve: {
+    alias: {
+      '@': path.join(__dirname, 'src')
+    }
+  },
   plugins: [
     new MiniCssExtractPlugin({
       filename: 'index.css'

@@ -2,105 +2,129 @@
   transform: none; }
 
 @charset "UTF-8";
-.ms-crumbs button[data-v-307c9dfc] {
-  display: inline-flex;
-  font-size: 16px;
+.ms-crumbs {
+  padding: 0.625rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  text-align: center;
+  text-transform: uppercase;
+  border: 1px solid #ccc;
+}
+.ms-crumbs__crumb {
+  display: inline-block;
   line-height: 1;
-  outline: none;
 }
-.ms-crumbs button[data-v-307c9dfc]:before {
-    content: '←';
-    margin: 0 8px;
-    color: #000;
-    font-size: 1em;
-    user-select: none;
-    opacity: 0.5;
+.ms-crumbs__crumb button {
+    font-size: inherit;
+    font-weight: inherit;
+    text-transform: inherit;
+    outline: none;
+    opacity: 0.75;
 }
-.ms-crumbs button[data-v-307c9dfc]:hover, .ms-crumbs button[data-v-307c9dfc]:focus {
-    color: #555;
+.ms-crumbs__crumb button:after {
+      content: '→';
+      margin: 0 8px;
+      user-select: none;
+      opacity: 0.5;
 }
-
-.form[data-v-26084dc2] {
-  max-width: 18rem;
-}
-.form .k-input[data-v-26084dc2] {
-    margin-bottom: 1rem;
+.ms-crumbs__crumb button:hover, .ms-crumbs__crumb button:focus {
+      opacity: 1;
 }
 
-.k-section[data-v-0ecd383b] .k-grid {
+.k-section[data-v-dfd3d4e6] .k-grid {
   margin-bottom: -2px;
   margin-right: -2px;
 }
-.k-section[data-v-0ecd383b] .k-list-item {
+.k-section[data-v-dfd3d4e6] .k-list-item {
   margin-bottom: 2px;
   margin-right: 2px;
 }
-[data-v-0ecd383b] .ms-stats {
+[data-v-dfd3d4e6] .ms-stats {
   margin-bottom: 1rem;
 }
-[data-v-0ecd383b] .ms-stats li {
+[data-v-dfd3d4e6] .ms-stats li {
     display: inline-block;
     width: 33.33%;
     margin-bottom: 0.5rem;
 }
-[data-v-0ecd383b] .k-checkboxes-input li {
+[data-v-dfd3d4e6] .k-checkboxes-input li {
   display: inline-block;
   width: 33.33%;
   margin-bottom: 0.75rem;
 }
-header[data-v-0ecd383b] {
+header[data-v-dfd3d4e6] {
   margin-bottom: 0.75rem;
 }
-.k-list-item:not(:hover) .k-list-item-options[data-v-0ecd383b] {
+.k-list-item:not(:hover) .k-list-item-options[data-v-dfd3d4e6] {
   width: 0;
   overflow: hidden;
 }
 
-label[data-v-404f7490] {
+label[data-v-8b19033c] {
   display: flex;
   align-items: center;
 }
-label.k-button[data-v-404f7490],
-  label input[data-v-404f7490] {
+label.k-button[data-v-8b19033c],
+  label input[data-v-8b19033c] {
     cursor: pointer;
 }
-.ms-select-all[data-v-404f7490] {
+.ms-select-all[data-v-8b19033c] {
   display: block;
   margin-top: -20px;
   margin-left: auto;
   padding: 11px;
 }
-.ms-info[data-v-404f7490] {
+.ms-info[data-v-8b19033c] {
   margin: 1rem 0;
   text-align: center;
 }
-.k-list-item-text small[data-v-404f7490] {
+.k-list-item-text small[data-v-8b19033c] {
   margin-right: -10px;
 }
-.k-list-item-image[data-v-404f7490] {
+.k-list-item-image[data-v-8b19033c] {
   width: 64px;
 }
-.k-list-item-image .k-icon[data-v-404f7490] {
+.k-list-item-image .k-icon[data-v-8b19033c] {
     width: auto;
 }
-.ms-delete[data-v-404f7490] {
+.ms-delete[data-v-8b19033c] {
   display: block;
   margin: 0.75rem auto;
   opacity: 0.6;
 }
 
-.ms-user-info[data-v-e0b47cf6] {
+.ms-screen[data-v-f18971dc] {
+  text-align: center;
+}
+.ms-user-info[data-v-f18971dc] {
   margin-top: 1rem;
   margin-bottom: 2rem;
 }
 
-.ms-header[data-v-7ba5bd90] .k-headline {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+.form[data-v-9a2b2f96] {
+  max-width: 18rem;
+  margin: 0 auto;
+  text-align: center;
 }
-.ms-header[data-v-7ba5bd90] .k-button {
-  margin-bottom: -0.5rem;
+.form .k-input[data-v-9a2b2f96] {
+    margin-bottom: 1rem;
+}
+
+.ms-header[data-v-7ba5bd90] {
+  margin-top: 3rem;
+  margin-bottom: 2rem;
+}
+nav[data-v-7ba5bd90] {
+  border-bottom: 1px solid #ccc;
+}
+.k-tab-button[aria-current][data-v-7ba5bd90]:after {
+  display: none;
+}
+[data-v-7ba5bd90] .ms-crumbs {
+  border-top: none;
+}
+[data-v-7ba5bd90] .k-view {
+  max-width: 50rem;
 }
 [data-v-7ba5bd90] .ms-button {
   display: flex;
@@ -127,9 +151,6 @@ label.k-button[data-v-404f7490],
 }
 [data-v-7ba5bd90] .ms-actions button + button {
       margin-left: 2rem;
-}
-.k-view[data-v-7ba5bd90] {
-  max-width: 50rem;
 }
 .ms-alerts-wrapper[data-v-7ba5bd90] {
   width: 100%;

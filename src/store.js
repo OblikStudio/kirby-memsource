@@ -1,20 +1,43 @@
-var axios = require('axios')
-var freeze = require('deep-freeze-node')
-var session = require('./modules/session')
-var exporter = require('./modules/exporter')
-var memsource = require('./modules/memsource')
+import freeze from 'deep-freeze-node'
+import session from './modules/session'
+import exporter from './modules/exporter'
+import memsource from './modules/memsource'
 
-module.exports = (Vuex, rootStore) => new Vuex.Store({
+function getMessage (input) {
+  if (typeof input === 'string') {
+    return input
+  }
+
+  var response = (input.response && input.response.data)
+  if (response) {
+    return `${ response.errorCode || response.exception }: ${ response.errorDescription || response.message }`
+  }
+
+  if (typeof input.toString === 'function') {
+    return input.toString()
+  }
+
+  return null
+}
+
+export default (Vuex, rootStore) => new Vuex.Store({
   modules: {
     exporter,
     memsource
   },
   state: {
+    alerts: [],
+    crumbs: [],
+    tab: null,
     session: session.load(),
     project: null,
     job: null
   },
   getters: {
+    view: (state) => {
+      var last = state.crumbs[state.crumbs.length - 1]
+      return last ? last.value : null
+    },
     user: (state) => {
       return (state.session && state.session.user)
     },
@@ -32,6 +55,27 @@ module.exports = (Vuex, rootStore) => new Vuex.Store({
     }
   },
   mutations: {
+    TAB (state, value) {
+      state.crumbs = []
+      state.tab = value
+    },
+    VIEW (state, value) {
+      if (typeof value === 'string') {
+        value = {
+          text: value,
+          value
+        }
+      }
+
+      if (value !== null) {
+        state.crumbs.push(value)
+      } else {
+        state.crumbs = []
+      }
+    },
+    CRUMBS (state, value) {
+      state.crumbs = value
+    },
     SET_SESSION: function (state, data) {
       state.session = freeze(data)
       session.save(data)
@@ -41,15 +85,20 @@ module.exports = (Vuex, rootStore) => new Vuex.Store({
     },
     SET_JOB: function (state, value) {
       state.job = freeze(value)
-    }
-  },
-  actions: {
-    logOut: function (context) {
-      context.commit('SET_SESSION', null)
-      context.commit('SET_PROJECT', [])
-      context.commit('SET_JOB', [])
-      context.commit('MS_SET_PROJECTS', [])
-      context.commit('MS_SET_JOBS', [])
+    },
+    ALERT (state, alert) {
+      if (!alert.type) {
+        alert.type = 'info'
+      }
+
+      if (!alert.text && alert.data) {
+        alert.text = getMessage(alert.data)
+      }
+
+      state.alerts.push(alert)
+    },
+    CLEAR_ALERTS (state) {
+      state.alerts = []
     }
   }
 })

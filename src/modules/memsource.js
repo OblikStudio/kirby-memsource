@@ -50,6 +50,13 @@ module.exports = {
         return Promise.resolve()
       })
     },
+    logOut (context) {
+      context.commit('SET_SESSION', null)
+      context.commit('SET_PROJECT', [])
+      context.commit('SET_JOB', [])
+      context.commit('MS_SET_PROJECTS', [])
+      context.commit('MS_SET_JOBS', [])
+    },
     loadProjects: function (context) {
       return context.getters.msClient({
         url: '/projects'

@@ -1,36 +1,25 @@
 <template>
   <div>
     <k-view>
-      <k-header class="ms-header">
-        <Crumbs :entries="crumbs" @click="openCrumb"></Crumbs>
+      <div class="ms-header">
+        <div class="k-header-tabs">
+          <nav>
+            <k-button
+              v-for="tab in tabs"
+              :key="tab.component"
+              :current="currentTab === tab.component"
+              :icon="tab.icon"
+              class="k-tab-button"
+              @click="currentTab = tab.component"
+            >
+              {{ tab.component }}
+            </k-button>
+          </nav>
+        </div>
+        <Crumbs v-if="crumbs.length" v-model="crumbs"></Crumbs>
+      </div>
 
-        <k-button
-          v-if="screen === 'User'"
-          icon="parent"
-          @click="previousScreen"
-        >
-          Back
-        </k-button>
-        <k-button
-          v-else-if="$store.getters.user"
-          icon="user"
-          @click="screen = 'User'"
-        >
-          {{ $store.getters.user.firstName }}
-        </k-button>
-      </k-header>
-
-      <component
-        :is="screen"
-        @logIn="logIn"
-        @upload="uploadToProject"
-        @export="exportSite"
-        @uploadJobs="uploadJobs"
-        @listJobs="listJobs"
-        @importJobs="importJobs"
-        @deleteJobs="deleteJobs"
-        @logOut="logOut"
-      ></component>
+      <component :is="currentTab"></component>
     </k-view>
 
     <transition name="slide">
@@ -40,11 +29,11 @@
             <k-box
               v-for="(alert, index) in alerts"
               :key="index"
-              :text="getError(alert.text)"
+              :text="alert.text"
               :theme="alert.type"
             />
 
-            <k-button @click="alerts = []" icon="check">
+            <k-button @click="$store.commit('CLEAR_ALERTS')" icon="check">
               Close
             </k-button>
           </div>
@@ -55,243 +44,74 @@
 </template>
 
 <script>
-import axios from 'axios'
 import whenExpired from 'when-expired'
-
-import mixin from './mixins/main'
-
-import Crumbs from './comps/Crumbs.vue'
-import Login from './views/Login.vue'
-import Projects from './views/Projects.vue'
-import Export from './views/Export.vue'
-import Upload from './views/Upload.vue'
-import Jobs from './views/Jobs.vue'
-import User from './views/User.vue'
+import Crumbs from './components/Crumbs.vue'
+import Service from './components/tabs/service/Service.vue'
+import User from './components/tabs/user/User.vue'
+import createStore from './store'
 
 export default {
-  mixins: [
-    mixin
-  ],
   components: {
     Crumbs,
-    Login,
-    Projects,
-    Export,
-    Upload,
-    Jobs,
+    Service,
     User
   },
   data () {
     return {
-      screen: null,
-      alerts: [],
-      crumbs: []
+      tabs: [
+        {
+          icon: 'page',
+          component: 'Service'
+        },
+        {
+          icon: 'user',
+          component: 'User'
+        }
+      ]
     }
   },
-  methods: {
-    openCrumb: function (crumb) {
-      if (crumb.value !== this.screen) {
-        this.crumbs.splice(this.crumbs.indexOf(crumb))
-
-        if (crumb.value) {
-          this.screen = crumb.value
-        } else if (this.crumbs.length) {
-          this.openCrumb(this.crumbs[this.crumbs.length - 1])
-        }
+  computed: {
+    currentTab: {
+      get () {
+        return this.$store.state.tab
+      },
+      set (value) {
+        return this.$store.commit('TAB', value)
       }
     },
-    previousScreen: function () {
-      var crumb = this.crumbs[this.crumbs.length - 2]
-      if (crumb) {
-        this.openCrumb(crumb)
+    crumbs: {
+      get () {
+        return this.$store.state.crumbs
+      },
+      set (value) {
+        return this.$store.commit('CRUMBS', value)
       }
     },
-    logIn (credentials) {
-      this.$store.dispatch('logIn', credentials).then(() => {
-        this.showProjects()
-      }).catch(error => {
-        this.alerts.push({
-          type: 'negative',
-          text: error
-        })
-      })
-    },
-    showProjects () {
-      this.screen = 'Projects'
-      this.$store.dispatch('loadProjects').catch(function (error) {
-        this.alerts.push({
-          type: 'negative',
-          text: error
-        })
-      })
-    },
-    uploadToProject (project) {
-      this.$store.commit('SET_PROJECT', project)
-      this.screen = 'Export'
-    },
-    exportSite (options) {
-      this.$store.dispatch('exportContent', options).then(response => {
-        this.$store.commit('SET_EXPORT_DATA', response.data)
-        this.screen = 'Upload'
-      }).catch(error => {
-        this.alerts.push({
-          type: 'negative',
-          text: error
-        })
-      })
-    },
-    uploadJobs (options) {
-      this.$store.dispatch('fetchImportSettings').then(settings => {
-        this.alerts.push({
-          type: 'info',
-          text: `Using import settings: ${ settings.name }`
-        })
-
-        return this.$store.dispatch('createJob', {
-          data: this.$store.state.exporter.exportData,
-          projectId: this.$store.state.project.uid,
-          importSettingsId: settings.uid,
-          languages: options.languages,
-          name: options.jobName
-        })
-      }).then(response => {
-        var jobs = (response.data && response.data.jobs)
-
-        if (jobs && jobs.length) {
-          this.alerts.push({
-            type: 'positive',
-            text: `Successfully created ${ jobs.length } jobs!`
-          })
-        }
-      }).catch(error => {
-        this.alerts.push({
-          type: 'negative',
-          text: error
-        })
-      })
-    },
-    listJobs (project) {
-      this.$store.commit('SET_PROJECT', project)
-      this.$store.dispatch('listJobs', {
-        projectId: this.$store.state.project.id
-      }).catch(error => {
-        this.alerts.push({
-          type: 'error',
-          text: error
-        })
-      }).then(response => {
-        this.screen = 'Jobs'
-      })
-    },
-    importJobs (jobIds) {
-      this.$store.state.memsource.jobs.forEach(job => {
-        if (jobIds.indexOf(job.uid) >= 0) {
-          this.importJob(job)
-        }
-      })
-    },
-    importJob: function (job) {
-      var project = this.$store.state.project
-      var languages = this.$store.getters.availableLanguages
-      var jobLanguage = job.targetLang
-      var importLanguage = languages.find(lang => this.isValidLanguage(jobLanguage, lang.code))
-
-      if (!importLanguage) {
-        return this.alerts.push({
-          type: 'negative',
-          text: `Could not import job ${ job.uid }, language ${ jobLanguage } is not valid.`
-        })
-      }
-
-      console.log('import job', job)
-      this.$store.dispatch('downloadJob', {
-        projectId: project.id,
-        jobId: job.uid
-      }).then(response => {
-        return this.$store.dispatch('importContent', {
-          language: importLanguage.code,
-          content: response.data
-        })
-      }).then(response => {
-        console.log('imported', response)
-        this.alerts.push({
-          type: 'positive',
-          text: `Successfully imported job in ${ importLanguage.name }!`
-        })
-      }).catch(error => {
-        this.alerts.push({
-          type: 'negative',
-          text: error
-        })
-      })
-    },
-    deleteJobs: function (jobIds) {
-      var project = this.$store.state.project
-
-      this.$store.dispatch('deleteJobs', {
-        projectId: project.id,
-        jobIds
-      }).then(response => {
-        return this.$store.dispatch('listJobs', {
-          projectId: project.id
-        })
-      }).then(response => {
-        this.alerts.push({
-          type: 'positive',
-          text: `Deleted ${ jobIds.length } jobs!`
-        })
-      }).catch(error => {
-        this.alerts.push({
-          type: 'negative',
-          text: error
-        })
-      })
-    },
-    logOut: function () {
-      this.screen = 'Login'
-      this.$store.dispatch('logOut')
+    alerts () {
+      return this.$store.state.alerts
     }
   },
   beforeCreate () {
     var Vuex = this.$root.constructor._installedPlugins.find(entry => !!entry.Store)
-    this.$store = require('./store')(Vuex, this.$root.$store)
+    this.$store = createStore(Vuex, this.$root.$store)
   },
-  created: function () {
+  created () {
     if (this.$store.state.session) {
-      this.showProjects()
+      this.currentTab = 'Service'
     } else {
-      this.screen = 'Login'
+      this.currentTab = 'User'
     }
   },
   watch: {
-    screen (value, oldValue) {
-      var text = value
-
-      if (value === 'Login' || oldValue === 'Login') {
-        this.crumbs = []
-      }
-
-      if (oldValue === 'Projects' && this.$store.state.project) {
-        this.crumbs.push({
-          value: null,
-          text: this.$store.state.project.name
-        })
-      }
-
-      this.crumbs.push({
-        value,
-        text
-      })
-    },
     "$store.state.session.expires": {
       immediate: true,
-      handler: value => {
+      handler: function (value) {
         if (value) {
           whenExpired('session', value).then(() => {
-            this.screen = 'Login'
-            this.$store.dispatch('logOut').then(() => {
-              console.log('session expired!')
-            }) 
+            this.$store.dispatch('logOut')
+            this.$store.commit('ALERT', {
+              text: 'Your session expired, please log in again.'
+            })
           })
         }
       }
@@ -304,20 +124,27 @@ export default {
 $easeOutCubic: cubic-bezier(0.215, 0.61, 0.355, 1);
 
 .ms-header {
-  &/deep/ {
-    .k-headline {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-
-    .k-button {
-      margin-bottom: -0.5rem;
-    }
-  }
+  margin-top: 3rem;
+  margin-bottom: 2rem;
 }
 
+  nav {
+    border-bottom: 1px solid #ccc;
+  }
+
+    .k-tab-button[aria-current]:after {
+      display: none;
+    }
+
+  /deep/ .ms-crumbs {
+    border-top: none;
+  }
+
 /deep/ {
+  .k-view {
+  max-width: 50rem;
+  }
+
   .ms-button {
     display: flex;
     align-items: center;
@@ -352,9 +179,6 @@ $easeOutCubic: cubic-bezier(0.215, 0.61, 0.355, 1);
   }
 }
 
-.k-view {
-  max-width: 50rem;
-}
 
 .ms-alerts-wrapper {
   width: 100%;

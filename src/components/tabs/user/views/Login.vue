@@ -1,5 +1,5 @@
 <template>
-  <form class="form" method="post" @submit="signIn">
+  <form class="form" method="post" @submit.prevent="logIn">
    <div class="k-input" data-theme="field">
       <span class="k-input-element">
         <input
@@ -54,9 +54,13 @@ export default {
     }
   },
   methods: {
-    signIn (event) {
-      event.preventDefault()
-      this.$emit('logIn', this.credentials)
+    logIn () {
+      this.$store.dispatch('logIn', this.credentials).catch(error => {
+        this.$store.commit('ALERT', {
+          type: 'negative',
+          data: error
+        })
+      })
     }
   }
 }
@@ -65,6 +69,8 @@ export default {
 <style lang="scss" scoped>
 .form {
   max-width: 18rem;
+  margin: 0 auto;
+  text-align: center;
 
   .k-input {
     margin-bottom: 1rem;
