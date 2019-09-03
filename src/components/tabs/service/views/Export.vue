@@ -3,7 +3,7 @@
     <k-grid>
       <k-column width="1/2">
         <label for="pages" class="k-field-label">Pages</label>
-        <k-input v-model="page" type="text" theme="field" icon="page" name="pages" placeholder="Export all pages" />
+        <k-input v-model="pages" type="text" theme="field" icon="page" name="pages" placeholder="Export all pages" />
         <div data-theme="help" class="k-text k-field-help">When set, only pages containing the given string will be exported.</div>
       </k-column>
 
@@ -30,15 +30,31 @@
 export default {
   data () {
     return {
-      page: null,
+      pages: null,
       variables: true
     }
   },
   methods: {
     submit () {
-      this.$emit('export', {
-        page: this.page || null,
+      var data = {
+        pages: this.pages,
         variables: this.variables
+      }
+
+      if (typeof data.pages === 'string' && data.pages.length) {
+        data.pages = `!${ data.pages }!`
+      } else {
+        data.pages = null
+      }
+
+      this.$store.dispatch('exportContent', data).then(response => {
+        this.$store.commit('SET_EXPORT_DATA', response.data)
+        this.$store.commit('VIEW', 'Upload')
+      }).catch(error => {
+        this.$store.commit('ALERT', {
+          type: 'negative',
+          data: error
+        })
       })
     }
   }

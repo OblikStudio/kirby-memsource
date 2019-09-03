@@ -23,7 +23,7 @@
       ></k-button>
 
       <div class="k-list">
-        <div v-for="job in filteredJobs" class="k-list-item">
+        <div v-for="job in filteredJobs" class="k-list-item" :key="job.uid">
           <div class="k-list-item-image">
             <span class="k-icon" data-back="black" title="Target language">
               <strong>{{ job.targetLang }}</strong>
@@ -53,7 +53,7 @@
       <k-button
         icon="trash"
         :theme="confirmDelete ? 'negative' : null"
-        @click="deleteJobs"
+        @click="deleteHandler"
       >
         {{ confirmDelete ? 'Delete?!' : 'Delete' }}
       </k-button>
@@ -61,7 +61,7 @@
       <k-button
         class="ms-button ms-t2"
         icon="import"
-        @click="$emit('importJobs', selectedJobs)"
+        @click="importHandler"
       >
         Import {{ selectedJobs.length }} jobs
       </k-button>
@@ -101,6 +101,13 @@ export default {
     }
   },
   methods: {
+    isValidLanguage (input, target) {
+      input = input.toLowerCase()
+      target = target.toLowerCase()
+
+      // allow imports of en in en_us and vice-versa
+      return (target.indexOf(input) === 0 || input.indexOf(target) === 0)
+    },
     toggleSelected () {
       if (this.selectedJobs.length !== this.filteredJobs.length) {
         this.selectedJobs = this.filteredJobs.map(job => job.uid)
@@ -108,15 +115,78 @@ export default {
         this.selectedJobs = []
       }
     },
-    deleteJobs () {
+    importHandler () {
+      this.jobs.forEach(job => {
+        if (this.selectedJobs.indexOf(job.uid) >= 0) {
+          this.importJob(job)
+        }
+      })
+    },
+    deleteHandler () {
       if (this.confirmDelete) {
-        this.$emit('deleteJobs', this.selectedJobs)
+        this.deleteJobs()
       } else {
         this.confirmDelete = true
         setTimeout(() => {
           this.confirmDelete = false
         }, 1500)
       }
+    },
+    importJob (job) {
+      var project = this.$store.state.project
+      var languages = this.$store.getters.availableLanguages
+      var jobLanguage = job.targetLang
+      var importLanguage = languages.find(lang => this.isValidLanguage(jobLanguage, lang.code))
+
+      if (!importLanguage) {
+        return this.$store.commit('ALERT', {
+          type: 'negative',
+          text: `Could not import job ${ job.uid }, language ${ jobLanguage } is not valid.`
+        })
+      }
+
+      this.$store.dispatch('downloadJob', {
+        projectId: project.id,
+        jobId: job.uid
+      }).then(response => {
+        return this.$store.dispatch('importContent', {
+          language: importLanguage.code,
+          content: response.data
+        })
+      }).then(response => {
+        this.$store.commit('ALERT', {
+          type: 'positive',
+          text: `Successfully imported job in ${ importLanguage.name }!`
+        })
+      }).catch(error => {
+        this.$store.commit('ALERT', {
+          type: 'negative',
+          data: error
+        })
+      })
+    },
+    deleteJobs (jobIds) {
+      var jobs = this.selectedJobs
+      var project = this.$store.state.project
+
+      this.$store.dispatch('deleteJobs', {
+        projectId: project.id,
+        jobIds: jobs
+      }).then(response => {
+        return this.$store.dispatch('listJobs', {
+          projectId: project.id
+        })
+      }).then(response => {
+        this.$store.commit('ALERT', {
+          type: 'positive',
+          text: `Deleted ${ jobs.length } jobs!`
+        })
+      }).catch(error => {
+        this.$store.commit('ALERT', {
+          type: 'negative',
+          data: error
+        })
+      })
     }
   }
 }

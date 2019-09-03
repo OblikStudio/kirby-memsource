@@ -172,9 +172,32 @@ export default {
       this.jobName = (wordgen.generate() + dateFormat(new Date(), `-mmm-dd`)).toLowerCase()
     },
     upload () {
-      this.$emit('uploadJobs', {
-        languages: this.selectedLangs,
-        jobName: this.jobName
+      this.$store.dispatch('fetchImportSettings').then(settings => {
+        this.$store.commit('ALERT', {
+          type: 'info',
+          text: `Using import settings: ${ settings.name }`
+        })
+
+        return this.$store.dispatch('createJob', {
+          data: this.$store.state.exporter.exportData,
+          projectId: this.$store.state.project.uid,
+          importSettingsId: settings.uid,
+          languages: this.selectedLangs,
+          name: this.jobName
+        })
+      }).then(response => {
+        var jobs = (response.data && response.data.jobs)
+        if (jobs && jobs.length) {
+          this.$store.commit('ALERT', {
+            type: 'positive',
+            text: `Successfully created ${ jobs.length } jobs!`
+          })
+        }
+      }).catch(error => {
+        this.$store.commit('ALERT', {
+          type: 'negative',
+          data: error
+        })
       })
     },
     downloadExport () {

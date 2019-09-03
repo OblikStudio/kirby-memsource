@@ -18,8 +18,8 @@
       <k-dropdown class="k-list-item-options">
         <k-button @click="openDropdown(project.uid)" icon="dots" alt="Actions"></k-button>
         <k-dropdown-content :id="project.uid" ref="dropdown" align="right">
-          <k-dropdown-item icon="upload" @click="$emit('upload', project)">Upload</k-dropdown-item>
-          <k-dropdown-item icon="page" @click="$emit('listJobs', project)">Jobs</k-dropdown-item>
+          <k-dropdown-item icon="upload" @click="uploadToProject(project)">Upload</k-dropdown-item>
+          <k-dropdown-item icon="page" @click="listJobs(project)">Jobs</k-dropdown-item>
         </k-dropdown-content>
       </k-dropdown>
     </div>
@@ -34,7 +34,32 @@ export default {
       if (dropdown) {
         dropdown.toggle()
       }
+    },
+    uploadToProject (project) {
+      this.$store.commit('SET_PROJECT', project)
+      this.$store.commit('VIEW', 'Export')
+    },
+    listJobs (project) {
+      this.$store.commit('SET_PROJECT', project)
+      this.$store.dispatch('listJobs', {
+        projectId: this.$store.state.project.id
+      }).catch(error => {
+        this.$store.commit('ALERT', {
+          type: 'error',
+          data: error
+        })
+      }).then(response => {
+        this.$store.commit('VIEW', 'Jobs')
+      })
     }
+  },
+  created () {
+    this.$store.dispatch('loadProjects').catch(error => {
+      this.$store.commit('ALERT', {
+        type: 'negative',
+        data: error
+      })
+    })
   }
 }
 </script>
