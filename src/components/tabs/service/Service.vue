@@ -4,6 +4,7 @@
 
 <script>
 import Projects from './views/Projects.vue'
+import Project from './views/Project.vue'
 import Export from './views/Export.vue'
 import Upload from './views/Upload.vue'
 import Jobs from './views/Jobs.vue'
@@ -11,6 +12,7 @@ import Jobs from './views/Jobs.vue'
 export default {
   components: {
     Projects,
+    Project,
     Export,
     Upload,
     Jobs
