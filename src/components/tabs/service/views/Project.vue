@@ -8,13 +8,13 @@
         </h2>
       </k-column>
 
-      <k-column>
-        <ul>
-          <li v-for="property in properties" :key="property.text">
-            <strong>{{ property.text }}:</strong>
-            {{ property.value }}
-          </li>
-        </ul>
+      <k-column class="mb-col">
+        <table>
+          <tr v-for="property in properties" :key="property.text">
+            <td><strong>{{ property.text }}</strong></td>
+            <td>{{ property.value }}</td>
+          </tr>
+        </table>
       </k-column>
 
       <k-column class="ms-actions">
@@ -95,14 +95,15 @@ h2 {
   }
 }
 
-ul {
-  display: flex;
-  flex-flow: row wrap;
-  margin-bottom: -0.5rem;
-
-  li {
-    margin-bottom: 0.5rem;
-    flex: 1 1 50%;
-  }
+.mb-col {
+  grid-column: 3 / span 7;
 }
+
+  table {
+    margin: -5px;
+
+    tr td {
+      padding: 5px;
+    }
+  }
 </style>
