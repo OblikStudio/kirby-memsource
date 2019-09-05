@@ -16,7 +16,7 @@
       <k-column width="1/1" class="ms-actions">
         <k-button
           class="ms-button"
-          icon="share"
+          icon="upload"
           @click="submit"
         >
           Export
