@@ -1,51 +1,44 @@
 <template>
   <div>
-    <ul v-if="stats" class="ms-stats">
-      <li v-for="(value, name) in stats" :key="name">
-        {{ name }}: <strong>{{ value }}</strong>
-      </li>
-    </ul>
-
     <section class="k-section">
+      <ul v-if="stats" class="ms-stats">
+        <li v-for="(value, name) in stats" :key="name">
+          {{ name }}: <strong>{{ value }}</strong>
+        </li>
+      </ul>
+
       <k-json-editor
         v-model="$store.state.exporter.exportData"
         label="Data"
       ></k-json-editor>
     </section>
 
-    <section class="k-section">
-      <header>
-        <h2 class="k-headline">Target Languages</h2>
-      </header>
+    <k-grid class="k-section" gutter="medium">
+      <k-column width="2/3">
+        <header>
+          <h2 class="k-headline">Target Languages</h2>
+        </header>
 
-      <k-input
-        type="checkboxes"
-        v-model="selectedLangs"
-        :options="languageOptions"
-        :required="true"
-      />
+        <k-input
+          type="checkboxes"
+          v-model="selectedLangs"
+          :options="languageOptions"
+          :required="true"
+        />
 
-      <k-button v-if="languageOptions.length > 1" icon="check" @click="toggleLanguages">
-        Toggle all
-      </k-button>
-    </section>
+        <k-button v-if="languageOptions.length > 1" icon="check" @click="toggleLanguages">
+          Toggle all
+        </k-button>
+      </k-column>
 
-    <section class="k-section">
-      <header>
-        <h2 class="k-headline">Job Name</h2>
-      </header>
+      <k-column width="1/3">
+        <header>
+          <h2 class="k-headline">Job Name</h2>
+        </header>
 
-      <k-input
-        theme="field"
-        type="text"
-        v-model="jobName"
-        :required="true"
-      />
-
-      <k-button class="k-field-help" icon="refresh" @click="generateName">
-        Generate
-      </k-button>
-    </section>
+        <NameGen v-model="jobName" />
+      </k-column>
+    </k-grid>
 
     <div class="ms-actions">
       <k-button
@@ -64,14 +57,8 @@
 </template>
 
 <script>
-import dateFormat from 'dateformat'
 import cloneDeep from 'lodash/cloneDeep'
-
-import Wordgen from '@/modules/wordgen'
-
-var wordgen = new Wordgen({
-  length: 6
-})
+import NameGen from '@/components/NameGen.vue'
 
 function countObjectData (data) {
   var stats = {
@@ -102,6 +89,9 @@ function countObjectData (data) {
 }
 
 export default {
+  components: {
+    NameGen
+  },
   data () {
     return {
       selectedLangs: [],
@@ -168,9 +158,6 @@ export default {
         this.selectedLangs = []
       }
     },
-    generateName () {
-      this.jobName = (wordgen.generate() + dateFormat(new Date(), `-mmm-dd`)).toLowerCase()
-    },
     upload () {
       this.$store.dispatch('fetchImportSettings').then(settings => {
         this.$store.commit('ALERT', {
@@ -216,7 +203,6 @@ export default {
   },
   created () {
     this.toggleLanguages()
-    this.generateName()
   }
 }
 </script>
@@ -248,7 +234,7 @@ export default {
   .k-checkboxes-input {
     li {
       display: inline-block;
-      width: 33.33%;
+      width: 50%;
       margin-bottom: 0.75rem;
     }
   }
