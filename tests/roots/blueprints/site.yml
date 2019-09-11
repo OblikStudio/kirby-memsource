@@ -1,4 +1,5 @@
 title: Site
+preset: page
 fields:
   editor:
     type: variables

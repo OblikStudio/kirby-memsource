@@ -96,11 +96,11 @@ h2 {
 }
 
 .mb-col {
-  grid-column: 3 / span 7;
+  grid-column: 3 / span 8;
 }
 
   table {
-    margin: -5px;
+    margin: -5px auto;
 
     tr td {
       padding: 5px;
