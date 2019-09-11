@@ -30,7 +30,7 @@
               v-for="(alert, index) in alerts"
               :key="index"
               :text="alert.text"
-              :theme="alert.type"
+              :theme="alert.theme"
             />
 
             <k-button @click="$store.commit('CLEAR_ALERTS')" icon="check">
@@ -45,27 +45,33 @@
 
 <script>
 import whenExpired from 'when-expired'
-import Crumbs from './components/Crumbs.vue'
-import Service from './components/tabs/service/Service.vue'
-import User from './components/tabs/user/User.vue'
 import createStore from './store'
+import Crumbs from './components/Crumbs.vue'
+import User from './components/tabs/user/User.vue'
+import Service from './components/tabs/service/Service.vue'
+import Snapshots from './components/tabs/snapshots/Snapshots.vue'
 
 export default {
   components: {
     Crumbs,
+    User,
     Service,
-    User
+    Snapshots
   },
   data () {
     return {
       tabs: [
         {
+          icon: 'user',
+          component: 'User'
+        },
+        {
           icon: 'page',
           component: 'Service'
         },
         {
-          icon: 'user',
-          component: 'User'
+          icon: 'page',
+          component: 'Snapshots'
         }
       ]
     }
@@ -132,8 +138,14 @@ $easeOutCubic: cubic-bezier(0.215, 0.61, 0.355, 1);
     border-bottom: 1px solid #ccc;
   }
 
-    .k-tab-button[aria-current]:after {
-      display: none;
+    .k-tab-button {
+      &[aria-current]:after {
+        display: none;
+      }
+
+      &.k-button {
+        width: 100%;
+      }
     }
 
   /deep/ .ms-crumbs {

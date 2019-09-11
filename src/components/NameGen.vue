@@ -1,0 +1,57 @@
+<template>
+  <div>
+    <k-input
+      theme="field"
+      type="text"
+      v-model="value"
+      :required="true"
+    />
+
+    <div class="k-list-item-options">
+      <k-button icon="refresh" @click="generate"></k-button>
+    </div>
+  </div>
+</template>
+
+<script>
+import dateFormat from 'dateformat'
+import Wordgen from '@/modules/wordgen'
+
+var wordgen = new Wordgen({
+  length: 6
+})
+
+export default {
+  props: {
+    value: true
+  },
+  methods: {
+    generate () {
+      var string = wordgen.generate()
+      var date = dateFormat(new Date(), `-mmm-dd`)
+      var name = (string + date).toLowerCase()
+
+      this.$emit('input', name)
+    }
+  },
+  created () {
+    this.generate()
+  }
+}
+</script>
+
+<style lang="scss" scoped>
+/deep/ {
+  position: relative;
+}
+
+.k-input {
+  padding-right: 40px;
+}
+
+.k-list-item-options {
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+</style>

@@ -87,8 +87,8 @@ export default (Vuex, rootStore) => new Vuex.Store({
       state.job = freeze(value)
     },
     ALERT (state, alert) {
-      if (!alert.type) {
-        alert.type = 'info'
+      if (!alert.theme) {
+        alert.theme = 'info'
       }
 
       if (!alert.text && alert.data) {

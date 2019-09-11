@@ -1,7 +1,6 @@
-var Vue = require('vue')
-var axios = require('axios')
+import axios from 'axios'
 
-module.exports = {
+export default {
   state: {
     exportData: null,
   },
@@ -22,6 +21,16 @@ module.exports = {
     }
   },
   actions: {
+    outsource: ({ commit, getters }, payload) => {
+      return getters.exporterClient(payload).catch(error => {
+        commit('ALERT', {
+          theme: 'negative',
+          data: error
+        })
+
+        return Promise.reject(error)
+      })
+    },
     exportContent: (context, payload) => {
       return context.getters.exporterClient({
         url: '/export',
