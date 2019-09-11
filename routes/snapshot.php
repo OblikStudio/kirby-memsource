@@ -11,12 +11,12 @@ return [
         'method' => 'GET',
         'auth' => false,
         'action' => function () {
-            $folder = realpath(__DIR__ . '/../snapshots');
-            $files = glob($folder . '/*.json');
+            $folder = option('oblik.memsource.snapshots');
+            $files = glob("$folder/*.json");
 
             $files = array_map(function ($entry) {
                 return [
-                    'filename' => basename($entry),
+                    'name' => basename($entry, '.json'),
                     'date' => filemtime($entry)
                 ];
             }, $files);
@@ -33,8 +33,9 @@ return [
             $models = site()->index()->prepend(site());
             $data = $exporter->export($models);
 
+            $folder = option('oblik.memsource.snapshots');
             $filename = $_POST['name'] ?? 'snapshot';
-            $filepath = __DIR__ . "/snapshots/$filename.json";
+            $filepath = "$folder/$filename.json";
 
             if (!F::exists($filepath)) {
                 return F::write($filepath, json_encode($data));

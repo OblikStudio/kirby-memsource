@@ -20,6 +20,7 @@ function walkerSettings($data = [])
 
 Kirby::plugin('oblik/memsource', [
     'options' => [
+        'snapshots' => kirby()->root('content') . '/__snapshots',
         'fields' => [
             'files' => [
                 'ignore' => true
