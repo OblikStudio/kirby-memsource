@@ -5,6 +5,10 @@ namespace Oblik\Memsource;
 use Kirby;
 use Oblik\Outsource\Variables;
 
+load([
+    'Oblik\\Memsource\\Snapshot' => 'Snapshot.php'
+], __DIR__ . '/lib');
+
 function walkerSettings($data = [])
 {
     return array_replace_recursive([
