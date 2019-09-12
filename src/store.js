@@ -1,7 +1,6 @@
+import axios from 'axios'
 import freeze from 'deep-freeze-node'
 import session from './modules/session'
-import exporter from './modules/exporter'
-import memsource from './modules/memsource'
 
 function getMessage (input) {
   if (typeof input === 'string') {
@@ -21,15 +20,12 @@ function getMessage (input) {
 }
 
 export default (Vuex, rootStore) => new Vuex.Store({
-  modules: {
-    exporter,
-    memsource
-  },
   state: {
     alerts: [],
     crumbs: [],
     tab: null,
     session: session.load(),
+    export: null,
     project: null,
     job: null
   },
@@ -52,6 +48,26 @@ export default (Vuex, rootStore) => new Vuex.Store({
     },
     sourceLanguage: function (state, getters) {
       return getters.languages.current.code
+    },
+    msClient: function (state, getters, rootState) {
+      var token = (rootState.session && rootState.session.token)
+
+      return axios.create({
+        baseURL: 'https://cloud.memsource.com/web/api2/v1',
+        method: 'get',
+        params: {
+          token: token
+        }
+      })
+    },
+    exporterClient: () => {
+      return axios.create({
+        baseURL: panel.api,
+        method: 'get',
+        headers: {
+          'X-CSRF': panel.csrf
+        }
+      })
     }
   },
   mutations: {
@@ -83,6 +99,9 @@ export default (Vuex, rootStore) => new Vuex.Store({
     SET_PROJECT: function (state, value) {
       state.project = freeze(value)
     },
+    SET_EXPORT: (state, value) => {
+      state.export = value
+    },
     SET_JOB: function (state, value) {
       state.job = freeze(value)
     },
@@ -99,6 +118,28 @@ export default (Vuex, rootStore) => new Vuex.Store({
     },
     CLEAR_ALERTS (state) {
       state.alerts = []
+    }
+  },
+  actions: {
+    memsource: ({ commit, getters }, payload) => {
+      return getters.msClient(payload).catch(error => {
+        commit('ALERT', {
+          theme: 'negative',
+          data: error
+        })
+
+        return Promise.reject(error)
+      })
+    },
+    outsource: ({ commit, getters }, payload) => {
+      return getters.exporterClient(payload).catch(error => {
+        commit('ALERT', {
+          theme: 'negative',
+          data: error
+        })
+
+        return Promise.reject(error)
+      })
     }
   }
 })

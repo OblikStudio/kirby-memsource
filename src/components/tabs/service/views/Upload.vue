@@ -8,7 +8,7 @@
       </ul>
 
       <k-json-editor
-        v-model="$store.state.exporter.exportData"
+        v-model="$store.state.export"
         label="Data"
       ></k-json-editor>
     </section>
@@ -100,7 +100,7 @@ export default {
   },
   computed: {
     data () {
-      return this.$store.state.exporter.exportData
+      return this.$store.state.export
     },
     displayData () {
       var data = {}
@@ -180,7 +180,7 @@ export default {
             'Content-Type': 'application/octet-stream',
             'Content-Disposition': `filename*=UTF-8''${ filename }`
           },
-          data: this.$store.state.exporter.exportData
+          data: this.data
         })
       }).then(response => {
         var jobs = (response.data && response.data.jobs)
@@ -222,8 +222,7 @@ export default {
       })
     },
     downloadExport () {
-      var data = this.$store.state.exporter.exportData
-      var part = JSON.stringify(data, null, 2)
+      var part = JSON.stringify(this.data, null, 2)
       var blob = new Blob([part], {
         type: 'application/json'
       })

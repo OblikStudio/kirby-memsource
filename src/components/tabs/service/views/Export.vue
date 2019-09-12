@@ -51,7 +51,7 @@ export default {
         url: '/export',
         params
       }).then(response => {
-        this.$store.commit('SET_EXPORT_DATA', response.data)
+        this.$store.commit('SET_EXPORT', response.data)
         this.$store.commit('VIEW', 'Upload')
       })
     }
