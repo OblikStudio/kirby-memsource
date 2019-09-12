@@ -70,16 +70,7 @@ export default {
       this.$store.commit('VIEW', 'Export')
     },
     listJobs () {
-      this.$store.dispatch('listJobs', {
-        projectId: this.project.id
-      }).catch(error => {
-        this.$store.commit('ALERT', {
-          type: 'error',
-          data: error
-        })
-      }).then(response => {
-        this.$store.commit('VIEW', 'Jobs')
-      })
+      this.$store.commit('VIEW', 'Jobs')
     }
   }
 }

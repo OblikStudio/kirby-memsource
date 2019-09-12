@@ -79,14 +79,14 @@ export default {
   data () {
     return {
       query: null,
+      jobs: [],
       selectedJobs: [],
       confirmDelete: false
     }
   },
   computed: {
-    jobs () {
-      this.selectedJobs = []
-      return this.$store.state.memsource.jobs
+    projectId () {
+      return this.$store.state.project.id
     },
     filteredJobs () {
       return this.jobs.filter(job => {
@@ -120,6 +120,14 @@ export default {
         if (this.selectedJobs.indexOf(job.uid) >= 0) {
           this.importJob(job)
         }
+      })
+    },
+    loadJobs () {
+      return this.$store.dispatch('memsource', {
+        url: `/projects/${ this.projectId }/jobs`
+      }).then(response => {
+        this.jobs = response.data.content
+        this.selectedJobs = []
       })
     },
     deleteHandler () {
@@ -173,9 +181,7 @@ export default {
         projectId: project.id,
         jobIds: jobs
       }).then(response => {
-        return this.$store.dispatch('listJobs', {
-          projectId: project.id
-        })
+        return this.loadJobs()
       }).then(response => {
         this.$store.commit('ALERT', {
           type: 'positive',
@@ -188,6 +194,9 @@ export default {
         })
       })
     }
+  },
+  created () {
+    this.loadJobs()
   }
 }
 </script>

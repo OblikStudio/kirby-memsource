@@ -11,9 +11,6 @@ var IMPORT_SETTINGS = {
 }
 
 module.exports = {
-  state: {
-    jobs: []
-  },
   getters: {
     msClient: function (state, getters, rootState) {
       var token = (rootState.session && rootState.session.token)
@@ -25,11 +22,6 @@ module.exports = {
           token: token
         }
       })
-    }
-  },
-  mutations: {
-    MS_SET_JOBS: function (state, data) {
-      state.jobs = freeze(data)
     }
   },
   actions: {
@@ -59,8 +51,6 @@ module.exports = {
     logOut (context) {
       context.commit('SET_SESSION', null)
       context.commit('SET_PROJECT', [])
-      context.commit('SET_JOB', [])
-      context.commit('MS_SET_JOBS', [])
     },
     listImportSettings: function (context) {
       return context.getters.msClient({
@@ -123,19 +113,6 @@ module.exports = {
           'Content-Disposition': 'filename*=UTF-8\'\'' + filename
         },
         data: payload.data
-      })
-    },
-    listJobs: function (context, payload) {
-      return context.getters.msClient({
-        url: '/projects/' + payload.projectId + '/jobs'
-      }).then(function (response) {
-        var jobs = response.data.content
-
-        if (jobs) {
-          context.commit('MS_SET_JOBS', jobs)
-        }
-
-        return Promise.resolve(response)
       })
     },
     downloadJob: function (context, payload) {
