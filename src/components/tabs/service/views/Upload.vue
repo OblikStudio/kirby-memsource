@@ -159,32 +159,66 @@ export default {
       }
     },
     upload () {
-      this.$store.dispatch('fetchImportSettings').then(settings => {
+      this.getImportSettings().then(settings => {
         this.$store.commit('ALERT', {
-          type: 'info',
           text: `Using import settings: ${ settings.name }`
         })
 
-        return this.$store.dispatch('createJob', {
-          data: this.$store.state.exporter.exportData,
-          projectId: this.$store.state.project.uid,
-          importSettingsId: settings.uid,
-          languages: this.selectedLangs,
-          name: this.jobName
+        var filename = this.jobName + '.json'
+        var memsourceHeader = {
+          targetLangs: this.selectedLangs,
+          importSettings: {
+            uid: settings.uid
+          }
+        }
+
+        return this.$store.dispatch('memsource', {
+          url: `/projects/${ this.$store.state.project.uid }/jobs`,
+          method: 'post',
+          headers: {
+            'Memsource': JSON.stringify(memsourceHeader),
+            'Content-Type': 'application/octet-stream',
+            'Content-Disposition': `filename*=UTF-8''${ filename }`
+          },
+          data: this.$store.state.exporter.exportData
         })
       }).then(response => {
         var jobs = (response.data && response.data.jobs)
         if (jobs && jobs.length) {
           this.$store.commit('ALERT', {
-            type: 'positive',
+            theme: 'positive',
             text: `Successfully created ${ jobs.length } jobs!`
           })
         }
-      }).catch(error => {
-        this.$store.commit('ALERT', {
-          type: 'negative',
-          data: error
-        })
+      })
+    },
+    getImportSettings () {
+      return this.$store.dispatch('memsource', {
+        url: '/importSettings'
+      }).then(response => {
+        var items = (response.data && response.data.content) || []
+        var settings = items.find(item => item.name === 'k3-1')
+
+        if (settings) {
+          return this.$store.dispatch('memsource', {
+            url: `/importSettings/${ settings.uid }`
+          })
+        } else {
+          return this.$store.dispatch('memsource', {
+            url: '/importSettings',
+            method: 'post',
+            data: {
+              name: 'k3-1',
+              fileImportSettings: {
+                json: {
+                  htmlSubFilter: true
+                }
+              }
+            }
+          })
+        }
+      }).then(response => {
+        return Promise.resolve(response.data)
       })
     },
     downloadExport () {
