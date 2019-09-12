@@ -36,25 +36,23 @@ export default {
   },
   methods: {
     submit () {
-      var data = {
+      var params = {
         pages: this.pages,
         variables: this.variables
       }
 
-      if (typeof data.pages === 'string' && data.pages.length) {
-        data.pages = `!${ data.pages }!`
+      if (typeof params.pages === 'string' && params.pages.length) {
+        params.pages = `!${ params.pages }!`
       } else {
-        data.pages = null
+        params.pages = null
       }
 
-      this.$store.dispatch('exportContent', data).then(response => {
+      this.$store.dispatch('outsource', {
+        url: '/export',
+        params
+      }).then(response => {
         this.$store.commit('SET_EXPORT_DATA', response.data)
         this.$store.commit('VIEW', 'Upload')
-      }).catch(error => {
-        this.$store.commit('ALERT', {
-          type: 'negative',
-          data: error
-        })
       })
     }
   }

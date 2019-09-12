@@ -30,12 +30,6 @@ export default {
 
         return Promise.reject(error)
       })
-    },
-    exportContent: (context, payload) => {
-      return context.getters.exporterClient({
-        url: '/export',
-        params: payload
-      })
     }
   }
 }
