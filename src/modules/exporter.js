@@ -36,16 +36,6 @@ export default {
         url: '/export',
         params: payload
       })
-    },
-    importContent: (context, { language, content }) => {
-      return context.getters.exporterClient({
-        url: '/import',
-        method: 'post',
-        data: JSON.stringify({
-          language,
-          content
-        })
-      })
     }
   }
 }

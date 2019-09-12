@@ -101,13 +101,6 @@ export default {
     }
   },
   methods: {
-    isValidLanguage (input, target) {
-      input = input.toLowerCase()
-      target = target.toLowerCase()
-
-      // allow imports of en in en_us and vice-versa
-      return (target.indexOf(input) === 0 || input.indexOf(target) === 0)
-    },
     toggleSelected () {
       if (this.selectedJobs.length !== this.filteredJobs.length) {
         this.selectedJobs = this.filteredJobs.map(job => job.uid)
@@ -141,56 +134,50 @@ export default {
       }
     },
     importJob (job) {
-      var project = this.$store.state.project
-      var languages = this.$store.getters.availableLanguages
-      var jobLanguage = job.targetLang
-      var importLanguage = languages.find(lang => this.isValidLanguage(jobLanguage, lang.code))
+      var importLanguage = this.$store.getters.availableLanguages.find(lang => {
+        return job.targetLang.indexOf(lang.code) === 0
+      })
 
-      if (!importLanguage) {
-        return this.$store.commit('ALERT', {
-          type: 'negative',
-          text: `Could not import job ${ job.uid }, language ${ jobLanguage } is not valid.`
+      if (importLanguage) {
+        this.$store.dispatch('memsource', {
+          url: `/projects/${ this.projectId }/jobs/${ job.uid }/targetFile`
+        }).then(response => {
+          return this.$store.dispatch('outsource', {
+            url: '/import',
+            method: 'post',
+            data: {
+              language: importLanguage.code,
+              content: response.data
+            }
+          })
+        }).then(response => {
+          this.$store.commit('ALERT', {
+            theme: 'positive',
+            text: `Successfully imported job in ${ importLanguage.name }!`
+          })
+        })
+      } else {
+        this.$store.commit('ALERT', {
+          theme: 'negative',
+          text: `Invalid site language: ${ job.targetLang }`
         })
       }
-
-      this.$store.dispatch('downloadJob', {
-        projectId: project.id,
-        jobId: job.uid
-      }).then(response => {
-        return this.$store.dispatch('importContent', {
-          language: importLanguage.code,
-          content: response.data
-        })
-      }).then(response => {
-        this.$store.commit('ALERT', {
-          type: 'positive',
-          text: `Successfully imported job in ${ importLanguage.name }!`
-        })
-      }).catch(error => {
-        this.$store.commit('ALERT', {
-          type: 'negative',
-          data: error
-        })
-      })
     },
-    deleteJobs (jobIds) {
+    deleteJobs () {
       var jobs = this.selectedJobs
-      var project = this.$store.state.project
 
-      this.$store.dispatch('deleteJobs', {
-        projectId: project.id,
-        jobIds: jobs
+      this.$store.dispatch('memsource', {
+        url: `/projects/${ this.projectId }/jobs/batch`,
+        method: 'delete',
+        data: {
+          jobs: jobs.map(id => ({ uid: id }))
+        }
       }).then(response => {
         return this.loadJobs()
       }).then(response => {
         this.$store.commit('ALERT', {
-          type: 'positive',
+          theme: 'positive',
           text: `Deleted ${ jobs.length } jobs!`
-        })
-      }).catch(error => {
-        this.$store.commit('ALERT', {
-          type: 'negative',
-          data: error
         })
       })
     }

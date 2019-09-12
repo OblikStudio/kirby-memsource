@@ -114,24 +114,6 @@ module.exports = {
         },
         data: payload.data
       })
-    },
-    downloadJob: function (context, payload) {
-      return context.getters.msClient({
-        url: `/projects/${ payload.projectId }/jobs/${ payload.jobId }/targetFile`
-      })
-    },
-    deleteJobs: (context, payload) => {
-      return context.getters.msClient({
-        url: `/projects/${ payload.projectId }/jobs/batch`,
-        method: 'delete',
-        data: {
-          jobs: payload.jobIds.map(id => {
-            return {
-              uid: id
-            }
-          })
-        }
-      })
     }
   }
 }

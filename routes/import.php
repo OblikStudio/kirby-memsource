@@ -24,7 +24,7 @@ return [
                 'language' => $input['language']
             ]));
 
-            return $importer->import($input['content']);
+            return $importer->process($input['content']);
         }
     ]
 ];
