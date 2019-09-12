@@ -14,7 +14,7 @@ return [
                     'name' => basename($file, '.json'),
                     'date' => filemtime($file)
                 ];
-            }, Snapshot::getAll());
+            }, Snapshot::list());
         }
     ],
     [

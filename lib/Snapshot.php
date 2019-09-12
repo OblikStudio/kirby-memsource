@@ -12,7 +12,7 @@ class Snapshot {
         return "$folder/$name.json";
     }
 
-    public static function getAll()
+    public static function list()
     {
         return glob(self::file('*'));
     }
@@ -25,6 +25,15 @@ class Snapshot {
             return F::write($file, json_encode($data));
         } else {
             throw new Exception('Snapshot already exists', 400);
+        }
+    }
+
+    public static function read(string $name)
+    {
+        if ($content = F::read(self::file($name))) {
+            return json_decode($content, true);
+        } else {
+            throw new Exception('Could not read snapshot', 500);
         }
     }
 
