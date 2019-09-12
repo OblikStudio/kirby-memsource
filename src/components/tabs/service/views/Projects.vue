@@ -1,10 +1,10 @@
 <template>
   <div class="k-list">
     <div
-      v-for="project in $store.state.memsource.projects"
+      v-for="project in projects"
       :key="project.uid"
       class="k-list-item"
-      @click="openProject(project)"
+      @click="open(project)"
     >
       <div class="k-list-item-image">
         <span class="k-icon" data-back="black" title="Project ID">
@@ -21,8 +21,13 @@
 
 <script>
 export default {
+  data () {
+    return {
+      projects: []
+    }
+  },
   methods: {
-    openProject (project) {
+    open (project) {
       this.$store.commit('SET_PROJECT', project)
       this.$store.commit('VIEW', {
         text: project.name,
@@ -31,11 +36,11 @@ export default {
     }
   },
   created () {
-    this.$store.dispatch('loadProjects').catch(error => {
-      this.$store.commit('ALERT', {
-        type: 'negative',
-        data: error
-      })
+    this.$store.dispatch('memsource', {
+      url: '/projects',
+      method: 'get'
+    }).then(response => {
+      this.projects = response.data.content
     })
   }
 }

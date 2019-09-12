@@ -12,7 +12,6 @@ var IMPORT_SETTINGS = {
 
 module.exports = {
   state: {
-    projects: [],
     jobs: []
   },
   getters: {
@@ -29,14 +28,21 @@ module.exports = {
     }
   },
   mutations: {
-    MS_SET_PROJECTS: function (state, data) {
-      state.projects = freeze(data)
-    },
     MS_SET_JOBS: function (state, data) {
       state.jobs = freeze(data)
     }
   },
   actions: {
+    memsource: ({ commit, getters }, payload) => {
+      return getters.msClient(payload).catch(error => {
+        commit('ALERT', {
+          theme: 'negative',
+          data: error
+        })
+
+        return Promise.reject(error)
+      })
+    },
     logIn: function (context, data) {
       return context.getters.msClient({
         url: '/auth/login',
@@ -54,21 +60,7 @@ module.exports = {
       context.commit('SET_SESSION', null)
       context.commit('SET_PROJECT', [])
       context.commit('SET_JOB', [])
-      context.commit('MS_SET_PROJECTS', [])
       context.commit('MS_SET_JOBS', [])
-    },
-    loadProjects: function (context) {
-      return context.getters.msClient({
-        url: '/projects'
-      }).then(function (response) {
-        var projects = response.data.content
-
-        if (projects) {
-          context.commit('MS_SET_PROJECTS', projects)
-        }
-
-        return Promise.resolve(response)
-      })
     },
     listImportSettings: function (context) {
       return context.getters.msClient({
