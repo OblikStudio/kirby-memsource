@@ -36,6 +36,7 @@ export default {
     }
   },
   created () {
+    this.$store.commit('SET_PROJECT', null)
     this.$store.dispatch('memsource', {
       url: '/projects',
       method: 'get'

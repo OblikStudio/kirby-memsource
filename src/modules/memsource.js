@@ -24,23 +24,6 @@ module.exports = {
 
         return Promise.reject(error)
       })
-    },
-    logIn: function (context, data) {
-      return context.getters.msClient({
-        url: '/auth/login',
-        method: 'post',
-        data: {
-          userName: data.username,
-          password: data.password
-        }
-      }).then(function (response) {
-        context.commit('SET_SESSION', response.data)
-        return Promise.resolve()
-      })
-    },
-    logOut (context) {
-      context.commit('SET_SESSION', null)
-      context.commit('SET_PROJECT', [])
     }
   }
 }

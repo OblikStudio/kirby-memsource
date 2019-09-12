@@ -10,7 +10,7 @@
     <k-button
       icon="logout"
       theme="negative"
-      @click="$store.dispatch('logOut')"
+      @click="logOut"
     >
       Log out
     </k-button>
@@ -21,6 +21,11 @@
 export default {
   props: {
     data: Object
+  },
+  methods: {
+    logOut () {
+      this.$store.commit('SET_SESSION', null)
+    }
   }
 }
 </script>

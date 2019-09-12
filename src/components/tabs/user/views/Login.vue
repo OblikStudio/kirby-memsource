@@ -3,7 +3,7 @@
    <div class="k-input" data-theme="field">
       <span class="k-input-element">
         <input
-          v-model="credentials.username"
+          v-model="username"
           type="username"
           id="ms-username"
           name="ms-username"
@@ -20,7 +20,7 @@
     <div class="k-input" data-theme="field">
       <span class="k-input-element">
         <input
-          v-model="credentials.password"
+          v-model="password"
           type="password"
           id="ms-password"
           name="ms-password"
@@ -47,19 +47,21 @@
 export default {
   data () {
     return {
-      credentials: {
-        username: null,
-        password: null
-      }
+      username: null,
+      password: null
     }
   },
   methods: {
     logIn () {
-      this.$store.dispatch('logIn', this.credentials).catch(error => {
-        this.$store.commit('ALERT', {
-          type: 'negative',
-          data: error
-        })
+      this.$store.dispatch('memsource', {
+        url: '/auth/login',
+        method: 'post',
+        data: {
+          userName: this.username,
+          password: this.password
+        }
+      }).then(response => {
+        this.$store.commit('SET_SESSION', response.data)
       })
     }
   }
