@@ -1,12 +1,14 @@
 <template>
   <div>
     <section class="k-section">
-      <ul v-if="stats" class="ms-stats">
-        <li v-for="(value, name) in stats" :key="name">
+      <k-grid v-if="stats" class="ms-stats">
+        <k-column width="1/3" v-for="(value, name) in stats" :key="name">
           {{ name }}: <strong>{{ value }}</strong>
-        </li>
-      </ul>
+        </k-column>
+      </k-grid>
+    </section>
 
+    <section class="k-section">
       <k-json-editor
         v-model="$store.state.export"
         label="Data"
@@ -14,6 +16,14 @@
     </section>
 
     <k-grid class="k-section" gutter="medium">
+      <k-column width="1/3">
+        <header>
+          <h2 class="k-headline">Job Name</h2>
+        </header>
+
+        <NameGen v-model="jobName" />
+      </k-column>
+
       <k-column width="2/3">
         <header>
           <h2 class="k-headline">Target Languages</h2>
@@ -25,18 +35,6 @@
           :options="languageOptions"
           :required="true"
         />
-
-        <k-button v-if="languageOptions.length > 1" icon="check" @click="toggleLanguages">
-          Toggle all
-        </k-button>
-      </k-column>
-
-      <k-column width="1/3">
-        <header>
-          <h2 class="k-headline">Job Name</h2>
-        </header>
-
-        <NameGen v-model="jobName" />
       </k-column>
     </k-grid>
 
@@ -102,6 +100,9 @@ export default {
     data () {
       return this.$store.state.export
     },
+    project () {
+      return this.$store.state.project
+    },
     displayData () {
       var data = {}
 
@@ -132,7 +133,7 @@ export default {
       }
     },
     languageOptions () {
-      var targetLangs =  this.$store.state.project.targetLangs
+      var targetLangs =  this.project.targetLangs
 
       return this.$store.getters.availableLanguages
         .filter(lang => !lang.default)
@@ -151,13 +152,6 @@ export default {
     }
   },
   methods: {
-    toggleLanguages () {
-      if (this.selectedLangs.length !== this.languageOptions.length) {
-        this.selectedLangs = this.languageOptions.map(lang => lang.value)
-      } else {
-        this.selectedLangs = []
-      }
-    },
     upload () {
       this.getImportSettings().then(settings => {
         this.$store.commit('ALERT', {
@@ -173,7 +167,7 @@ export default {
         }
 
         return this.$store.dispatch('memsource', {
-          url: `/projects/${ this.$store.state.project.uid }/jobs`,
+          url: `/projects/${ this.project.uid }/jobs`,
           method: 'post',
           headers: {
             'Memsource': JSON.stringify(memsourceHeader),
@@ -235,33 +229,19 @@ export default {
     }
   },
   created () {
-    this.toggleLanguages()
+    var codes = this.languageOptions.map(lang => lang.value)
+    this.selectedLangs = this.project.targetLangs.filter(code => {
+      return codes.indexOf(code) >= 0
+    })
   }
 }
 </script>
 
 <style lang="scss" scoped>
-.k-section/deep/ {
-  .k-grid {
-    margin-bottom: -2px;
-    margin-right: -2px;
-  }
-
-    .k-list-item {
-      margin-bottom: 2px;
-      margin-right: 2px;
-    }
-}
-
 /deep/ {
   .ms-stats {
-    margin-bottom: 1rem;
-
-    li {
-      display: inline-block;
-      width: 33.33%;
-      margin-bottom: 0.5rem;
-    }
+    grid-column-gap: 1.5rem;
+    grid-row-gap: 0.5rem;
   }
 
   .k-checkboxes-input {
