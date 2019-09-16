@@ -1,6 +1,10 @@
 <template>
   <div>
-    <div class="ms-diff" v-for="entry in entries" :key="entry.name">
+    <div
+      v-for="entry in entries"
+      class="ms-diff" 
+      :key="entry.name"
+    >
       <p>{{ entry.name }}</p>
       <CodeDiff
         :old-string="entry.oldValue"
@@ -14,55 +18,12 @@
 <script>
 import CodeDiff from 'vue-code-diff'
 
-function sanitize (value) {
-  if (value === null || value === undefined) {
-    value = ''
-  } else if (typeof value === 'object') {
-    value = JSON.stringify(value, null, 4)
-  } else if (typeof value !== 'string') {
-    value += ''
-  }
-
-  return value
-}
-
-function getDiffEntries (data, prefix = null) {
-  var entries = []
-
-  for (let k in data) {
-    let entry = data[k]
-    let name = prefix ? `${ prefix }/${ k }` : k
-
-    if (entry) {
-      let oldValue = entry.$old
-      let newValue = entry.$new
-
-      if (typeof oldValue !== 'undefined' && typeof newValue !== 'undefined') {
-        entries.push({
-          name,
-          oldValue: sanitize(oldValue),
-          newValue: sanitize(newValue)
-        })
-      } else if (typeof entry === 'object') {
-        entries = entries.concat(getDiffEntries(entry, name))
-      }
-    }
-  }
-
-  return entries
-}
-
 export default {
   props: {
-    data: Object
+    entries: Array
   },
   components: {
     CodeDiff
-  },
-  computed: {
-    entries () {
-      return getDiffEntries(this.data)
-    }
   }
 }
 </script>

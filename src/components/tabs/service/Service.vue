@@ -7,7 +7,8 @@ import Projects from './views/Projects.vue'
 import Project from './views/Project.vue'
 import Export from './views/Export.vue'
 import Upload from './views/Upload.vue'
-import Jobs from './views/Jobs.vue'
+import Import from './views/Import.vue'
+import Results from './views/Results.vue'
 
 export default {
   components: {
@@ -15,7 +16,8 @@ export default {
     Project,
     Export,
     Upload,
-    Jobs
+    Import,
+    Results
   },
   created () {
     this.$store.commit('VIEW', 'Projects')

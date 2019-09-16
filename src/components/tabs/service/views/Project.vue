@@ -70,7 +70,7 @@ export default {
       this.$store.commit('VIEW', 'Export')
     },
     listJobs () {
-      this.$store.commit('VIEW', 'Jobs')
+      this.$store.commit('VIEW', 'Import')
     }
   }
 }

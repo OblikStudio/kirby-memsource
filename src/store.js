@@ -38,7 +38,7 @@ export default (Vuex, rootStore) => new Vuex.Store({
     session: session.load(),
     export: null,
     project: null,
-    job: null
+    results: null
   },
   getters: {
     view: (state) => {
@@ -113,8 +113,8 @@ export default (Vuex, rootStore) => new Vuex.Store({
     SET_EXPORT: (state, value) => {
       state.export = value
     },
-    SET_JOB: function (state, value) {
-      state.job = freeze(value)
+    SET_RESULTS: function (state, value) {
+      state.results = freeze(value)
     },
     ALERT (state, alert) {
       if (!alert.theme) {

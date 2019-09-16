@@ -75,6 +75,8 @@
 </template>
 
 <script>
+import freeze from 'deep-freeze-node'
+
 export default {
   inject: ['$alert'],
   data () {
@@ -114,19 +116,16 @@ export default {
         .map(id => this.jobs.find(job => job.uid === id))
         .filter(job => !!job)
 
-      var imports = jobs
-        .map(this.importJob, this)
-        .map(this.reflectImport, this)
-
-      Promise.all(imports).then(values => {
-        console.log('values', values)
+      Promise.all(jobs.map(this.importJob, this)).then(results => {
+        this.$store.commit('SET_RESULTS', results)
+        this.$store.commit('VIEW', 'Results')
       })
     },
     loadJobs () {
       return this.$store.dispatch('memsource', {
         url: `/projects/${ this.projectId }/jobs`
       }).then(response => {
-        this.jobs = response.data.content
+        this.jobs = freeze(response.data.content)
         this.selectedJobs = []
       }).catch(this.$alert)
     },
@@ -141,12 +140,13 @@ export default {
       }
     },
     importJob (job) {
+      var promise
       var language = this.$store.getters.availableLanguages.find(lang => {
         return job.targetLang.indexOf(lang.code) === 0
       })
 
       if (language) {
-        return this.$store.dispatch('memsource', {
+        promise = this.$store.dispatch('memsource', {
           url: `/projects/${ this.projectId }/jobs/${ job.uid }/targetFile`
         }).then(response => {
           return this.$store.dispatch('outsource', {
@@ -158,23 +158,14 @@ export default {
             }
           })
         }).then(response => {
-          return Promise.resolve({
-            job,
-            language,
-            data: response.data
-          })
+          return Promise.resolve(response.data)
         })
       } else {
-        return Promise.reject(new Error(`Invalid site language: ${ job.targetLang }`))
+        promise = Promise.reject(new Error('Invalid site language'))
       }
-    },
-    reflectImport (promise) {
-      return promise.then(result => {
-        this.$alert(`Successfully imported job in ${ result.language.name }!`, 'positive')
-        return Promise.resolve(result)
-      }).catch(error => {
-        this.$alert(error)
-        return Promise.resolve(null)
+
+      return promise.catch(error => Promise.resolve(error)).then(data => {
+        return Promise.resolve({ job, language, data })
       })
     },
     deleteJobs () {
