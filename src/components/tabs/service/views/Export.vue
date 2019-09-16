@@ -44,6 +44,7 @@
 
 <script>
 export default {
+  inject: ['$alert'],
   data () {
     return {
       pages: null,
@@ -70,7 +71,7 @@ export default {
       }).then(response => {
         this.$store.commit('SET_EXPORT', response.data)
         this.$store.commit('VIEW', 'Upload')
-      })
+      }).catch(this.$alert)
     }
   },
   created () {
@@ -81,7 +82,7 @@ export default {
       this.snapshots = response.data.sort((a, b) => {
         return (a.date > b.date) ? -1 : 1
       })
-    })
+    }).catch(this.$alert)
   }
 }
 </script>

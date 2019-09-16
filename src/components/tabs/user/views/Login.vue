@@ -45,6 +45,7 @@
 
 <script>
 export default {
+  inject: ['$alert'],
   data () {
     return {
       username: null,
@@ -62,7 +63,7 @@ export default {
         }
       }).then(response => {
         this.$store.commit('SET_SESSION', response.data)
-      })
+      }).catch(this.$alert)
     }
   }
 }

@@ -76,6 +76,7 @@
 
 <script>
 export default {
+  inject: ['$alert'],
   data () {
     return {
       query: null,
@@ -109,10 +110,16 @@ export default {
       }
     },
     importHandler () {
-      this.jobs.forEach(job => {
-        if (this.selectedJobs.indexOf(job.uid) >= 0) {
-          this.importJob(job)
-        }
+      var jobs = this.selectedJobs
+        .map(id => this.jobs.find(job => job.uid === id))
+        .filter(job => !!job)
+
+      var imports = jobs
+        .map(this.importJob, this)
+        .map(this.reflectImport, this)
+
+      Promise.all(imports).then(values => {
+        console.log('values', values)
       })
     },
     loadJobs () {
@@ -121,7 +128,7 @@ export default {
       }).then(response => {
         this.jobs = response.data.content
         this.selectedJobs = []
-      })
+      }).catch(this.$alert)
     },
     deleteHandler () {
       if (this.confirmDelete) {
@@ -134,34 +141,41 @@ export default {
       }
     },
     importJob (job) {
-      var importLanguage = this.$store.getters.availableLanguages.find(lang => {
+      var language = this.$store.getters.availableLanguages.find(lang => {
         return job.targetLang.indexOf(lang.code) === 0
       })
 
-      if (importLanguage) {
-        this.$store.dispatch('memsource', {
+      if (language) {
+        return this.$store.dispatch('memsource', {
           url: `/projects/${ this.projectId }/jobs/${ job.uid }/targetFile`
         }).then(response => {
           return this.$store.dispatch('outsource', {
             url: '/import',
             method: 'post',
             data: {
-              language: importLanguage.code,
+              language: language.code,
               content: response.data
             }
           })
         }).then(response => {
-          this.$store.commit('ALERT', {
-            theme: 'positive',
-            text: `Successfully imported job in ${ importLanguage.name }!`
+          return Promise.resolve({
+            job,
+            language,
+            data: response.data
           })
         })
       } else {
-        this.$store.commit('ALERT', {
-          theme: 'negative',
-          text: `Invalid site language: ${ job.targetLang }`
-        })
+        return Promise.reject(new Error(`Invalid site language: ${ job.targetLang }`))
       }
+    },
+    reflectImport (promise) {
+      return promise.then(result => {
+        this.$alert(`Successfully imported job in ${ result.language.name }!`, 'positive')
+        return Promise.resolve(result)
+      }).catch(error => {
+        this.$alert(error)
+        return Promise.resolve(null)
+      })
     },
     deleteJobs () {
       var jobs = this.selectedJobs
@@ -179,7 +193,7 @@ export default {
           theme: 'positive',
           text: `Deleted ${ jobs.length } jobs!`
         })
-      })
+      }).catch(this.$alert)
     }
   },
   created () {

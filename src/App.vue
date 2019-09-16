@@ -58,6 +58,11 @@ export default {
     Service,
     Snapshots
   },
+  provide () {
+    return {
+      $alert: this.alert
+    }
+  },
   data () {
     return {
       tabs: [
@@ -97,6 +102,28 @@ export default {
       return this.$store.state.alerts
     }
   },
+  methods: {
+    alert (data, theme) {
+      var conf = {
+        theme: 'info',
+        text: null,
+        error: null
+      }
+
+      if (typeof data === 'string') {
+        conf.text = data
+      } else if (data instanceof Error) {
+        conf.theme = 'negative'
+        conf.error = data
+      }
+
+      if (typeof theme === 'string') {
+        conf.theme = theme
+      }
+
+      this.$store.commit('ALERT', conf)
+    }
+  },
   beforeCreate () {
     var Vuex = this.$root.constructor._installedPlugins.find(entry => !!entry.Store)
     this.$store = createStore(Vuex, this.$root.$store)
@@ -115,9 +142,7 @@ export default {
         if (value) {
           whenExpired('session', value).then(() => {
             this.$store.dispatch('logOut')
-            this.$store.commit('ALERT', {
-              text: 'Your session expired, please log in again.'
-            })
+            this.$alert('Your session expired, please log in again.')
           })
         }
       }

@@ -35,6 +35,7 @@
 import NameGen from '@/components/NameGen.vue'
 
 export default {
+  inject: ['$alert'],
   components: {
     NameGen
   },
@@ -56,7 +57,7 @@ export default {
         this.snapshots = response.data.sort((a, b) => {
           return (a.date > b.date) ? -1 : 1
         })
-      })
+      }).catch(this.$alert)
     },
     create () {
       this.$store.dispatch('outsource', {
@@ -67,7 +68,7 @@ export default {
         }
       }).then(response => {
         this.fetch()
-      })
+      }).catch(this.$alert)
     },
     remove (name) {
       this.$store.dispatch('outsource', {
@@ -78,7 +79,7 @@ export default {
         }
       }).then(response => {
         this.fetch()
-      })
+      }).catch(this.$alert)
     }
   },
   created() {

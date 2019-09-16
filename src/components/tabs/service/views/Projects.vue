@@ -21,6 +21,7 @@
 
 <script>
 export default {
+  inject: ['$alert'],
   data () {
     return {
       projects: []
@@ -42,7 +43,7 @@ export default {
       method: 'get'
     }).then(response => {
       this.projects = response.data.content
-    })
+    }).catch(this.$alert)
   }
 }
 </script>

@@ -87,6 +87,7 @@ function countObjectData (data) {
 }
 
 export default {
+  inject: ['$alert'],
   components: {
     NameGen
   },
@@ -184,7 +185,7 @@ export default {
             text: `Successfully created ${ jobs.length } jobs!`
           })
         }
-      })
+      }).catch(this.$alert)
     },
     getImportSettings () {
       return this.$store.dispatch('memsource', {

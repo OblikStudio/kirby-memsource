@@ -2,21 +2,32 @@ import axios from 'axios'
 import freeze from 'deep-freeze-node'
 import session from './modules/session'
 
-function getMessage (input) {
-  if (typeof input === 'string') {
-    return input
+class MemsourceError extends Error {
+  constructor (response) {
+    super(response.data.errorDescription)
+    this.name = 'MemsourceError'
+    this.type = response.data.errorCode
+    this.response = response
   }
+}
 
-  var response = (input.response && input.response.data)
-  if (response) {
-    return `${ response.errorCode || response.exception }: ${ response.errorDescription || response.message }`
+class OutsourceError extends Error {
+  constructor (response) {
+    super(response.data.message)
+    this.name = 'OutsourceError'
+    this.code = response.data.code
+    this.type = response.data.exception
   }
+}
 
-  if (typeof input.toString === 'function') {
-    return input.toString()
+function formatRejection (Error) {
+  return function (error) {
+    if (error.response && error.response.data) {
+      error = new Error(error.response)
+    }
+
+    return Promise.reject(error)
   }
-
-  return null
 }
 
 export default (Vuex, rootStore) => new Vuex.Store({
@@ -110,8 +121,8 @@ export default (Vuex, rootStore) => new Vuex.Store({
         alert.theme = 'info'
       }
 
-      if (!alert.text && alert.data) {
-        alert.text = getMessage(alert.data)
+      if (!alert.text && alert.error) {
+        alert.text = `${ alert.error.name }: ${ alert.error.message }`
       }
 
       state.alerts.push(alert)
@@ -121,25 +132,11 @@ export default (Vuex, rootStore) => new Vuex.Store({
     }
   },
   actions: {
-    memsource: ({ commit, getters }, payload) => {
-      return getters.msClient(payload).catch(error => {
-        commit('ALERT', {
-          theme: 'negative',
-          data: error
-        })
-
-        return Promise.reject(error)
-      })
+    memsource: ({ getters }, payload) => {
+      return getters.msClient(payload).catch(formatRejection(MemsourceError))
     },
-    outsource: ({ commit, getters }, payload) => {
-      return getters.exporterClient(payload).catch(error => {
-        commit('ALERT', {
-          theme: 'negative',
-          data: error
-        })
-
-        return Promise.reject(error)
-      })
+    outsource: ({ getters }, payload) => {
+      return getters.exporterClient(payload).catch(formatRejection(OutsourceError))
     }
   }
 })
