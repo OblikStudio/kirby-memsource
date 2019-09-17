@@ -1,22 +1,14 @@
 <template>
-  <div class="k-list">
-    <div
+  <k-list>
+    <k-list-item
       v-for="project in projects"
       :key="project.uid"
-      class="k-list-item"
+      :text="project.name"
+      :info="info(project)"
+      :icon="{ type: 'page', back: 'black' }"
       @click="open(project)"
-    >
-      <div class="k-list-item-image">
-        <span class="k-icon" data-back="black" title="Project ID">
-          <strong>{{ project.internalId }}</strong>
-        </span>
-      </div>
-      
-      <p class="k-list-item-text">
-        {{ project.name }}
-      </p>
-    </div>
-  </div>
+    />
+  </k-list>
 </template>
 
 <script>
@@ -34,6 +26,10 @@ export default {
         text: project.name,
         value: 'Project'
       })
+    },
+    info (project) {
+      var date = new Date(project.dateCreated)
+      return `${ date.toLocaleString() }<strong>#${ project.internalId }</strong>`
     }
   },
   created () {
@@ -47,3 +43,13 @@ export default {
   }
 }
 </script>
+
+<style lang="scss" scoped>
+.k-list-item {
+  cursor: pointer;
+}
+
+/deep/ .k-list-item-text strong {
+  margin-left: 10px;
+}
+</style>

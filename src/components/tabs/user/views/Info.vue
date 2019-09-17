@@ -1,42 +1,46 @@
 <template>
-  <div class="ms-screen">
-    <h3>{{ data.role }}</h3>
+  <div>
+    <header class="k-section-header">
+      <k-headline>{{ data.role }}</k-headline>
+      <k-button-group>
+        <k-button icon="logout" theme="negative" @click="logout">
+          Log out
+        </k-button>
+      </k-button-group>
+    </header>
 
-    <div class="ms-user-info">
-      <p>{{ data.firstName }} {{ data.lastName }}</p>
-      <p>{{ data.email }}</p>
-    </div>
-
-    <k-button
-      icon="logout"
-      theme="negative"
-      @click="logOut"
-    >
-      Log out
-    </k-button>
+    <Stats :data="info" />
   </div>
 </template>
 
 <script>
+import Stats from '@/components/Stats.vue'
+
 export default {
+  components: {
+    Stats
+  },
   props: {
     data: Object
   },
+  computed: {
+    info () {
+      return [
+        {
+          title: 'Name',
+          content: `${ this.data.firstName } ${ this.data.lastName }`
+        },
+        {
+          title: 'Email',
+          content: this.data.email
+        }
+      ]
+    }
+  },
   methods: {
-    logOut () {
+    logout () {
       this.$store.commit('SET_SESSION', null)
     }
   }
 }
 </script>
-
-<style lang="scss" scoped>
-.ms-screen {
-  text-align: center;
-}
-
-  .ms-user-info {
-    margin-top: 1rem;
-    margin-bottom: 2rem;
-  }
-</style>

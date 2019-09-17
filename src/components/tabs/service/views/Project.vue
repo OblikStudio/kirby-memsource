@@ -1,45 +1,23 @@
 <template>
-  <div class="k-fieldset">
-    <k-grid>
-      <k-column>
-        <h2>
-          {{ project.name }}
-          <span>#{{ project.internalId}}</span>
-        </h2>
-      </k-column>
-
-      <k-column class="mb-col">
-        <table>
-          <tr v-for="property in properties" :key="property.text">
-            <td><strong>{{ property.text }}</strong></td>
-            <td>{{ property.value }}</td>
-          </tr>
-        </table>
-      </k-column>
-
-      <k-column class="ms-actions">
-        <k-button
-          class="ms-button"
-          icon="upload"
-          @click="exportData"
-        >
-          Export
-        </k-button>
-
-        <k-button
-          class="ms-button ms-t2"
-          icon="download"
-          @click="listJobs"
-        >
-          Import
-        </k-button>
-      </k-column>
-    </k-grid>
+  <div>
+    <header class="k-section-header">
+      <k-headline size="large">{{ project.name }}</k-headline>
+      <k-button-group>
+        <k-button icon="upload" @click="exportView">Export</k-button>
+        <k-button icon="download" theme="positive" @click="importView">Import</k-button>
+      </k-button-group>
+    </header>
+    <Stats :data="properties" />
   </div>
 </template>
 
 <script>
+import Stats from '@/components/Stats.vue'
+
 export default {
+  components: {
+    Stats
+  },
   computed: {
     project () {
       return this.$store.state.project
@@ -47,54 +25,27 @@ export default {
     properties () {
       return [
         {
-          text: 'Source language',
-          value: this.project.sourceLang
+          title: 'Source language',
+          content: this.project.sourceLang
         },
         {
-          text: 'Target languages',
-          value: this.project.targetLangs.join(', ')
+          title: 'Target languages',
+          content: this.project.targetLangs.join(', ')
         },
         {
-          text: 'Jobs total',
-          value: this.project.progress.totalCount
-        },
-        {
-          text: 'Jobs finished',
-          value: this.project.progress.finishedCount
+          title: 'Jobs',
+          content: `${ this.project.progress.finishedCount }/${ this.project.progress.totalCount }`
         }
       ]
     }
   },
   methods: {
-    exportData () {
+    exportView () {
       this.$store.commit('VIEW', 'Export')
     },
-    listJobs () {
+    importView () {
       this.$store.commit('VIEW', 'Import')
     }
   }
 }
 </script>
-
-<style lang="scss" scoped>
-h2 {
-  text-align: center;
-
-  span {
-    font-size: 18px;
-    font-weight: normal;
-  }
-}
-
-.mb-col {
-  grid-column: 3 / span 8;
-}
-
-  table {
-    margin: -5px auto;
-
-    tr td {
-      padding: 5px;
-    }
-  }
-</style>
