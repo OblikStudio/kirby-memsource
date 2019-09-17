@@ -1,46 +1,43 @@
 <template>
-  <div>
-    <k-view>
-      <div class="ms-header">
-        <div class="k-header-tabs">
-          <nav>
-            <k-button
-              v-for="tab in tabs"
-              :key="tab.component"
-              :current="currentTab === tab.component"
-              :icon="tab.icon"
-              class="k-tab-button"
-              @click="currentTab = tab.component"
-            >
-              {{ tab.component }}
-            </k-button>
-          </nav>
-        </div>
-        <Crumbs v-if="crumbs.length" v-model="crumbs"></Crumbs>
+  <k-view>
+    <div class="k-header">
+      <div class="k-header-tabs">
+        <nav>
+          <k-button
+            v-for="tab in tabs"
+            :key="tab.component"
+            :current="currentTab === tab.component"
+            :icon="tab.icon"
+            class="k-tab-button"
+            @click="currentTab = tab.component"
+          >
+            {{ tab.component }}
+          </k-button>
+        </nav>
       </div>
+      <Crumbs v-if="crumbs.length" v-model="crumbs"></Crumbs>
+    </div>
 
-      <component :is="currentTab"></component>
-    </k-view>
+    <component :is="currentTab"></component>
 
-    <transition name="slide">
-      <div v-if="alerts.length" class="ms-alerts-wrapper">
-        <div class="ms-alerts-pad">
-          <div class="ms-alerts">
-            <k-box
-              v-for="(alert, index) in alerts"
-              :key="index"
-              :text="alert.text"
-              :theme="alert.theme"
-            />
+    <k-dialog ref="alerts" size="medium">
+      <k-text>
+        <k-box
+          v-for="(alert, index) in alerts"
+          :key="index"
+          :text="alert.text"
+          :theme="alert.theme"
+        />
+      </k-text>
 
-            <k-button @click="$store.commit('CLEAR_ALERTS')" icon="check">
-              Close
-            </k-button>
-          </div>
-        </div>
-      </div>
-    </transition>
-  </div>
+      <k-button-group slot="footer">
+        <div></div>
+        <k-button icon="check" @click="closeAlerts">
+          {{ $t('close') }}
+        </k-button>
+      </k-button-group>
+    </k-dialog>
+  </k-view>
 </template>
 
 <script>
@@ -71,11 +68,11 @@ export default {
           component: 'User'
         },
         {
-          icon: 'page',
+          icon: 'globe',
           component: 'Service'
         },
         {
-          icon: 'page',
+          icon: 'clock',
           component: 'Snapshots'
         }
       ]
@@ -122,6 +119,10 @@ export default {
       }
 
       this.$store.commit('ALERT', conf)
+    },
+    closeAlerts () {
+      this.$store.commit('CLEAR_ALERTS')
+      this.$refs.alerts.close()
     }
   },
   beforeCreate () {
@@ -138,13 +139,18 @@ export default {
   watch: {
     "$store.state.session.expires": {
       immediate: true,
-      handler: function (value) {
+      handler (value) {
         if (value) {
           whenExpired('session', value).then(() => {
+            this.$alert('Your session expired, please log in again')
             this.$store.dispatch('logOut')
-            this.$alert('Your session expired, please log in again.')
           })
         }
+      }
+    },
+    alerts (value) {
+      if (value.length) {
+        this.$refs.alerts.open()
       }
     }
   }
@@ -152,110 +158,23 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-$easeOutCubic: cubic-bezier(0.215, 0.61, 0.355, 1);
-
-.ms-header {
-  margin-top: 3rem;
-  margin-bottom: 2rem;
+.k-view {
+  max-width: 50rem;
 }
 
-  nav {
-    border-bottom: 1px solid #ccc;
-  }
-
-    .k-tab-button {
-      &[aria-current]:after {
-        display: none;
-      }
-
-      &.k-button {
-        width: 100%;
-      }
+  .k-tab-button {
+    &[aria-current]:after {
+      display: none;
     }
 
-  /deep/ .ms-crumbs {
-    border-top: none;
+    &.k-button {
+      width: 100%;
+    }
   }
 
 /deep/ {
-  .k-view {
-  max-width: 50rem;
-  }
-
-  .ms-button {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0.75rem 1.5rem;
-    border-radius: 2px;
-
-    background: #16171a;
-    color: white;
-
-    &.ms-t1 {
-      background: #4271ae;
-    }
-
-    &.ms-t2 {
-      background: #5d800d;
-    }
-  }
-
-  .ms-actions {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    button {
-      min-width: 10em;
-
-      & + button {
-        margin-left: 2rem;
-      }
-    }
-  }
-}
-
-
-.ms-alerts-wrapper {
-  width: 100%;
-  padding-top: 6px; // for shadow
-  position: fixed;
-    bottom: 0;
-    left: 0; 
-  transition: all 0.3s ease;
-  overflow: hidden;
-
-  &/deep/ {
-    .k-button {
-      display: block;
-      margin: 1rem auto;
-    }
-  }
-}
-
-  .ms-alerts-pad {
-    padding: 0.1px 0;
-    background: #f6f6f6;
-    box-shadow: 0 0 5px 0 rgba(#000, 0.1);
-    transition: transform 0.3s $easeOutCubic;
-  }
-
-  .ms-alerts {
-    max-width: 25em;
-    margin: 2rem auto;
-
-    &/deep/ {
-      .k-box {
-        margin-bottom: 0.5rem;
-      }
-    }
-  }
-
-.slide-enter,
-.slide-leave-to {
-  .ms-alerts-pad {
-    transform: translateY(100%);
+  .ms-crumbs {
+    border-bottom: none;
   }
 }
 </style>

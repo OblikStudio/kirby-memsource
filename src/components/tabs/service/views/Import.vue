@@ -14,64 +14,75 @@
         />
       </k-column>
 
-    <k-column>
-      <template v-if="filteredJobs.length">
-        <k-button
-          class="ms-select-all"
-          icon="check"
-          @click="toggleSelected"
-        ></k-button>
+      <k-column>
+        <template v-if="filteredJobs.length">
+          <k-button
+            class="ms-select-all"
+            icon="check"
+            @click="toggleSelected"
+          ></k-button>
 
-        <div class="k-list">
-          <div v-for="job in filteredJobs" class="k-list-item" :key="job.uid">
-            <div class="k-list-item-image">
-              <span class="k-icon" data-back="black" title="Target language">
-                <strong>{{ job.targetLang }}</strong>
-              </span>
-            </div>
-            
-            <p class="k-list-item-text" :title="(new Date(job.dateCreated)).toLocaleString()">
-              <em>{{ job.filename }}</em>
-              <small>{{ job.status }}</small>
-            </p>
+          <div class="k-list">
+            <div v-for="job in filteredJobs" class="k-list-item" :key="job.uid">
+              <div class="k-list-item-image">
+                <span class="k-icon" data-back="black" title="Target language">
+                  <strong>{{ job.targetLang }}</strong>
+                </span>
+              </div>
+              
+              <p class="k-list-item-text" :title="(new Date(job.dateCreated)).toLocaleString()">
+                <em>{{ job.filename }}</em>
+                <small>{{ job.status }}</small>
+              </p>
 
-            <div class="k-list-item-options">
-              <label :for="job.uid" class="k-button">
-                <input :id="job.uid" v-model="selectedJobs" :value="job.uid" type="checkbox"/>
-              </label>
+              <div class="k-list-item-options">
+                <label :for="job.uid" class="k-button">
+                  <input :id="job.uid" v-model="selectedJobs" :value="job.uid" type="checkbox"/>
+                </label>
+              </div>
             </div>
           </div>
-        </div>
-      </template>
+        </template>
 
-      <p v-if="filteredJobs.length < jobs.length" class="ms-info">
-        <strong>{{ jobs.length - filteredJobs.length }} hidden jobs</strong>
-      </p>
-    </k-column>
+        <p v-if="filteredJobs.length < jobs.length" class="ms-info">
+          <strong>{{ jobs.length - filteredJobs.length }} hidden jobs</strong>
+        </p>
+      </k-column>
 
-    <k-column class="ms-actions" v-if="selectedJobs.length">
-      <k-button
-        icon="trash"
-        :theme="confirmDelete ? 'negative' : null"
-        @click="deleteHandler"
-      >
-        {{ confirmDelete ? 'Delete?!' : 'Delete' }}
-      </k-button>
+      <k-column class="ms-actions" v-if="selectedJobs.length">
+        <k-button
+          icon="trash"
+          theme="negative"
+          @click="$refs.dialog.open()"
+        >
+          {{ $t('delete') }}
+        </k-button>
 
-      <k-button
-        class="ms-button ms-t2"
-        icon="download"
-        @click="importHandler"
-      >
-        Import {{ selectedJobs.length }} jobs
-      </k-button>
-    </k-column>
+        <k-button
+          class="ms-button ms-t2"
+          icon="download"
+          @click="importHandler"
+        >
+          Import {{ selectedJobs.length }} jobs
+        </k-button>
+      </k-column>
+    </k-grid>
 
-  </k-grid>
+    <k-dialog
+      ref="dialog"
+      :button="$t('delete')"
+      theme="negative"
+      icon="trash"
+      @submit="deleteJobs"
+    >
+      <k-text>
+        Confirm deletion of {{ selectedJobs.length }} jobs?
+      </k-text>
+    </k-dialog>
   </div>
-  <p v-else class="ms-info">
+  <k-empty icon="page" v-else>
     <strong>No jobs in this project</strong>
-  </p>
+  </k-empty>
 </template>
 
 <script>
@@ -83,8 +94,7 @@ export default {
     return {
       query: null,
       jobs: [],
-      selectedJobs: [],
-      confirmDelete: false
+      selectedJobs: []
     }
   },
   computed: {
@@ -128,16 +138,6 @@ export default {
         this.jobs = freeze(response.data.content)
         this.selectedJobs = []
       }).catch(this.$alert)
-    },
-    deleteHandler () {
-      if (this.confirmDelete) {
-        this.deleteJobs()
-      } else {
-        this.confirmDelete = true
-        setTimeout(() => {
-          this.confirmDelete = false
-        }, 1500)
-      }
     },
     importJob (job) {
       var promise
@@ -216,11 +216,6 @@ label {
   padding: 11px;
 }
 
-.ms-info {
-  margin: 1rem 0;
-  text-align: center;
-}
-
 .k-list-item-text small {
   margin-right: -10px;
 }
@@ -231,11 +226,5 @@ label {
   .k-icon {
     width: auto;
   }
-}
-
-.ms-delete {
-  display: block;
-  margin: 0.75rem auto;
-  opacity: 0.6;
 }
 </style>
