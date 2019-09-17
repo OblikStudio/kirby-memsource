@@ -147,15 +147,21 @@ export default {
 
       if (language) {
         promise = this.$store.dispatch('memsource', {
-          url: `/projects/${ this.projectId }/jobs/${ job.uid }/targetFile`
+          url: `/projects/${ this.projectId }/jobs/${ job.uid }/targetFile`,
+          responseType: 'blob'
         }).then(response => {
+          var blob = response.data
+          var config = {
+            language: language.code
+          }
+
           return this.$store.dispatch('outsource', {
             url: '/import',
             method: 'post',
-            data: {
-              language: language.code,
-              content: response.data
-            }
+            headers: {
+              'Memsource': JSON.stringify(config)
+            },
+            data: blob
           })
         }).then(response => {
           return Promise.resolve(response.data)
@@ -182,10 +188,7 @@ export default {
       }).then(response => {
         return this.loadJobs()
       }).then(response => {
-        this.$store.commit('ALERT', {
-          theme: 'positive',
-          text: `Deleted ${ jobs.length } jobs!`
-        })
+        this.$alert(`Deleted ${ jobs.length } jobs!`)
       }).catch(this.$alert)
     }
   },

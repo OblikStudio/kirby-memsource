@@ -2,6 +2,7 @@
 
 namespace Oblik\Memsource;
 
+use Exception;
 use Oblik\Outsource\Importer;
 
 return [
@@ -9,22 +10,27 @@ return [
         'pattern' => 'import',
         'method' => 'POST',
         'action' => function () {
-            $postData = file_get_contents('php://input');
-            $input = json_decode($postData, true);
+            if ($config = $_SERVER['HTTP_MEMSOURCE'] ?? null) {
+                $config = json_decode($config, true);
+            }
 
-            if (empty($input['language'])) {
+            $language = $config['language'] ?? null;
+            $postData = file_get_contents('php://input');
+            $content = json_decode($postData, true);
+
+            if (empty($language)) {
                 throw new Exception('Missing language', 400);
             }
 
-            if (empty($input['content'])) {
+            if (empty($content)) {
                 throw new Exception('Missing content', 400);
             }
 
             $importer = new Importer(walkerSettings([
-                'language' => $input['language']
+                'language' => $language
             ]));
 
-            return $importer->process($input['content']);
+            return $importer->process($content);
         }
     ]
 ];
