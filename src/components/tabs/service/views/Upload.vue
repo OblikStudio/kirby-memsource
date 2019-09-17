@@ -58,6 +58,18 @@
 import cloneDeep from 'lodash/cloneDeep'
 import NameGen from '@/components/NameGen.vue'
 
+const IMPORT_SETTINGS = {
+  name: 'kirby-2.0.0',
+  fileImportSettings: {
+    inputCharset: 'UTF-8',
+    outputCharset: 'UTF-8',
+    json: {
+      htmlSubFilter: true,
+      includeKeyRegexp: '.*(?<!/id)$'
+    }
+  }
+}
+
 function countObjectData (data) {
   var stats = {
     strings: 0,
@@ -155,10 +167,6 @@ export default {
   methods: {
     upload () {
       this.getImportSettings().then(settings => {
-        this.$store.commit('ALERT', {
-          text: `Using import settings: ${ settings.name }`
-        })
-
         var filename = this.jobName + '.json'
         var memsourceHeader = {
           targetLangs: this.selectedLangs,
@@ -180,10 +188,7 @@ export default {
       }).then(response => {
         var jobs = (response.data && response.data.jobs)
         if (jobs && jobs.length) {
-          this.$store.commit('ALERT', {
-            theme: 'positive',
-            text: `Successfully created ${ jobs.length } jobs!`
-          })
+          this.$alert(`Successfully created ${ jobs.length } jobs!`, 'positive')
         }
       }).catch(this.$alert)
     },
@@ -192,28 +197,34 @@ export default {
         url: '/importSettings'
       }).then(response => {
         var items = (response.data && response.data.content) || []
-        var settings = items.find(item => item.name === 'k3-1')
+        var settings = items.find(item => item.name === IMPORT_SETTINGS.name)
 
         if (settings) {
           return this.$store.dispatch('memsource', {
             url: `/importSettings/${ settings.uid }`
+          }).then(response => {
+            return Promise.resolve(response.data)
           })
         } else {
           return this.$store.dispatch('memsource', {
             url: '/importSettings',
             method: 'post',
-            data: {
-              name: 'k3-1',
-              fileImportSettings: {
-                json: {
-                  htmlSubFilter: true
-                }
-              }
-            }
+            data: IMPORT_SETTINGS
+          }).then(response => {
+            this.$alert(`Created import settings ${ IMPORT_SETTINGS.name }`)
+            return Promise.resolve(response.data)
           })
         }
-      }).then(response => {
-        return Promise.resolve(response.data)
+      }).then(settings => {
+        var name = settings.name
+        var date = settings.dateCreated
+
+        if (name && date) {
+          this.$alert(`Using settings ${ name } (${ (new Date(date)).toLocaleString() })`)
+          return Promise.resolve(settings)
+        } else {
+          return Promise.reject(new Error('Invalid import settings'))
+        }
       })
     },
     downloadExport () {
