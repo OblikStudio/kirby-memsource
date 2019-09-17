@@ -164,8 +164,10 @@ export default {
         promise = Promise.reject(new Error('Invalid site language'))
       }
 
-      return promise.catch(error => Promise.resolve(error)).then(data => {
+      return promise.then(data => {
         return Promise.resolve({ job, language, data })
+      }).catch(error => {
+        return Promise.resolve({ job, language, error })
       })
     },
     deleteJobs () {

@@ -9,7 +9,7 @@
         @click="activeId = result.id"
       >
         <div class="k-list-item-image">
-          <span class="k-icon" data-back="black" title="Target language">
+          <span class="k-icon" :data-ms-state="result.state">
             <strong>{{ result.job.targetLang }}</strong>
           </span>
         </div>
@@ -21,8 +21,16 @@
     </div>
 
     <template v-if="activeResult">
-      <Diff v-if="!activeResult.isEmpty" :entries="activeResult.diff" />
-      <p v-else>Nothing was changed.</p>
+      <template v-if="activeResult.state === 'imported'">
+        <p class="ms-title">Changed {{ activeResult.diff.length }} values in {{ activeResult.language.name }}</p>
+        <Diff :entries="activeResult.diff" />
+      </template>
+      <template v-else-if="activeResult.state === 'error'">
+        <p class="ms-title">Error: {{ activeResult.error.message }}</p>
+      </template>
+      <template v-if="activeResult.state === 'empty'">
+        <p class="ms-title">Nothing was changed</p>
+      </template>
     </template>
   </div>
 </template>
@@ -44,11 +52,20 @@ export default {
     results () {
       return this.$store.state.results.map(result => {
         var diff = getEntries(result.data)
+        var state = 'imported'
+
+        if (result.error) {
+          state = 'error'
+        } else if (diff.length === 0) {
+          state = 'empty'
+        }
 
         return {
           id: result.job.uid,
           job: result.job,
-          isEmpty: diff.length === 0,
+          error: result.error,
+          language: result.language,
+          state,
           diff
         }
       })
@@ -67,6 +84,29 @@ export default {
 
 <style lang="scss" scoped>
 .ms-active {
-  box-shadow: 0 0 0 2px rgba(66,113,174,.25);
+  background: #f6f6f6;
 }
+
+.ms-title {
+  margin-top: 2.5rem;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.k-list-item {
+  cursor: pointer;
+}
+
+  .k-list-item-image {
+    width: 64px;
+
+    .k-icon {
+      width: auto;
+      color: #fff;
+    }
+  }
+
+[data-ms-state="imported"] { background: #5d800d; }
+[data-ms-state="empty"] { background: #000; }
+[data-ms-state="error"] { background: #800d0d; }
 </style>
