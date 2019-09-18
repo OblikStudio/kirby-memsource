@@ -183,14 +183,18 @@ export default {
     transition: opacity 0.1s ease-out;
   }
 
-  .k-tab-button {
-    &[aria-current]:after {
-      display: none;
+    .k-tab-button {
+      &[aria-current]:after {
+        display: none;
+      }
+
+      &.k-button {
+        width: 100%;
+      }
     }
 
-    &.k-button {
-      width: 100%;
-    }
+  .k-box + .k-box {
+    margin-top: 5px;
   }
 
 /deep/ {

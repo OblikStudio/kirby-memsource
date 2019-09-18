@@ -152,22 +152,22 @@ export default {
     deleteJobs () {
       var jobs = this.selectedJobs
 
-      this.$store.dispatch('memsource', {
-        url: `/projects/${ this.projectId }/jobs/batch`,
-        method: 'delete',
-        data: {
-          jobs: jobs.map(id => ({ uid: id }))
-        }
-      }).then(response => {
-        return this.loadJobs()
-      }).then(response => {
-        this.$alert(this.$t('memsource.info.deleted_jobs', {
-          count: jobs.length
-        }))
-      }).catch(this.$alert)
-      .then(() => {
-        this.$refs.dialog.close()
-      })
+      this.$refs.dialog.close()
+      this.$loading(
+        this.$store.dispatch('memsource', {
+          url: `/projects/${ this.projectId }/jobs/batch`,
+          method: 'delete',
+          data: {
+            jobs: jobs.map(id => ({ uid: id }))
+          }
+        }).then(response => {
+          return this.loadJobs()
+        }).then(response => {
+          this.$alert(this.$t('memsource.info.deleted_jobs', {
+            count: jobs.length
+          }))
+        }).catch(this.$alert)
+      )
     }
   },
   created () {
