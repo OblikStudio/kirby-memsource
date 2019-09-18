@@ -7,6 +7,10 @@
       :required="true"
     />
 
+    <template slot="options">
+      <slot name="options" />
+    </template>
+
     <div class="k-list-item-options">
       <k-button icon="refresh" @click="generate"></k-button>
     </div>

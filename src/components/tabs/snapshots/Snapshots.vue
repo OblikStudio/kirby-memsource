@@ -1,33 +1,29 @@
 <template>
-  <div class="k-fieldset">
-    <k-grid>
-      <k-column class="ms-add">
-        <NameGen v-model="name" />
-
-        <k-button icon="add" @click="create">
+  <div>
+    <div class="k-section">
+      <NameGen :label="$t('name')" v-model="name">
+        <k-button slot="options" icon="add" @click="create">
           {{ $t('add') }}
         </k-button>
-      </k-column>
+      </NameGen>
+    </div>
 
-      <k-column>
-        <k-list>
-          <k-list-item
-            v-for="snapshot in snapshots"
-            :key="snapshot.name"
-            :icon="{
-              type: 'page',
-              back: 'black'
-            }"
-            :text="snapshot.name"
-            :info="time(snapshot.date)"
-            :options="[
-              {icon: 'trash', text: $t('delete')}
-            ]"
-            @action="remove(snapshot.name)"
-          ></k-list-item>
-        </k-list>
-      </k-column>
-    </k-grid>
+    <k-list>
+      <k-list-item
+        v-for="snapshot in snapshots"
+        :key="snapshot.name"
+        :icon="{
+          type: 'page',
+          back: 'black'
+        }"
+        :text="snapshot.name"
+        :info="time(snapshot.date)"
+        :flag="{
+          icon: 'trash',
+          click: removeClosure(snapshot.name)
+        }"
+      ></k-list-item>
+    </k-list>
   </div>
 </template>
 
@@ -47,7 +43,7 @@ export default {
   },
   methods: {
     time (seconds) {
-      return new Date(seconds * 1000).toLocaleString()
+      return (new Date(seconds * 1000)).toLocaleString()
     },
     fetch () {
       this.$store.dispatch('outsource', {
@@ -80,6 +76,11 @@ export default {
       }).then(response => {
         this.fetch()
       }).catch(this.$alert)
+    },
+    removeClosure (name) {
+      return () => {
+        this.remove(name)
+      }
     }
   },
   created() {
@@ -87,15 +88,3 @@ export default {
   }
 };
 </script>
-
-<style lang="scss" scoped>
-.ms-add {
-  display: flex;
-  grid-column: 4 / span 6;
-
-  .k-button {
-    flex: 1 0 auto;
-    margin-left: 1rem;
-  }
-}
-</style>
