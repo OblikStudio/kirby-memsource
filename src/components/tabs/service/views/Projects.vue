@@ -13,7 +13,7 @@
 
 <script>
 export default {
-  inject: ['$alert'],
+  inject: ['$alert', '$loading'],
   data () {
     return {
       projects: []
@@ -34,12 +34,14 @@ export default {
   },
   created () {
     this.$store.commit('SET_PROJECT', null)
-    this.$store.dispatch('memsource', {
-      url: '/projects',
-      method: 'get'
-    }).then(response => {
-      this.projects = response.data.content
-    }).catch(this.$alert)
+    this.$loading(
+      this.$store.dispatch('memsource', {
+        url: '/projects',
+        method: 'get'
+      }).then(response => {
+        this.projects = response.data.content
+      }).catch(this.$alert)
+    )
   }
 }
 </script>

@@ -150,6 +150,7 @@ export default {
   },
   methods: {
     upload () {
+      this.$alert(this.$t('upload.progress'))
       this.getImportSettings().then(settings => {
         var filename = this.jobName + '.json'
         var memsourceHeader = {

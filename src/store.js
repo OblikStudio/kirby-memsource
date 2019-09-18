@@ -38,7 +38,8 @@ export default (Vuex, rootStore) => new Vuex.Store({
     session: session.load(),
     export: null,
     project: null,
-    results: null
+    results: null,
+    loading: false
   },
   getters: {
     view: (state) => {
@@ -85,6 +86,9 @@ export default (Vuex, rootStore) => new Vuex.Store({
     TAB (state, value) {
       state.crumbs = []
       state.tab = value
+    },
+    LOADING (state, value) {
+      state.loading = !!value
     },
     VIEW (state, value) {
       if (typeof value === 'string') {

@@ -60,7 +60,7 @@
 import freeze from 'deep-freeze-node'
 
 export default {
-  inject: ['$alert', '$jobInfo'],
+  inject: ['$alert', '$jobInfo', '$loading'],
   data () {
     return {
       jobs: [],
@@ -97,10 +97,12 @@ export default {
         .map(id => this.jobs.find(job => job.uid === id))
         .filter(job => !!job)
 
-      Promise.all(jobs.map(this.importJob, this)).then(results => {
-        this.$store.commit('SET_RESULTS', results)
-        this.$store.commit('VIEW', 'Results')
-      })
+      this.$loading(
+        Promise.all(jobs.map(this.importJob, this)).then(results => {
+          this.$store.commit('SET_RESULTS', results)
+          this.$store.commit('VIEW', 'Results')
+        })
+      )
     },
     loadJobs () {
       return this.$store.dispatch('memsource', {
@@ -169,7 +171,7 @@ export default {
     }
   },
   created () {
-    this.loadJobs()
+    this.$loading(this.loadJobs())
   }
 }
 </script>

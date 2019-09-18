@@ -24,7 +24,7 @@
 
 <script>
 export default {
-  inject: ['$alert'],
+  inject: ['$alert', '$loading'],
   data () {
     return {
       showForm: false,
@@ -45,35 +45,39 @@ export default {
         params.pages = null
       }
 
-      this.$store.dispatch('outsource', {
-        url: '/export',
-        params
-      }).then(response => {
-        this.$store.commit('SET_EXPORT', response.data)
-        this.$store.commit('VIEW', 'Upload')
-      }).catch(this.$alert)
+      this.$loading(
+        this.$store.dispatch('outsource', {
+          url: '/export',
+          params
+        }).then(response => {
+          this.$store.commit('SET_EXPORT', response.data)
+          this.$store.commit('VIEW', 'Upload')
+        }).catch(this.$alert)
+      )
     }
   },
   created () {
-    this.$store.dispatch('outsource', {
-      url: '/snapshot',
-      method: 'get'
-    }).then(response => {
-      this.snapshots = response.data.sort((a, b) => {
-        return (a.date > b.date) ? -1 : 1
-      }).map(snap => {
-        return {
-          text: snap.name,
-          value: snap.name
-        }
-      })
+    this.$loading(
+      this.$store.dispatch('outsource', {
+        url: '/snapshot',
+        method: 'get'
+      }).then(response => {
+        this.snapshots = response.data.sort((a, b) => {
+          return (a.date > b.date) ? -1 : 1
+        }).map(snap => {
+          return {
+            text: snap.name,
+            value: snap.name
+          }
+        })
 
-      /**
-       * Needed because the select field in the form does not have reactive
-       * options. @see https://github.com/getkirby/kirby/issues/2075
-       */
-      this.showForm = true
-    }).catch(this.$alert)
+        /**
+         * Needed because the select field in the form does not have reactive
+         * options. @see https://github.com/getkirby/kirby/issues/2075
+         */
+        this.showForm = true
+      }).catch(this.$alert)
+    )
   }
 }
 </script>

@@ -20,7 +20,7 @@
 
 <script>
 export default {
-  inject: ['$alert'],
+  inject: ['$alert', '$loading'],
   data () {
     return {
       credentials: {
@@ -31,13 +31,15 @@ export default {
   },
   methods: {
     submit () {
-      this.$store.dispatch('memsource', {
-        url: '/auth/login',
-        method: 'post',
-        data: this.credentials
-      }).then(response => {
-        this.$store.commit('SET_SESSION', response.data)
-      }).catch(this.$alert)
+      this.$loading(
+        this.$store.dispatch('memsource', {
+          url: '/auth/login',
+          method: 'post',
+          data: this.credentials
+        }).then(response => {
+          this.$store.commit('SET_SESSION', response.data)
+        }).catch(this.$alert)
+      )
     }
   }
 }

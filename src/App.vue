@@ -1,5 +1,5 @@
 <template>
-  <k-view>
+  <k-view :class="{ 'ms-loading': $store.state.loading }">
     <div class="k-header">
       <div class="k-header-tabs">
         <nav>
@@ -18,7 +18,7 @@
       <Crumbs v-if="crumbs.length" v-model="crumbs"></Crumbs>
     </div>
 
-    <component :is="currentTab"></component>
+    <component :is="currentTab" v-show="!$store.state.loading"></component>
 
     <k-dialog ref="alerts" size="medium">
       <k-text>
@@ -57,7 +57,8 @@ export default {
   },
   provide () {
     return {
-      $alert: this.alert
+      $alert: this.$alert,
+      $loading: this.$loading
     }
   },
   data () {
@@ -103,7 +104,7 @@ export default {
     }
   },
   methods: {
-    alert (data, theme) {
+    $alert (data, theme) {
       var conf = {
         theme: 'info',
         text: null,
@@ -122,6 +123,12 @@ export default {
       }
 
       this.$store.commit('ALERT', conf)
+    },
+    $loading (promise) {
+      this.$store.commit('LOADING', true)
+      return promise.then(() => {
+        this.$store.commit('LOADING', false)
+      })
     },
     closeAlerts () {
       this.$store.commit('CLEAR_ALERTS')
@@ -163,7 +170,18 @@ export default {
 <style lang="scss" scoped>
 .k-view {
   max-width: 50rem;
+
+  &.ms-loading {
+    .k-header {
+      pointer-events: none;
+      opacity: 0.6;
+    }
+  }
 }
+
+  .k-header {
+    transition: opacity 0.1s ease-out;
+  }
 
   .k-tab-button {
     &[aria-current]:after {
