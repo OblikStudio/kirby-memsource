@@ -1,45 +1,25 @@
 <template>
-  <div class="k-fieldset">
-    <k-grid>
-      <k-column width="1/2">
-        <label class="k-field-label">Snapshot</label>
-
-        <select v-model="snapshot">
-          <option :value="null">None</option>
-          <option
-            v-for="option in snapshots"
-            :key="option.name"
-            :value="option.name"
-          >
-            {{ option.name }}
-          </option>
-        </select>
-
-        <div data-theme="help" class="k-text k-field-help">
-          Compare current site data with a snapshot to export only the differences.
-        </div>
-      </k-column>
-
-      <k-column width="1/2">
-        <k-text-field
-          v-model="pages"
-          label="Pages"
-          placeholder="Export all pages"
-          help="When set, only pages containing the given string will be exported."
-        />
-      </k-column>
-
-      <k-column width="1/1" class="ms-actions">
-        <k-button
-          class="ms-button"
-          icon="upload"
-          @click="submit"
-        >
-          Export
-        </k-button>
-      </k-column>
-    </k-grid>
-  </div>
+  <k-form v-if="showForm" v-model="params" @submit="submit" :fields="{
+    snapshots: {
+      width: '1/2',
+      type: 'select',
+      options: snapshots,
+      label: $t('snapshot'),
+      help: $t('memsource.help.snapshot')
+    },
+    pages: {
+      width: '1/2',
+      type: 'text',
+      label: $t('pages'),
+      help: $t('memsource.help.pages')
+    }
+  }">
+    <k-button-group slot="footer" align="center">
+      <k-button icon="upload" @click="submit">
+        {{ $t('export') }}
+      </k-button>
+    </k-button-group>
+  </k-form>
 </template>
 
 <script>
@@ -47,17 +27,17 @@ export default {
   inject: ['$alert'],
   data () {
     return {
-      pages: null,
-      snapshot: null,
-      snapshots: []
+      showForm: false,
+      snapshots: [],
+      params: {
+        snapshot: null,
+        pages: null
+      }
     }
   },
   methods: {
     submit () {
-      var params = {
-        pages: this.pages,
-        snapshot: this.snapshot
-      }
+      var params = { ...this.params }
 
       if (typeof params.pages === 'string' && params.pages.length) {
         params.pages = `!${ params.pages }!` // PHP regex
@@ -81,7 +61,18 @@ export default {
     }).then(response => {
       this.snapshots = response.data.sort((a, b) => {
         return (a.date > b.date) ? -1 : 1
+      }).map(snap => {
+        return {
+          text: snap.name,
+          value: snap.name
+        }
       })
+
+      /**
+       * Needed because the select field in the form does not have reactive
+       * options. @see https://github.com/getkirby/kirby/issues/2075
+       */
+      this.showForm = true
     }).catch(this.$alert)
   }
 }

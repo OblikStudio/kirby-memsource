@@ -55,5 +55,20 @@ Kirby::plugin('oblik/memsource', [
             include 'routes/import.php',
             include 'routes/snapshot.php'
         )
+    ],
+    'translations' => [
+        'en' => [
+            'snapshot' => 'Snapshot',
+            'export' => 'Export',
+            'variables' => 'Variables',
+            'strings' => 'Strings',
+            'words' => 'Words',
+            'data' => 'Data',
+            'characters' => 'Characters',
+            'memsource.label.job' => 'Job Name',
+            'memsource.label.target_languages' => 'Target Languages',
+            'memsource.help.snapshot' => 'Compare current site data with a snapshot to export only the differences.',
+            'memsource.help.pages' => 'When set, only pages containing the given string will be exported.'
+        ]
     ]
 ]);

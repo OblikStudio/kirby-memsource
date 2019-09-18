@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <k-field v-bind="$attrs">
     <k-input
       theme="field"
       type="text"
@@ -10,7 +10,7 @@
     <div class="k-list-item-options">
       <k-button icon="refresh" @click="generate"></k-button>
     </div>
-  </div>
+  </k-field>
 </template>
 
 <script>
@@ -51,7 +51,7 @@ export default {
 
 .k-list-item-options {
   position: absolute;
-  top: 0;
   right: 0;
+  bottom: 0;
 }
 </style>

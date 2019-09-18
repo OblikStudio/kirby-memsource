@@ -1,61 +1,48 @@
 <template>
   <div>
     <section class="k-section">
-      <k-grid v-if="stats" class="ms-stats">
-        <k-column width="1/3" v-for="(value, name) in stats" :key="name">
-          {{ name }}: <strong>{{ value }}</strong>
-        </k-column>
-      </k-grid>
+      <Stats :data="stats" />
     </section>
 
     <section class="k-section">
       <k-json-editor
         v-model="$store.state.export"
-        label="Data"
+        :label="$t('data')"
       ></k-json-editor>
     </section>
 
     <k-grid class="k-section" gutter="medium">
-      <k-column width="1/3">
-        <header>
-          <h2 class="k-headline">Job Name</h2>
-        </header>
-
-        <NameGen v-model="jobName" />
+      <k-column width="1/2">
+        <NameGen
+          v-model="jobName"
+          :label="$t('memsource.label.job')"
+        />
       </k-column>
 
-      <k-column width="2/3">
-        <header>
-          <h2 class="k-headline">Target Languages</h2>
-        </header>
-
-        <k-input
+      <k-column width="1/2">
+        <k-checkboxes-field
           type="checkboxes"
           v-model="selectedLangs"
           :options="languageOptions"
-          :required="true"
+          :label="$t('memsource.label.target_languages')"
         />
       </k-column>
     </k-grid>
 
-    <div class="ms-actions">
-      <k-button
-        class="ms-button"
-        icon="download"
-        @click="downloadExport"
-      >
-        Save as file
+    <k-button-group align="center">
+      <k-button icon="download" @click="downloadExport">
+        {{ $t('file') }}
       </k-button>
 
-      <k-button @click="upload" class="ms-button ms-t1" icon="upload">
-        Upload
+      <k-button theme="positive" icon="upload" @click="upload">
+        {{ $t('upload') }}
       </k-button>
-    </div>
+    </k-button-group>
   </div>
 </template>
 
 <script>
-import cloneDeep from 'lodash/cloneDeep'
+import Stats from '@/components/Stats.vue'
 import NameGen from '@/components/NameGen.vue'
 
 const IMPORT_SETTINGS = {
@@ -90,7 +77,7 @@ function countObjectData (data) {
       value = value + ''
 
       stats.strings++
-      stats.words += value.split(/\s+/).length
+      stats.words += value.trim().split(/\s+/).length
       stats.chars += value.length
     }
   }
@@ -101,6 +88,7 @@ function countObjectData (data) {
 export default {
   inject: ['$alert'],
   components: {
+    Stats,
     NameGen
   },
   data () {
@@ -116,17 +104,6 @@ export default {
     project () {
       return this.$store.state.project
     },
-    displayData () {
-      var data = {}
-
-      for (var k in this.data) {
-        if (Object.keys(this.data[k]).length) {
-          data[k] = this.data[k]
-        }
-      }
-
-      return data
-    },
     stats () {
       if (!this.data) {
         return null
@@ -134,16 +111,17 @@ export default {
 
       var pages = this.data.pages && Object.keys(this.data.pages).length
       var files = this.data.files && Object.keys(this.data.files).length
+      var variableStats = countObjectData(this.data.variables)
       var stats = countObjectData(this.data)
 
-      return {
-        Pages: pages,
-        Files: files,
-        Variables: countObjectData(this.data.variables).strings,
-        Strings: stats.strings,
-        Words: stats.words,
-        Characters: stats.chars
-      }
+      return [
+        { title: this.$t('pages'), content: pages || 0 },
+        { title: this.$t('files'), content: files || 0 },
+        { title: this.$t('variables'), content: variableStats.strings },
+        { title: this.$t('strings'), content: stats.strings },
+        { title: this.$t('words'), content: stats.words },
+        { title: this.$t('characters'), content: stats.chars }
+      ]
     },
     languageOptions () {
       var targetLangs =  this.project.targetLangs
@@ -151,7 +129,10 @@ export default {
       return this.$store.getters.availableLanguages
         .filter(lang => !lang.default)
         .map(lang => {
-          // Overwrite due to: https://forum.getkirby.com/t/language-locales-not-available-in-the-panel-front-end/14620
+          /**
+           *  Overwrite because site locales can't be used
+           *  @see https://github.com/getkirby/kirby/issues/2054
+          */
           var target = targetLangs.find(code => code.indexOf(lang.code) === 0)
           if (target) {
             lang.code = target
@@ -248,33 +229,3 @@ export default {
   }
 }
 </script>
-
-<style lang="scss" scoped>
-/deep/ {
-  .ms-stats {
-    grid-column-gap: 1.5rem;
-    grid-row-gap: 0.5rem;
-  }
-
-  .k-checkboxes-input {
-    li {
-      display: inline-block;
-      width: 50%;
-      margin-bottom: 0.75rem;
-    }
-  }
-}
-
-header {
-  margin-bottom: 0.75rem;
-}
-
-.k-list-item {
-  &:not(:hover) {
-    .k-list-item-options {
-      width: 0;
-      overflow: hidden;
-    }
-  }
-}
-</style>

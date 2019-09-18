@@ -176,5 +176,11 @@ export default {
   .ms-crumbs {
     border-bottom: none;
   }
+
+  .k-form {
+    .k-button-group {
+      margin-top: 1rem;
+    }
+  }
 }
 </style>
