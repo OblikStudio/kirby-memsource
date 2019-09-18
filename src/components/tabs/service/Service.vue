@@ -19,9 +19,29 @@ export default {
     Import,
     Results
   },
+  provide () {
+    return {
+      $jobInfo: this.jobInfo
+    }
+  },
+  methods: {
+    jobInfo (job) {
+      return `${ (new Date(job.dateCreated)).toLocaleString() } (${ job.status })` +
+        `<strong>${ job.targetLang }</strong>`
+    }
+  },
   created () {
     this.$store.commit('VIEW', 'Projects')
   }
 }
 </script>
 
+<style lang="scss" scoped>
+/deep/ {
+  .k-list-item-text {
+    strong {
+      margin-left: 10px;
+    }
+  }
+}
+</style>

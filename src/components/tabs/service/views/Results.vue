@@ -1,51 +1,60 @@
 <template>
   <div>
-    <div class="k-list">
-      <div
+    <k-list>
+      <k-list-item
         v-for="result in results"
-        class="k-list-item"
-        :class="{ 'ms-active': result === activeResult }"
         :key="result.id"
-        @click="activeId = result.id"
-      >
-        <div class="k-list-item-image">
-          <span class="k-icon" :data-ms-state="result.state">
-            <strong>{{ result.job.targetLang }}</strong>
-          </span>
-        </div>
-        
-        <p class="k-list-item-text">
-          <em>{{ result.job.filename }}</em>
-        </p>
-      </div>
-    </div>
+        :text="result.job.filename"
+        :icon="{ type: statusIcon(result.state), back: result.state }"
+        :info="$jobInfo(result.job)"
+        @click="open(result)"
+      />
+    </k-list>
 
-    <template v-if="activeResult">
-      <template v-if="activeResult.state === 'imported'">
-        <p class="ms-title">Changed {{ activeResult.diff.length }} values in {{ activeResult.language.name }}</p>
-        <Diff :entries="activeResult.diff" />
+    <k-dialog ref="dialog" size="large">
+      <template v-if="activeResult">
+        <k-headline>
+          <template v-if="activeResult.state === 'imported'">
+            {{ $t('memsource.info.changed_values', {
+              count: activeResult.diff.length,
+              language: activeResult.language.name
+            }) }}
+          </template>
+          <template v-else-if="activeResult.state === 'error'">
+            {{ $t('memsource.info.error', {
+              message: activeResult.error.message
+            }) }}
+          </template>
+          <template v-if="activeResult.state === 'empty'">
+            {{ $t('memsource.info.no_changed') }}
+          </template>
+        </k-headline>
+
+        <Diff v-if="activeResult.diff.length" :entries="activeResult.diff" />
       </template>
-      <template v-else-if="activeResult.state === 'error'">
-        <p class="ms-title">Error: {{ activeResult.error.message }}</p>
-      </template>
-      <template v-if="activeResult.state === 'empty'">
-        <p class="ms-title">Nothing was changed</p>
-      </template>
-    </template>
+
+      <k-button-group slot="footer">
+        <div></div>
+        <k-button icon="check" @click="close">
+          {{ $t('close') }}
+        </k-button>
+      </k-button-group>
+    </k-dialog>
   </div>
 </template>
 
 <script>
-import { getEntries } from '@/modules/diff'
 import Diff from '@/components/Diff.vue'
+import { getEntries } from '@/modules/diff'
 
 export default {
+  inject: ['$jobInfo'],
   components: {
     Diff
   },
   data () {
     return {
-      activeId: null
+      activeResult: null
     }
   },
   computed: {
@@ -69,44 +78,45 @@ export default {
           diff
         }
       })
-    },
-    activeResult () {
-      return this.results.find(result => result.id === this.activeId)
     }
   },
-  created () {
-    if (this.results.length) {
-      this.activeId = this.results[0].id
+  methods: {
+    statusIcon (state) {
+      switch (state) {
+        case 'imported': return 'check'
+        case 'error': return 'cancel'
+        case 'empty': return 'circle-outline'
+      }
+    },
+    open (result) {
+      this.activeResult = result
+      this.$refs.dialog.open()
+    },
+    close () {
+      this.$refs.dialog.close()
+      this.activeResult = null
     }
   }
 }
 </script>
 
 <style lang="scss" scoped>
-.ms-active {
-  background: #f6f6f6;
-}
-
-.ms-title {
-  margin-top: 2.5rem;
-  margin-bottom: 1rem;
-  text-align: center;
+/deep/ {
+  [data-back] { color: #fff; }
+  [data-back="imported"] { background: #5d800d; }
+  [data-back="empty"] { background: #000; }
+  [data-back="error"] { background: #800d0d; }
 }
 
 .k-list-item {
   cursor: pointer;
 }
 
-  .k-list-item-image {
-    width: 64px;
+.k-headline {
+  text-align: center;
+}
 
-    .k-icon {
-      width: auto;
-      color: #fff;
-    }
-  }
-
-[data-ms-state="imported"] { background: #5d800d; }
-[data-ms-state="empty"] { background: #000; }
-[data-ms-state="error"] { background: #800d0d; }
+.ms-diff {
+  margin-top: 1.5rem;
+}
 </style>

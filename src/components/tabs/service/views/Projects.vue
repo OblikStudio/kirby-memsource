@@ -48,8 +48,4 @@ export default {
 .k-list-item {
   cursor: pointer;
 }
-
-/deep/ .k-list-item-text strong {
-  margin-left: 10px;
-}
 </style>

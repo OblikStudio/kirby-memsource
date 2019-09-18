@@ -1,87 +1,58 @@
 <template>
-  <div class="k-fieldset" v-if="jobs.length">
-    <k-grid>
-      <k-column>
-        <label class="k-field-label">
-          Filter Jobs
+  <div v-if="jobs.length">
+    <k-text-field
+      class="k-section"
+      v-model="query"
+      :counter="false"
+      :label="$t('memsource.label.filter_jobs')"
+      :placeholder="$t('search')"
+    >
+      <k-button slot="options" icon="check" @click="toggle">
+        {{ $t('select') }}
+      </k-button>
+    </k-text-field>
+
+    <k-list>
+      <k-list-item
+        v-for="job in filteredJobs"
+        :key="job.uid"
+        :text="job.filename"
+        :info="$jobInfo(job)"
+        :icon="{ type: 'text', back: 'black' }"
+      >
+        <label slot="options" class="k-button" :for="job.uid">
+          <input type="checkbox" :id="job.uid" v-model="selectedJobs" :value="job.uid" />
         </label>
+      </k-list-item>
+      <k-empty v-if="filteredJobs.length < jobs.length" icon="text">
+        {{ $t('memsource.info.hidden_jobs', { count: jobs.length - filteredJobs.length }) }}
+      </k-empty>
+    </k-list>
 
-        <k-input
-          theme="field"
-          type="text"
-          v-model="query"
-          placeholder="Query"
-        />
-      </k-column>
+    <k-button-group v-if="selectedJobs.length" align="center">
+      <k-button icon="trash" theme="negative" @click="$refs.dialog.open()">
+        {{ $t('delete') }}
+      </k-button>
 
-      <k-column>
-        <template v-if="filteredJobs.length">
-          <k-button
-            class="ms-select-all"
-            icon="check"
-            @click="toggleSelected"
-          ></k-button>
-
-          <div class="k-list">
-            <div v-for="job in filteredJobs" class="k-list-item" :key="job.uid">
-              <div class="k-list-item-image">
-                <span class="k-icon" data-back="black" title="Target language">
-                  <strong>{{ job.targetLang }}</strong>
-                </span>
-              </div>
-              
-              <p class="k-list-item-text" :title="(new Date(job.dateCreated)).toLocaleString()">
-                <em>{{ job.filename }}</em>
-                <small>{{ job.status }}</small>
-              </p>
-
-              <div class="k-list-item-options">
-                <label :for="job.uid" class="k-button">
-                  <input :id="job.uid" v-model="selectedJobs" :value="job.uid" type="checkbox"/>
-                </label>
-              </div>
-            </div>
-          </div>
-        </template>
-
-        <p v-if="filteredJobs.length < jobs.length" class="ms-info">
-          <strong>{{ jobs.length - filteredJobs.length }} hidden jobs</strong>
-        </p>
-      </k-column>
-
-      <k-column class="ms-actions" v-if="selectedJobs.length">
-        <k-button
-          icon="trash"
-          theme="negative"
-          @click="$refs.dialog.open()"
-        >
-          {{ $t('delete') }}
-        </k-button>
-
-        <k-button
-          class="ms-button ms-t2"
-          icon="download"
-          @click="importHandler"
-        >
-          Import {{ selectedJobs.length }} jobs
-        </k-button>
-      </k-column>
-    </k-grid>
+      <k-button icon="download" theme="positive" @click="importHandler">
+        {{ $t('import') }}
+      </k-button>
+    </k-button-group>
 
     <k-dialog
       ref="dialog"
-      :button="$t('delete')"
       theme="negative"
       icon="trash"
+      :button="$t('delete')"
       @submit="deleteJobs"
     >
       <k-text>
-        Confirm deletion of {{ selectedJobs.length }} jobs?
+        {{ $t('memsource.info.jobs_deletion', { count: selectedJobs.length }) }}
       </k-text>
     </k-dialog>
   </div>
-  <k-empty icon="page" v-else>
-    <strong>No jobs in this project</strong>
+  <k-empty v-else icon="text">
+    {{ $t('memsource.info.jobs_empty') }}
   </k-empty>
 </template>
 
@@ -89,11 +60,11 @@
 import freeze from 'deep-freeze-node'
 
 export default {
-  inject: ['$alert'],
+  inject: ['$alert', '$jobInfo'],
   data () {
     return {
-      query: null,
       jobs: [],
+      query: null,
       selectedJobs: []
     }
   },
@@ -114,7 +85,7 @@ export default {
     }
   },
   methods: {
-    toggleSelected () {
+    toggle () {
       if (this.selectedJobs.length !== this.filteredJobs.length) {
         this.selectedJobs = this.filteredJobs.map(job => job.uid)
       } else {
@@ -199,32 +170,18 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-label {
-  display: flex;
-  align-items: center;
-
-  &.k-button,
-  & input {
-    cursor: pointer;
-  }
-}
-
-.ms-select-all {
-  display: block;
-  margin-top: -20px;
-  margin-left: auto;
-  padding: 11px;
-}
-
-.k-list-item-text small {
-  margin-right: -10px;
-}
-
-.k-list-item-image {
-  width: 64px;
-
-  .k-icon {
-    width: auto;
+/deep/ {
+  .k-list-item {
+    .k-button {
+      display: flex;
+      align-items: center;
+      margin-left: -10px;
+      top: 2px;
+      
+      &, input {
+        cursor: pointer;
+      }
+    }
   }
 }
 </style>

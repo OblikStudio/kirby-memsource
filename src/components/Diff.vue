@@ -1,9 +1,9 @@
 <template>
-  <div>
+  <div class="ms-diff">
     <div
       v-for="entry in entries"
-      class="ms-diff" 
       :key="entry.name"
+      class="ms-diff-entry" 
     >
       <p>{{ entry.name }}</p>
       <CodeDiff
@@ -29,8 +29,10 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.ms-diff {
-  margin-bottom: 1rem;
+.ms-diff-entry {
+  & + .ms-diff-entry {
+    margin-top: 1rem;
+  }
 
   p {
     font-family: monospace;
