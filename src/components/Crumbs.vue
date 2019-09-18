@@ -5,8 +5,8 @@
       :key="crumb.value"
       class="ms-crumbs__crumb"
     >
-      <span v-if="index === value.length - 1">{{ crumb.text }}</span>
-      <button v-else @click="open(crumb)">{{ crumb.text }}</button>
+      <span v-if="index === value.length - 1">{{ $t(crumb.text) }}</span>
+      <button v-else @click="open(crumb)">{{ $t(crumb.text) }}</button>
     </div>
   </div>
 </template>

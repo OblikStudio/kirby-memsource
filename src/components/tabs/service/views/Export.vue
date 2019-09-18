@@ -1,6 +1,6 @@
 <template>
   <k-form v-if="showForm" v-model="params" @submit="submit" :fields="{
-    snapshots: {
+    snapshot: {
       width: '1/2',
       type: 'select',
       options: snapshots,

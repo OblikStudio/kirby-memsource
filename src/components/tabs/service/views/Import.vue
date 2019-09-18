@@ -138,7 +138,7 @@ export default {
           return Promise.resolve(response.data)
         })
       } else {
-        promise = Promise.reject(new Error('Invalid site language'))
+        promise = Promise.reject(new Error(this.$t('memsource.info.invalid_language')))
       }
 
       return promise.then(data => {
@@ -159,8 +159,13 @@ export default {
       }).then(response => {
         return this.loadJobs()
       }).then(response => {
-        this.$alert(`Deleted ${ jobs.length } jobs!`)
+        this.$alert(this.$t('memsource.info.deleted_jobs', {
+          count: jobs.length
+        }))
       }).catch(this.$alert)
+      .then(() => {
+        this.$refs.dialog.close()
+      })
     }
   },
   created () {

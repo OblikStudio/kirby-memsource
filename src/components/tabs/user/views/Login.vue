@@ -2,12 +2,12 @@
   <k-form v-model="credentials" @submit="submit" :fields="{
     userName: {
       width: '1/2',
-      label: 'Username',
+      label: $t('username'),
       type: 'text'
     },
     password: {
       width: '1/2',
-      label: 'Password',
+      label: $t('password'),
       type: 'password',
       minlength: 0
     }

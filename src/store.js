@@ -89,7 +89,7 @@ export default (Vuex, rootStore) => new Vuex.Store({
     VIEW (state, value) {
       if (typeof value === 'string') {
         value = {
-          text: value,
+          text: value.toLowerCase(), // for translation key
           value
         }
       }

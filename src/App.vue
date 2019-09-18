@@ -11,7 +11,7 @@
             class="k-tab-button"
             @click="currentTab = tab.component"
           >
-            {{ tab.component }}
+            {{ tab.text }}
           </k-button>
         </nav>
       </div>
@@ -65,14 +65,17 @@ export default {
       tabs: [
         {
           icon: 'user',
+          text: this.$t('user'),
           component: 'User'
         },
         {
           icon: 'globe',
+          text: this.$t('service'),
           component: 'Service'
         },
         {
           icon: 'clock',
+          text: this.$t('snapshots'),
           component: 'Snapshots'
         }
       ]
@@ -142,7 +145,7 @@ export default {
       handler (value) {
         if (value) {
           whenExpired('session', value).then(() => {
-            this.$alert('Your session expired, please log in again')
+            this.$alert(this.$t('memsource.info.session_expired'))
             this.$store.dispatch('logOut')
           })
         }

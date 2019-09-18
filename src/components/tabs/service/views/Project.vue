@@ -3,8 +3,8 @@
     <header class="k-section-header">
       <k-headline size="large">{{ project.name }}</k-headline>
       <k-button-group>
-        <k-button icon="upload" @click="exportView">Export</k-button>
-        <k-button icon="download" theme="positive" @click="importView">Import</k-button>
+        <k-button icon="upload" @click="exportView">{{ $t('export') }}</k-button>
+        <k-button icon="download" theme="positive" @click="importView">{{ $t('import') }}</k-button>
       </k-button-group>
     </header>
     <Stats :data="properties" />
@@ -25,15 +25,15 @@ export default {
     properties () {
       return [
         {
-          title: 'Source language',
+          title: this.$t('memsource.label.source_langs'),
           content: this.project.sourceLang
         },
         {
-          title: 'Target languages',
+          title: this.$t('memsource.label.target_langs'),
           content: this.project.targetLangs.join(', ')
         },
         {
-          title: 'Jobs',
+          title: this.$t('jobs'),
           content: `${ this.project.progress.finishedCount }/${ this.project.progress.totalCount }`
         }
       ]

@@ -24,7 +24,7 @@
           type="checkboxes"
           v-model="selectedLangs"
           :options="languageOptions"
-          :label="$t('memsource.label.target_languages')"
+          :label="$t('memsource.label.target_langs')"
         />
       </k-column>
     </k-grid>
@@ -77,8 +77,11 @@ function countObjectData (data) {
       value = value + ''
 
       stats.strings++
-      stats.words += value.trim().split(/\s+/).length
       stats.chars += value.length
+
+      if (value.length) {
+        stats.words += value.trim().split(/\s+/).length
+      }
     }
   }
 
@@ -169,7 +172,7 @@ export default {
       }).then(response => {
         var jobs = (response.data && response.data.jobs)
         if (jobs && jobs.length) {
-          this.$alert(`Successfully created ${ jobs.length } jobs!`, 'positive')
+          this.$alert(this.$t('memsource.info.created_jobs', { count: jobs.length }), 'positive')
         }
       }).catch(this.$alert)
     },
@@ -192,7 +195,7 @@ export default {
             method: 'post',
             data: IMPORT_SETTINGS
           }).then(response => {
-            this.$alert(`Created import settings ${ IMPORT_SETTINGS.name }`)
+            this.$alert(this.$t('memsource.info.created_settings', { name: IMPORT_SETTINGS.name }))
             return Promise.resolve(response.data)
           })
         }
@@ -201,10 +204,14 @@ export default {
         var date = settings.dateCreated
 
         if (name && date) {
-          this.$alert(`Using settings ${ name } (${ (new Date(date)).toLocaleString() })`)
+          this.$alert(this.$t('memsource.info.using_settings', {
+            name,
+            date: (new Date(date)).toLocaleString()
+          }))
+
           return Promise.resolve(settings)
         } else {
-          return Promise.reject(new Error('Invalid import settings'))
+          return Promise.reject(new Error(this.$t('memsource.info.invalid_settings')))
         }
       })
     },

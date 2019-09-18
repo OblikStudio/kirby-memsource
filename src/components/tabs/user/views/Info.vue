@@ -4,7 +4,7 @@
       <k-headline>{{ data.role }}</k-headline>
       <k-button-group>
         <k-button icon="logout" theme="negative" @click="logout">
-          Log out
+          {{ this.$t('logout') }}
         </k-button>
       </k-button-group>
     </header>
@@ -27,11 +27,11 @@ export default {
     info () {
       return [
         {
-          title: 'Name',
+          title: this.$t('name'),
           content: `${ this.data.firstName } ${ this.data.lastName }`
         },
         {
-          title: 'Email',
+          title: this.$t('email'),
           content: this.data.email
         }
       ]
