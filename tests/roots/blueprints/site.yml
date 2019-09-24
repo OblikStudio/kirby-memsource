@@ -1,0 +1,11 @@
+title: Site
+preset: page
+fields:
+  editor:
+    type: variables
+  text:
+    type: variables
+    variable: bar
+  jsonData:
+    label: barbaz
+    type: json
