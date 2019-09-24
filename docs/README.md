@@ -2,9 +2,7 @@
 A plugin for [Kirby CMS](https://getkirby.com/) that can be used to export the site's content and create tasks (a.k.a. jobs) in [Memsource](https://www.memsource.com/). After the tasks are done and the content is translated, it can be imported back in Kirby.
 
 ## Demo
-<img src="https://i.imgur.com/vJeP8Jq.gif" alt="kirby-memsource demo"/><br>
-<img src="https://i.imgur.com/y30SlJw.png" alt="Memsource app with opened translation job" width="608"/>
-<img src="https://i.imgur.com/ytG767f.jpg" alt="Kirby Starterkit in English" width="304"/><img src="https://i.imgur.com/qIaytOw.jpg" alt="Kirby Starterkit in Bulgarian" width="304"/>
+![video demo](video.mp4)
 
 ## Features
 - Very simple workflow.
