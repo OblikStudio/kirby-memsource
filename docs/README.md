@@ -19,7 +19,7 @@ Importing content:
 
 ## Installation
 
-With [Composer](https://packagist.org/packages/oblik/kirby-outsource):
+With [Composer](https://packagist.org/packages/oblik/kirby-memsource):
 
 ```
 composer require oblik/kirby-memsource
