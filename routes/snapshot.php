@@ -22,8 +22,7 @@ return [
         'method' => 'POST',
         'action' => function () {
             $exporter = new Exporter(walkerSettings());
-            $models = site()->index()->prepend(site());
-            $data = $exporter->export($models);
+            $data = $exporter->export(site());
 
             return Snapshot::create($_GET['name'], $data);
         }
