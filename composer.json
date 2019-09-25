@@ -12,7 +12,6 @@
     "require": {
       "getkirby/composer-installer": "^1.1",
       "oblik/kirby-outsource": "^1.0",
-      "oblik/kirby-variables": "^2.0",
       "oblik/kirby-json": "^1.0"
     },
     "extra": {
