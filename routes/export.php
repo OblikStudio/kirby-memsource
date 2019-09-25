@@ -10,7 +10,6 @@ return [
     [
         'pattern' => 'export',
         'method' => 'GET',
-        'auth' => false,
         'action' => function () {
             $snapshot = $_GET['snapshot'] ?? null;
             $pattern = $_GET['pages'] ?? null;
