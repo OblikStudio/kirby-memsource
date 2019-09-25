@@ -3,9 +3,8 @@
 namespace Oblik\Memsource;
 
 use Exception;
-use Kirby\Cms\Pages;
-use Oblik\Outsource\Exporter;
 use Oblik\Outsource\Diff;
+use Oblik\Outsource\Exporter;
 
 return [
     [
@@ -16,15 +15,14 @@ return [
             $snapshot = $_GET['snapshot'] ?? null;
             $pattern = $_GET['pages'] ?? null;
 
-            $models = new Pages();
-            $models->append(site());
+            $models = [site()];
 
             if ($pattern === null || !empty($pattern)) {
                 $pages = site()->index()->filter(function ($page) use ($pattern) {
                     return (!$pattern || preg_match($pattern, $page->id()) === 1);
                 });
 
-                $models->add($pages);
+                $models = array_merge($models, $pages->values());
             }
 
             $exporter = new Exporter(walkerSettings());

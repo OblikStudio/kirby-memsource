@@ -3,7 +3,6 @@
 namespace Oblik\Memsource;
 
 use Kirby;
-use Oblik\Outsource\Variables;
 
 load([
     'Oblik\\Memsource\\Snapshot' => 'Snapshot.php'
@@ -11,9 +10,11 @@ load([
 
 function walkerSettings($data = [])
 {
+    $lang = kirby()->defaultLanguage();
+    $code = $lang ? $lang->code() : null;
+
     return array_replace_recursive([
-        'language' => kirby()->defaultLanguage()->code(),
-        'variables' => Variables::class,
+        'language' => $code,
         'blueprint' => option('oblik.outsource.blueprint'),
         'fields' => array_replace_recursive(
             option('oblik.outsource.fields'),
