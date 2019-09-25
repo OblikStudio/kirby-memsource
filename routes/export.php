@@ -6,6 +6,15 @@ use Exception;
 use Oblik\Outsource\Diff;
 use Oblik\Outsource\Exporter;
 
+class MemsourceExporter extends Exporter {
+    public function fieldPredicate($field, $input)
+    {
+        $isTranslatable = ($this->blueprint('translate') ?? true);
+        $isNotIgnored = parent::fieldPredicate($field, $input);
+        return $isTranslatable && $isNotIgnored;
+    }
+}
+
 return [
     [
         'pattern' => 'export',
@@ -24,7 +33,7 @@ return [
                 $models = array_merge($models, $pages->values());
             }
 
-            $exporter = new Exporter(walkerSettings());
+            $exporter = new MemsourceExporter(walkerSettings());
             $exportData = $exporter->export($models);
 
             if ($snapshot) {
