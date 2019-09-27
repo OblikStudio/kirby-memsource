@@ -1,26 +1,17 @@
 ![Memsource integration for Kirby](visual.png)
 
-This plugin allows you to translate your entire site content in the powerful TMS [Memsource](https://www.memsource.com/). Features:
+This plugin allows you to translate your entire site content in the powerful TMS [Memsource](https://www.memsource.com/):
 
 - Create Memsource jobs with great control over what's exported
 - Import Memsource jobs with reports for what has changed
 - Functionality to capture the state of your site and use it as a reference so you can later export only the differences
-- Support for the [Kirby Editor](https://github.com/getkirby/editor)
 - Great control over the exported format of fields via [kirby-outsource](https://github.com/OblikStudio/kirby-outsource)
 - Functionality to translate language variables via [kirby-variables](https://github.com/OblikStudio/kirby-variables)
+- Support for the [Kirby Editor](https://github.com/getkirby/editor)
 
-<div style="display: flex">
-<div>
-Exporting content:
-
-![export demo](export.gif)
-</div>
-<div>
-Importing content:
-
-![import demo](import.gif)
-</div>
-</div>
+| Exporting Content | Importing Translations |
+| --- | --- |
+| ![export demo](export.gif) | ![import demo](import.gif) |
 
 ## Installation
 
