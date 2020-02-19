@@ -3,7 +3,7 @@
 namespace Oblik\Memsource;
 
 use Exception;
-use Oblik\Outsource\Importer;
+use Oblik\Outsource\Walker\Importer;
 
 return [
     [
@@ -26,11 +26,8 @@ return [
                 throw new Exception('Missing content', 400);
             }
 
-            $importer = new Importer(walkerSettings([
-                'language' => $language
-            ]));
-
-            return $importer->process($content);
+            $importer = new Importer(walkerSettings());
+            return $importer->import($content, $language);
         }
     ]
 ];

@@ -2,7 +2,7 @@
 
 namespace Oblik\Memsource;
 
-use Oblik\Outsource\Exporter;
+use Oblik\Outsource\Walker\Exporter;
 
 return [
     [
@@ -21,8 +21,10 @@ return [
         'pattern' => 'snapshot',
         'method' => 'POST',
         'action' => function () {
+            $lang = kirby()->defaultLanguage()->code();
             $exporter = new Exporter(walkerSettings());
-            $data = $exporter->export(site());
+            $exporter->export(site(), $lang);
+            $data = $exporter->data();
 
             return Snapshot::create($_GET['name'], $data);
         }

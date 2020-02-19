@@ -3,49 +3,43 @@
 namespace Oblik\Memsource;
 
 use Exception;
-use Oblik\Outsource\Diff;
-use Oblik\Outsource\Exporter;
-
-class MemsourceExporter extends Exporter {
-    public function fieldPredicate($field, $input)
-    {
-        $isTranslatable = ($this->blueprint('translate') ?? true);
-        $isNotIgnored = parent::fieldPredicate($field, $input);
-        return $isTranslatable && $isNotIgnored;
-    }
-}
+use Oblik\Outsource\Util\Diff;
+use Oblik\Outsource\Walker\Exporter;
 
 return [
     [
         'pattern' => 'export',
         'method' => 'GET',
         'action' => function () {
-            $snapshot = $_GET['snapshot'] ?? null;
             $pattern = $_GET['pages'] ?? null;
+            $snapshot = $_GET['snapshot'] ?? null;
+            $lang = kirby()->defaultLanguage()->code();
 
-            $models = [site()];
+            $exporter = new Exporter(walkerSettings());
+            $pages = site()->index();
 
-            if ($pattern === null || !empty($pattern)) {
-                $pages = site()->index()->filter(function ($page) use ($pattern) {
-                    return (!$pattern || preg_match($pattern, $page->id()) === 1);
+            if ($pattern) {
+                $pages = $pages->filter(function ($page) use ($pattern) {
+                    return empty($pattern) || preg_match($pattern, $page->id()) === 1;
                 });
-
-                $models = array_merge($models, $pages->values());
             }
 
-            $exporter = new MemsourceExporter(walkerSettings());
-            $exportData = $exporter->export($models);
+            $exporter->export(site(), $lang, false);
+            $exporter->export($pages, $lang, false);
+            $exporter->exportVariables($lang);
+
+            $data = $exporter->data();
 
             if ($snapshot) {
                 $snapshotData = Snapshot::read($snapshot);
-                $exportData = Diff::process($exportData, $snapshotData);
+                $data = Diff::process($data, $snapshotData);
             }
 
-            if ($exportData === null) {
+            if ($data === null) {
                 throw new Exception('Nothing to export', 400);
             }
 
-            return $exportData;
+            return $data;
         }
     ]
 ];
