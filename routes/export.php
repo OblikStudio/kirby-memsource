@@ -3,40 +3,43 @@
 namespace Oblik\Memsource;
 
 use Exception;
-use Oblik\Outsource\Diff;
-use Oblik\Outsource\Exporter;
+use Oblik\Outsource\Util\Diff;
+use Oblik\Outsource\Walker\Exporter;
 
 return [
     [
         'pattern' => 'export',
         'method' => 'GET',
         'action' => function () {
-            $snapshot = $_GET['snapshot'] ?? null;
             $pattern = $_GET['pages'] ?? null;
-
-            $models = [site()];
-
-            if ($pattern === null || !empty($pattern)) {
-                $pages = site()->index()->filter(function ($page) use ($pattern) {
-                    return (!$pattern || preg_match($pattern, $page->id()) === 1);
-                });
-
-                $models = array_merge($models, $pages->values());
-            }
+            $snapshot = $_GET['snapshot'] ?? null;
+            $lang = kirby()->defaultLanguage()->code();
 
             $exporter = new Exporter(walkerSettings());
-            $exportData = $exporter->export($models);
+            $pages = site()->index();
+
+            if ($pattern) {
+                $pages = $pages->filter(function ($page) use ($pattern) {
+                    return empty($pattern) || preg_match($pattern, $page->id()) === 1;
+                });
+            }
+
+            $exporter->export(site(), $lang, false);
+            $exporter->export($pages, $lang, false);
+            $exporter->exportVariables($lang);
+
+            $data = $exporter->data();
 
             if ($snapshot) {
                 $snapshotData = Snapshot::read($snapshot);
-                $exportData = Diff::process($exportData, $snapshotData);
+                $data = Diff::process($data, $snapshotData);
             }
 
-            if ($exportData === null) {
+            if ($data === null) {
                 throw new Exception('Nothing to export', 400);
             }
 
-            return $exportData;
+            return $data;
         }
     ]
 ];

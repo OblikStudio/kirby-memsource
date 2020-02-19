@@ -2,28 +2,31 @@
 
 namespace Oblik\Memsource;
 
-use Kirby;
+use Kirby\Cms\App;
 
 load([
     'Oblik\\Memsource\\Snapshot' => 'Snapshot.php'
 ], __DIR__ . '/lib');
 
-function walkerSettings($data = [])
+function walkerSettings($config = [])
 {
-    $lang = kirby()->defaultLanguage();
-    $code = $lang ? $lang->code() : null;
-
-    return array_replace_recursive([
-        'language' => $code,
+    $outsourceConfig = [
         'blueprint' => option('oblik.outsource.blueprint'),
-        'fields' => array_replace_recursive(
-            option('oblik.outsource.fields'),
-            option('oblik.memsource.fields')
-        )
-    ], $data);
+        'fields' => option('oblik.outsource.fields')
+    ];
+
+    $memsourceConfig = [
+        'fields' => option('oblik.memsource.fields')
+    ];
+
+    return array_replace_recursive(
+        $outsourceConfig,
+        $memsourceConfig,
+        $config
+    );
 }
 
-Kirby::plugin('oblik/memsource', [
+App::plugin('oblik/memsource', [
     'options' => [
         'snapshots' => kirby()->root('content') . '/__snapshots',
         'fields' => [
@@ -33,19 +36,24 @@ Kirby::plugin('oblik/memsource', [
             'pages' => [
                 'ignore' => true
             ],
-            'link' => [
+            'text' => [
                 'serialize' => [
-                    'yaml' => true
-                ],
+                    'kirbytags' => true
+                ]
+            ],
+            'textarea' => [
+                'serialize' => [
+                    'kirbytags' => [
+                        'tags' => ['text']
+                    ],
+                    'markdown' => true
+                ]
+            ],
+            'link' => [
                 'export' => [
                     'filter' => [
                         'keys' => ['text']
                     ]
-                ]
-            ],
-            'json' => [
-                'serialize' => [
-                    'json' => true
                 ]
             ]
         ]
