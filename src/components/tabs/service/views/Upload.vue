@@ -46,13 +46,14 @@ import Stats from '@/components/Stats.vue'
 import NameGen from '@/components/NameGen.vue'
 
 const IMPORT_SETTINGS = {
-  name: 'kirby-2.0.0',
+  name: 'kirby-1',
   fileImportSettings: {
     inputCharset: 'UTF-8',
     outputCharset: 'UTF-8',
     json: {
+      tagRegexp: '\\{\\{[^\\}]+\\}\\}',
       htmlSubFilter: true,
-      includeKeyRegexp: '.*(?<!/id)$'
+      excludeKeyRegexp: '.*/id$'
     }
   }
 }
