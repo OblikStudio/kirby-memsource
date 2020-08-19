@@ -9,12 +9,23 @@
             "email": "h.dodov@gmail.com"
         }
     ],
+    "repositories": [
+        {
+            "type": "path",
+            "url": "../kirby-walker/",
+            "options": {
+                "symlink": true
+            }
+        }
+    ],
     "require": {
-      "getkirby/composer-installer": "^1.1",
-      "oblik/kirby-outsource": "^1.0",
-      "oblik/kirby-json": "^1.0"
+        "getkirby/composer-installer": "^1.1",
+        "oblik/kirby-json": "^1.0",
+        "oblik/kirby-walker": "@dev",
+        "oblik/kirby-variables": "^2.2",
+        "oblik/kirby-variables-field": "^1.2"
     },
     "extra": {
-      "installer-name": "memsource"
+        "installer-name": "memsource"
     }
 }

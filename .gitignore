@@ -1,1 +1,8 @@
-/node_modules/
+kirby/
+media/
+site/accounts/
+site/plugins/*
+!site/plugins/memsource
+site/sessions/
+node_modules/
+vendor/

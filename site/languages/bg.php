@@ -8,8 +8,6 @@ return [
         'bg_BG'
     ],
     'name' => 'Bulgarian',
-    'translations' => [
-
-    ],
+    'translations' => [],
     'url' => NULL
 ];

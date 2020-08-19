@@ -8,8 +8,6 @@ return [
         'de_DE'
     ],
     'name' => 'Deutch',
-    'translations' => [
-
-    ],
+    'translations' => [],
     'url' => NULL
 ];
