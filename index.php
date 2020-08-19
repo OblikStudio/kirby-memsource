@@ -5,6 +5,7 @@ namespace Oblik\Memsource;
 use Kirby\Cms\App;
 
 load([
+    'Oblik\\Memsource\\Service' => 'Service.php',
     'Oblik\\Memsource\\Snapshot' => 'Snapshot.php'
 ], __DIR__ . '/lib');
 
@@ -60,9 +61,8 @@ App::plugin('oblik/memsource', [
     ],
     'api' => [
         'routes' => array_merge(
-            include 'routes/export.php',
-            include 'routes/import.php',
-            include 'routes/snapshot.php'
+            include 'routes/snapshot.php',
+            include 'routes/export.php'
         )
     ],
     'translations' => [

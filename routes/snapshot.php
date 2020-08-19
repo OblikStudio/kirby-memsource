@@ -6,7 +6,7 @@ use Oblik\Outsource\Walker\Exporter;
 
 return [
     [
-        'pattern' => 'snapshot',
+        'pattern' => 'memsource/snapshot',
         'method' => 'GET',
         'action' => function () {
             return array_map(function ($file) {
@@ -18,7 +18,7 @@ return [
         }
     ],
     [
-        'pattern' => 'snapshot',
+        'pattern' => 'memsource/snapshot',
         'method' => 'POST',
         'action' => function () {
             $lang = kirby()->defaultLanguage()->code();
@@ -30,7 +30,7 @@ return [
         }
     ],
     [
-        'pattern' => 'snapshot',
+        'pattern' => 'memsource/snapshot',
         'method' => 'DELETE',
         'action' => function () {
             return Snapshot::remove($_GET['name']);

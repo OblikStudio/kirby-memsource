@@ -11,15 +11,6 @@ class MemsourceError extends Error {
   }
 }
 
-class OutsourceError extends Error {
-  constructor (response) {
-    super(response.data.message)
-    this.name = 'OutsourceError'
-    this.code = response.data.code
-    this.type = response.data.exception
-  }
-}
-
 function formatRejection (Error) {
   return function (error) {
     if (error.response && error.response.data) {
@@ -61,20 +52,9 @@ export default (Vuex, rootStore) => new Vuex.Store({
     sourceLanguage: function (state, getters) {
       return getters.languages.current.code
     },
-    msClient: function (state, getters, rootState) {
-      var token = (rootState.session && rootState.session.token)
-
+    msClient: function () {
       return axios.create({
-        baseURL: 'https://cloud.memsource.com/web/api2/v1',
-        method: 'get',
-        params: {
-          token: token
-        }
-      })
-    },
-    exporterClient: () => {
-      return axios.create({
-        baseURL: panel.api,
+        baseURL: panel.api + '/memsource',
         method: 'get',
         headers: {
           'X-CSRF': panel.csrf
@@ -126,7 +106,7 @@ export default (Vuex, rootStore) => new Vuex.Store({
       }
 
       if (!alert.text && alert.error) {
-        alert.text = `${ alert.error.name }: ${ alert.error.message }`
+        alert.text = `${alert.error.name}: ${alert.error.message}`
       }
 
       state.alerts.push(alert)
@@ -138,9 +118,6 @@ export default (Vuex, rootStore) => new Vuex.Store({
   actions: {
     memsource: ({ getters }, payload) => {
       return getters.msClient(payload).catch(formatRejection(MemsourceError))
-    },
-    outsource: ({ getters }, payload) => {
-      return getters.exporterClient(payload).catch(formatRejection(OutsourceError))
     }
   }
 })

@@ -46,7 +46,7 @@ export default {
       return (new Date(seconds * 1000)).toLocaleString()
     },
     fetch () {
-      this.$store.dispatch('outsource', {
+      this.$store.dispatch('memsource', {
         url: '/snapshot',
         method: 'get'
       }).then(response => {
@@ -56,7 +56,7 @@ export default {
       }).catch(this.$alert)
     },
     create () {
-      this.$store.dispatch('outsource', {
+      this.$store.dispatch('memsource', {
         url: '/snapshot',
         method: 'post',
         params: {
@@ -67,7 +67,7 @@ export default {
       }).catch(this.$alert)
     },
     remove (name) {
-      this.$store.dispatch('outsource', {
+      this.$store.dispatch('memsource', {
         url: '/snapshot',
         method: 'delete',
         params: {

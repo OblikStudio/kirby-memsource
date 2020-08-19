@@ -33,7 +33,7 @@ export default {
     submit () {
       this.$loading(
         this.$store.dispatch('memsource', {
-          url: '/auth/login',
+          url: '/login',
           method: 'post',
           data: this.credentials
         }).then(response => {

@@ -128,7 +128,7 @@ export default {
             language: language.code
           }
 
-          return this.$store.dispatch('outsource', {
+          return this.$store.dispatch('memsource', {
             url: '/import',
             method: 'post',
             headers: {

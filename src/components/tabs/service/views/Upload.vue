@@ -162,12 +162,10 @@ export default {
         }
 
         return this.$store.dispatch('memsource', {
-          url: `/projects/${ this.project.uid }/jobs`,
+          url: `/upload/${ this.project.uid }/${ filename }`,
           method: 'post',
           headers: {
-            'Memsource': JSON.stringify(memsourceHeader),
-            'Content-Type': 'application/octet-stream',
-            'Content-Disposition': `filename*=UTF-8''${ filename }`
+            Memsource: JSON.stringify(memsourceHeader),
           },
           data: this.data
         })

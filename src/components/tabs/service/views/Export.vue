@@ -46,7 +46,7 @@ export default {
       }
 
       this.$loading(
-        this.$store.dispatch('outsource', {
+        this.$store.dispatch('memsource', {
           url: '/export',
           params
         }).then(response => {
@@ -58,7 +58,7 @@ export default {
   },
   created () {
     this.$loading(
-      this.$store.dispatch('outsource', {
+      this.$store.dispatch('memsource', {
         url: '/snapshot',
         method: 'get'
       }).then(response => {
