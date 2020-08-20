@@ -13,10 +13,7 @@
 
 		<k-grid class="k-section" gutter="medium">
 			<k-column width="1/2">
-				<NameGen
-					v-model="jobName"
-					:label="$t('memsource.label.job')"
-				/>
+				<NameGen v-model="jobName" :label="$t('memsource.label.job')" />
 			</k-column>
 
 			<k-column width="1/2">
@@ -30,13 +27,13 @@
 		</k-grid>
 
 		<k-button-group align="center">
-			<k-button icon="download" @click="downloadExport">
-				{{ $t('file') }}
-			</k-button>
+			<k-button icon="download" @click="downloadExport">{{
+				$t('file')
+			}}</k-button>
 
-			<k-button theme="positive" icon="upload" @click="upload">
-				{{ $t('upload') }}
-			</k-button>
+			<k-button theme="positive" icon="upload" @click="upload">{{
+				$t('upload')
+			}}</k-button>
 		</k-button-group>
 	</div>
 </template>
@@ -58,8 +55,8 @@ const IMPORT_SETTINGS = {
 	}
 }
 
-function countObjectData (data) {
-	var stats = {
+function countObjectData(data) {
+	let stats = {
 		strings: 0,
 		words: 0,
 		chars: 0
@@ -69,7 +66,7 @@ function countObjectData (data) {
 		let value = data[k]
 
 		if (typeof value === 'object' && value !== null) {
-			var childStats = countObjectData(value)
+			let childStats = countObjectData(value)
 
 			for (let k in childStats) {
 				stats[k] += childStats[k]
@@ -95,28 +92,28 @@ export default {
 		Stats,
 		NameGen
 	},
-	data () {
+	data() {
 		return {
 			selectedLangs: [],
 			jobName: null
 		}
 	},
 	computed: {
-		data () {
+		data() {
 			return this.$store.state.export
 		},
-		project () {
+		project() {
 			return this.$store.state.project
 		},
-		stats () {
+		stats() {
 			if (!this.data) {
 				return null
 			}
 
-			var pages = this.data.pages && Object.keys(this.data.pages).length
-			var files = this.data.files && Object.keys(this.data.files).length
-			var variableStats = countObjectData(this.data.variables)
-			var stats = countObjectData(this.data)
+			let pages = this.data.pages && Object.keys(this.data.pages).length
+			let files = this.data.files && Object.keys(this.data.files).length
+			let variableStats = countObjectData(this.data.variables)
+			let stats = countObjectData(this.data)
 
 			return [
 				{ title: this.$t('pages'), content: pages || 0 },
@@ -127,110 +124,133 @@ export default {
 				{ title: this.$t('characters'), content: stats.chars }
 			]
 		},
-		languageOptions () {
-			var targetLangs =	this.project.targetLangs
+		languageOptions() {
+			let targetLangs = this.project.targetLangs
 
 			return this.$store.getters.availableLanguages
-				.filter(lang => !lang.default)
-				.map(lang => {
+				.filter((lang) => !lang.default)
+				.map((lang) => {
 					/**
 					 *	Overwrite because site locales can't be used
 					 *	@see https://github.com/getkirby/kirby/issues/2054
 					 */
-					var target = targetLangs.find(code => code.indexOf(lang.code) === 0)
+					let target = targetLangs.find((code) => code.indexOf(lang.code) === 0)
 					if (target) {
 						lang.code = target
 					}
 
 					return {
 						value: lang.code,
-						text: `${ lang.name } (${ lang.code })`
+						text: `${lang.name} (${lang.code})`
 					}
 				})
 		}
 	},
 	methods: {
-		upload () {
+		upload() {
 			this.$alert(this.$t('upload.progress'))
-			this.getImportSettings().then(settings => {
-				var filename = this.jobName + '.json'
-				var memsourceHeader = {
-					targetLangs: this.selectedLangs,
-					importSettings: {
-						uid: settings.uid
+			this.getImportSettings()
+				.then((settings) => {
+					let filename = this.jobName + '.json'
+					let memsourceHeader = {
+						targetLangs: this.selectedLangs,
+						importSettings: {
+							uid: settings.uid
+						}
 					}
-				}
 
-				return this.$store.dispatch('memsource', {
-					url: `/upload/${ this.project.uid }/${ filename }`,
-					method: 'post',
-					headers: {
-						Memsource: JSON.stringify(memsourceHeader),
-					},
-					data: this.data
-				})
-			}).then(response => {
-				var jobs = (response.data && response.data.jobs)
-				if (jobs && jobs.length) {
-					this.$alert(this.$t('memsource.info.created_jobs', { count: jobs.length }), 'positive')
-				}
-			}).catch(this.$alert)
-		},
-		getImportSettings () {
-			return this.$store.dispatch('memsource', {
-				url: '/importSettings'
-			}).then(response => {
-				var items = (response.data && response.data.content) || []
-				var settings = items.find(item => item.name === IMPORT_SETTINGS.name)
-
-				if (settings) {
 					return this.$store.dispatch('memsource', {
-						url: `/importSettings/${ settings.uid }`
-					}).then(response => {
-						return Promise.resolve(response.data)
-					})
-				} else {
-					return this.$store.dispatch('memsource', {
-						url: '/importSettings',
+						url: `/upload/${this.project.uid}/${filename}`,
 						method: 'post',
-						data: IMPORT_SETTINGS
-					}).then(response => {
-						this.$alert(this.$t('memsource.info.created_settings', { name: IMPORT_SETTINGS.name }))
-						return Promise.resolve(response.data)
+						headers: {
+							Memsource: JSON.stringify(memsourceHeader)
+						},
+						data: this.data
 					})
-				}
-			}).then(settings => {
-				var name = settings.name
-				var date = settings.dateCreated
-
-				if (name && date) {
-					this.$alert(this.$t('memsource.info.using_settings', {
-						name,
-						date: (new Date(date)).toLocaleString()
-					}))
-
-					return Promise.resolve(settings)
-				} else {
-					return Promise.reject(new Error(this.$t('memsource.info.invalid_settings')))
-				}
-			})
+				})
+				.then((response) => {
+					let jobs = response.data && response.data.jobs
+					if (jobs && jobs.length) {
+						this.$alert(
+							this.$t('memsource.info.created_jobs', { count: jobs.length }),
+							'positive'
+						)
+					}
+				})
+				.catch(this.$alert)
 		},
-		downloadExport () {
-			var part = JSON.stringify(this.data, null, 2)
-			var blob = new Blob([part], {
+		getImportSettings() {
+			return this.$store
+				.dispatch('memsource', {
+					url: '/importSettings'
+				})
+				.then((response) => {
+					let items = (response.data && response.data.content) || [] || foo.bar
+					let settings = items.find(
+						(item) => item.name === IMPORT_SETTINGS.name
+					)
+
+					if (settings) {
+						return this.$store
+							.dispatch('memsource', {
+								url: `/importSettings/${settings.uid}`
+							})
+							.then((response) => {
+								return Promise.resolve(response.data)
+							})
+					} else {
+						return this.$store
+							.dispatch('memsource', {
+								url: '/importSettings',
+								method: 'post',
+								data: IMPORT_SETTINGS
+							})
+							.then((response) => {
+								this.$alert(
+									this.$t('memsource.info.created_settings', {
+										name: IMPORT_SETTINGS.name
+									})
+								)
+								return Promise.resolve(response.data)
+							})
+					}
+				})
+				.then((settings) => {
+					let name = settings.name
+					let date = settings.dateCreated
+
+					if (name && date) {
+						this.$alert(
+							this.$t('memsource.info.using_settings', {
+								name,
+								date: new Date(date).toLocaleString()
+							})
+						)
+
+						return Promise.resolve(settings)
+					} else {
+						return Promise.reject(
+							new Error(this.$t('memsource.info.invalid_settings'))
+						)
+					}
+				})
+		},
+		downloadExport() {
+			let part = JSON.stringify(this.data, null, 2)
+			let blob = new Blob([part], {
 				type: 'application/json'
 			})
 
-			var url = URL.createObjectURL(blob)
-			var anchor = document.createElement('a')
+			let url = URL.createObjectURL(blob)
+			let anchor = document.createElement('a')
 			anchor.download = this.jobName
 			anchor.href = url
 			anchor.click()
 		}
 	},
-	created () {
-		var codes = this.languageOptions.map(lang => lang.value)
-		this.selectedLangs = this.project.targetLangs.filter(code => {
+	created() {
+		let codes = this.languageOptions.map((lang) => lang.value)
+		this.selectedLangs = this.project.targetLangs.filter((code) => {
 			return codes.indexOf(code) >= 0
 		})
 	}

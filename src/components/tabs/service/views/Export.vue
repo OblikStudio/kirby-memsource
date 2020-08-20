@@ -1,19 +1,24 @@
 <template>
-	<k-form v-if="showForm" v-model="params" @submit="submit" :fields="{
-		snapshot: {
-			width: '1/2',
-			type: 'select',
-			options: snapshots,
-			label: $t('snapshot'),
-			help: $t('memsource.help.snapshot')
-		},
-		pages: {
-			width: '1/2',
-			type: 'text',
-			label: $t('pages'),
-			help: $t('memsource.help.pages')
-		}
-	}">
+	<k-form
+		v-if="showForm"
+		v-model="params"
+		@submit="submit"
+		:fields="{
+			snapshot: {
+				width: '1/2',
+				type: 'select',
+				options: snapshots,
+				label: $t('snapshot'),
+				help: $t('memsource.help.snapshot')
+			},
+			pages: {
+				width: '1/2',
+				type: 'text',
+				label: $t('pages'),
+				help: $t('memsource.help.pages')
+			}
+		}"
+	>
 		<k-button-group slot="footer" align="center">
 			<k-button icon="upload" @click="submit">
 				{{ $t('export') }}
@@ -25,7 +30,7 @@
 <script>
 export default {
 	inject: ['$alert', '$loading'],
-	data () {
+	data() {
 		return {
 			showForm: false,
 			snapshots: [],
@@ -36,47 +41,55 @@ export default {
 		}
 	},
 	methods: {
-		submit () {
-			var params = { ...this.params }
+		submit() {
+			let params = { ...this.params }
 
 			if (typeof params.pages === 'string' && params.pages.length) {
-				params.pages = `!${ params.pages }!` // PHP regex
+				params.pages = `!${params.pages}!` // PHP regex
 			} else {
 				params.pages = null
 			}
 
 			this.$loading(
-				this.$store.dispatch('memsource', {
-					url: '/export',
-					params
-				}).then(response => {
-					this.$store.commit('SET_EXPORT', response.data)
-					this.$store.commit('VIEW', 'Upload')
-				}).catch(this.$alert)
+				this.$store
+					.dispatch('memsource', {
+						url: '/export',
+						params
+					})
+					.then((response) => {
+						this.$store.commit('SET_EXPORT', response.data)
+						this.$store.commit('VIEW', 'Upload')
+					})
+					.catch(this.$alert)
 			)
 		}
 	},
-	created () {
+	created() {
 		this.$loading(
-			this.$store.dispatch('memsource', {
-				url: '/snapshot',
-				method: 'get'
-			}).then(response => {
-				this.snapshots = response.data.sort((a, b) => {
-					return (a.date > b.date) ? -1 : 1
-				}).map(snap => {
-					return {
-						text: snap.name,
-						value: snap.name
-					}
+			this.$store
+				.dispatch('memsource', {
+					url: '/snapshot',
+					method: 'get'
 				})
+				.then((response) => {
+					this.snapshots = response.data
+						.sort((a, b) => {
+							return a.date > b.date ? -1 : 1
+						})
+						.map((snap) => {
+							return {
+								text: snap.name,
+								value: snap.name
+							}
+						})
 
-				/**
-				 * Needed because the select field in the form does not have reactive
-				 * options. @see https://github.com/getkirby/kirby/issues/2075
-				 */
-				this.showForm = true
-			}).catch(this.$alert)
+					/**
+					 * Needed because the select field in the form does not have reactive
+					 * options. @see https://github.com/getkirby/kirby/issues/2075
+					 */
+					this.showForm = true
+				})
+				.catch(this.$alert)
 		)
 	}
 }

@@ -15,15 +15,19 @@
 			<template v-if="activeResult">
 				<k-headline>
 					<template v-if="activeResult.state === 'imported'">
-						{{ $t('memsource.info.changed_values', {
-							count: activeResult.diff.length,
-							language: activeResult.language.name
-						}) }}
+						{{
+							$t('memsource.info.changed_values', {
+								count: activeResult.diff.length,
+								language: activeResult.language.name
+							})
+						}}
 					</template>
 					<template v-else-if="activeResult.state === 'error'">
-						{{ $t('memsource.info.error', {
-							message: activeResult.error.message
-						}) }}
+						{{
+							$t('memsource.info.error', {
+								message: activeResult.error.message
+							})
+						}}
 					</template>
 					<template v-if="activeResult.state === 'empty'">
 						{{ $t('memsource.info.no_changed') }}
@@ -52,16 +56,16 @@ export default {
 	components: {
 		Diff
 	},
-	data () {
+	data() {
 		return {
 			activeResult: null
 		}
 	},
 	computed: {
-		results () {
+		results() {
 			return this.$store.state.results.map(result => {
-				var diff = getEntries(result.data)
-				var state = 'imported'
+				let diff = getEntries(result.data)
+				let state = 'imported'
 
 				if (result.error) {
 					state = 'error'
@@ -81,18 +85,21 @@ export default {
 		}
 	},
 	methods: {
-		statusIcon (state) {
+		statusIcon(state) {
 			switch (state) {
-				case 'imported': return 'check'
-				case 'error': return 'cancel'
-				case 'empty': return 'circle-outline'
+				case 'imported':
+					return 'check'
+				case 'error':
+					return 'cancel'
+				case 'empty':
+					return 'circle-outline'
 			}
 		},
-		open (result) {
+		open(result) {
 			this.activeResult = result
 			this.$refs.dialog.open()
 		},
-		close () {
+		close() {
 			this.$refs.dialog.close()
 			this.activeResult = null
 		}
@@ -102,10 +109,18 @@ export default {
 
 <style lang="scss" scoped>
 /deep/ {
-	[data-back] { color: #fff; }
-	[data-back="imported"] { background: #5d800d; }
-	[data-back="empty"] { background: #000; }
-	[data-back="error"] { background: #800d0d; }
+	[data-back] {
+		color: #fff;
+	}
+	[data-back='imported'] {
+		background: #5d800d;
+	}
+	[data-back='empty'] {
+		background: #000;
+	}
+	[data-back='error'] {
+		background: #800d0d;
+	}
 }
 
 .k-list-item {

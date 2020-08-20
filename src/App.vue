@@ -55,13 +55,13 @@ export default {
 		Service,
 		Snapshots
 	},
-	provide () {
+	provide() {
 		return {
 			$alert: this.$alert,
 			$loading: this.$loading
 		}
 	},
-	data () {
+	data() {
 		return {
 			tabs: [
 				{
@@ -84,28 +84,28 @@ export default {
 	},
 	computed: {
 		currentTab: {
-			get () {
+			get() {
 				return this.$store.state.tab
 			},
-			set (value) {
+			set(value) {
 				return this.$store.commit('TAB', value)
 			}
 		},
 		crumbs: {
-			get () {
+			get() {
 				return this.$store.state.crumbs
 			},
-			set (value) {
+			set(value) {
 				return this.$store.commit('CRUMBS', value)
 			}
 		},
-		alerts () {
+		alerts() {
 			return this.$store.state.alerts
 		}
 	},
 	methods: {
-		$alert (data, theme) {
-			var conf = {
+		$alert(data, theme) {
+			let conf = {
 				theme: 'info',
 				text: null,
 				error: null
@@ -124,22 +124,24 @@ export default {
 
 			this.$store.commit('ALERT', conf)
 		},
-		$loading (promise) {
+		$loading(promise) {
 			this.$store.commit('LOADING', true)
 			return promise.then(() => {
 				this.$store.commit('LOADING', false)
 			})
 		},
-		closeAlerts () {
+		closeAlerts() {
 			this.$store.commit('CLEAR_ALERTS')
 			this.$refs.alerts.close()
 		}
 	},
-	beforeCreate () {
-		var Vuex = this.$root.constructor._installedPlugins.find(entry => !!entry.Store)
+	beforeCreate() {
+		let Vuex = this.$root.constructor._installedPlugins.find(
+			entry => !!entry.Store
+		)
 		this.$store = createStore(Vuex, this.$root.$store)
 	},
-	created () {
+	created() {
 		if (this.$store.state.session) {
 			this.currentTab = 'Service'
 		} else {
@@ -147,9 +149,9 @@ export default {
 		}
 	},
 	watch: {
-		"$store.state.session.expires": {
+		'$store.state.session.expires': {
 			immediate: true,
-			handler (value) {
+			handler(value) {
 				if (value) {
 					whenExpired('session', value).then(() => {
 						this.$alert(this.$t('memsource.info.session_expired'))
@@ -158,7 +160,7 @@ export default {
 				}
 			}
 		},
-		alerts (value) {
+		alerts(value) {
 			if (value.length) {
 				this.$refs.alerts.open()
 			}
@@ -179,23 +181,23 @@ export default {
 	}
 }
 
-	.k-header {
-		transition: opacity 0.1s ease-out;
+.k-header {
+	transition: opacity 0.1s ease-out;
+}
+
+.k-tab-button {
+	&[aria-current]:after {
+		display: none;
 	}
 
-		.k-tab-button {
-			&[aria-current]:after {
-				display: none;
-			}
-
-			&.k-button {
-				width: 100%;
-			}
-		}
-
-	.k-box + .k-box {
-		margin-top: 5px;
+	&.k-button {
+		width: 100%;
 	}
+}
+
+.k-box + .k-box {
+	margin-top: 5px;
+}
 
 /deep/ {
 	.ms-crumbs {

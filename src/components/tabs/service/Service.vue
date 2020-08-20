@@ -19,18 +19,20 @@ export default {
 		Import,
 		Results
 	},
-	provide () {
+	provide() {
 		return {
 			$jobInfo: this.jobInfo
 		}
 	},
 	methods: {
-		jobInfo (job) {
-			return `${ (new Date(job.dateCreated)).toLocaleString() } (${ job.status })` +
-				`<strong>${ job.targetLang }</strong>`
+		jobInfo(job) {
+			return (
+				`${new Date(job.dateCreated).toLocaleString()} (${job.status})` +
+				`<strong>${job.targetLang}</strong>`
+			)
 		}
 	},
-	created () {
+	created() {
 		this.$store.commit('VIEW', 'Projects')
 	}
 }

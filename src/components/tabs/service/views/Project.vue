@@ -3,8 +3,12 @@
 		<header class="k-section-header">
 			<k-headline size="large">{{ project.name }}</k-headline>
 			<k-button-group>
-				<k-button icon="upload" @click="exportView">{{ $t('export') }}</k-button>
-				<k-button icon="download" theme="positive" @click="importView">{{ $t('import') }}</k-button>
+				<k-button icon="upload" @click="exportView">{{
+					$t('export')
+				}}</k-button>
+				<k-button icon="download" theme="positive" @click="importView">{{
+					$t('import')
+				}}</k-button>
 			</k-button-group>
 		</header>
 		<Stats :data="properties" />
@@ -19,10 +23,10 @@ export default {
 		Stats
 	},
 	computed: {
-		project () {
+		project() {
 			return this.$store.state.project
 		},
-		properties () {
+		properties() {
 			return [
 				{
 					title: this.$t('memsource.label.source_langs'),
@@ -34,16 +38,16 @@ export default {
 				},
 				{
 					title: this.$t('jobs'),
-					content: `${ this.project.progress.finishedCount }/${ this.project.progress.totalCount }`
+					content: `${this.project.progress.finishedCount}/${this.project.progress.totalCount}`
 				}
 			]
 		}
 	},
 	methods: {
-		exportView () {
+		exportView() {
 			this.$store.commit('VIEW', 'Export')
 		},
-		importView () {
+		importView() {
 			this.$store.commit('VIEW', 'Import')
 		}
 	}

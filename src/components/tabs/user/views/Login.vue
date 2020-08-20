@@ -1,17 +1,21 @@
 <template>
-	<k-form v-model="credentials" @submit="submit" :fields="{
-		userName: {
-			width: '1/2',
-			label: $t('username'),
-			type: 'text'
-		},
-		password: {
-			width: '1/2',
-			label: $t('password'),
-			type: 'password',
-			minlength: 0
-		}
-	}">
+	<k-form
+		v-model="credentials"
+		@submit="submit"
+		:fields="{
+			userName: {
+				width: '1/2',
+				label: $t('username'),
+				type: 'text'
+			},
+			password: {
+				width: '1/2',
+				label: $t('password'),
+				type: 'password',
+				minlength: 0
+			}
+		}"
+	>
 		<k-button-group slot="footer" align="center">
 			<k-button icon="check" @click="submit">{{ $t('login') }}</k-button>
 		</k-button-group>
@@ -21,7 +25,7 @@
 <script>
 export default {
 	inject: ['$alert', '$loading'],
-	data () {
+	data() {
 		return {
 			credentials: {
 				userName: null,
@@ -30,15 +34,18 @@ export default {
 		}
 	},
 	methods: {
-		submit () {
+		submit() {
 			this.$loading(
-				this.$store.dispatch('memsource', {
-					url: '/login',
-					method: 'post',
-					data: this.credentials
-				}).then(response => {
-					this.$store.commit('SET_SESSION', response.data)
-				}).catch(this.$alert)
+				this.$store
+					.dispatch('memsource', {
+						url: '/login',
+						method: 'post',
+						data: this.credentials
+					})
+					.then((response) => {
+						this.$store.commit('SET_SESSION', response.data)
+					})
+					.catch(this.$alert)
 			)
 		}
 	}

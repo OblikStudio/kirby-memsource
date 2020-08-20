@@ -42,42 +42,51 @@ export default {
 		}
 	},
 	methods: {
-		time (seconds) {
-			return (new Date(seconds * 1000)).toLocaleString()
+		time(seconds) {
+			return new Date(seconds * 1000).toLocaleString()
 		},
-		fetch () {
-			this.$store.dispatch('memsource', {
-				url: '/snapshot',
-				method: 'get'
-			}).then(response => {
-				this.snapshots = response.data.sort((a, b) => {
-					return (a.date > b.date) ? -1 : 1
+		fetch() {
+			this.$store
+				.dispatch('memsource', {
+					url: '/snapshot',
+					method: 'get'
 				})
-			}).catch(this.$alert)
+				.then((response) => {
+					this.snapshots = response.data.sort((a, b) => {
+						return a.date > b.date ? -1 : 1
+					})
+				})
+				.catch(this.$alert)
 		},
-		create () {
-			this.$store.dispatch('memsource', {
-				url: '/snapshot',
-				method: 'post',
-				params: {
-					name: this.name
-				}
-			}).then(response => {
-				this.fetch()
-			}).catch(this.$alert)
+		create() {
+			this.$store
+				.dispatch('memsource', {
+					url: '/snapshot',
+					method: 'post',
+					params: {
+						name: this.name
+					}
+				})
+				.then((response) => {
+					this.fetch()
+				})
+				.catch(this.$alert)
 		},
-		remove (name) {
-			this.$store.dispatch('memsource', {
-				url: '/snapshot',
-				method: 'delete',
-				params: {
-					name
-				}
-			}).then(response => {
-				this.fetch()
-			}).catch(this.$alert)
+		remove(name) {
+			this.$store
+				.dispatch('memsource', {
+					url: '/snapshot',
+					method: 'delete',
+					params: {
+						name
+					}
+				})
+				.then((response) => {
+					this.fetch()
+				})
+				.catch(this.$alert)
 		},
-		removeClosure (name) {
+		removeClosure(name) {
 			return () => {
 				this.remove(name)
 			}

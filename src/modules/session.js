@@ -1,5 +1,5 @@
-exports.load = function () {
-	var value = null
+exports.load = function() {
+	let value = null
 
 	try {
 		if (localStorage.memsourceSession) {
@@ -9,7 +9,7 @@ exports.load = function () {
 		console.warn(e)
 	}
 
-	var expireDate = (value && value.expires)
+	let expireDate = value && value.expires
 	if (expireDate && new Date(expireDate) <= Date.now()) {
 		value = null
 	}
@@ -17,7 +17,7 @@ exports.load = function () {
 	return value
 }
 
-exports.save = function (data) {
+exports.save = function(data) {
 	try {
 		localStorage.memsourceSession = JSON.stringify(data)
 	} catch (e) {

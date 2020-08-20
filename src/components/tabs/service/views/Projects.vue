@@ -14,33 +14,36 @@
 <script>
 export default {
 	inject: ['$alert', '$loading'],
-	data () {
+	data() {
 		return {
 			projects: []
 		}
 	},
 	methods: {
-		open (project) {
+		open(project) {
 			this.$store.commit('SET_PROJECT', project)
 			this.$store.commit('VIEW', {
 				text: project.name,
 				value: 'Project'
 			})
 		},
-		info (project) {
-			var date = new Date(project.dateCreated)
-			return `${ date.toLocaleString() }<strong>#${ project.internalId }</strong>`
+		info(project) {
+			let date = new Date(project.dateCreated)
+			return `${date.toLocaleString()}<strong>#${project.internalId}</strong>`
 		}
 	},
-	created () {
+	created() {
 		this.$store.commit('SET_PROJECT', null)
 		this.$loading(
-			this.$store.dispatch('memsource', {
-				url: '/projects',
-				method: 'get'
-			}).then(response => {
-				this.projects = response.data.content
-			}).catch(this.$alert)
+			this.$store
+				.dispatch('memsource', {
+					url: '/projects',
+					method: 'get'
+				})
+				.then((response) => {
+					this.projects = response.data.content
+				})
+				.catch(this.$alert)
 		)
 	}
 }

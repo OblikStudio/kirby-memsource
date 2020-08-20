@@ -1,4 +1,4 @@
-function sanitize (value) {
+function sanitize(value) {
 	if (value === null || value === undefined) {
 		value = ''
 	} else if (typeof value === 'object') {
@@ -10,8 +10,8 @@ function sanitize (value) {
 	return value
 }
 
-export function getEntries (data, prefix = null) {
-	var entries = []
+export function getEntries(data, prefix = null) {
+	let entries = []
 
 	for (let k in data) {
 		let entry = data[k]

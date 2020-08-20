@@ -18,13 +18,13 @@ export default {
 			type: Array
 		}
 	},
-	data () {
+	data() {
 		return {
 			crumbs: []
 		}
 	},
 	methods: {
-		open (crumb) {
+		open(crumb) {
 			this.crumbs.splice(this.crumbs.indexOf(crumb) + 1)
 			this.$emit('input', this.crumbs)
 		}
@@ -32,7 +32,7 @@ export default {
 	watch: {
 		value: {
 			immediate: true,
-			handler (value) {
+			handler(value) {
 				this.crumbs = [...value]
 			}
 		}
@@ -50,27 +50,28 @@ export default {
 	border: 1px solid #ccc;
 }
 
-	.ms-crumbs__crumb {
-		display: inline-block;
-		line-height: 1;
+.ms-crumbs__crumb {
+	display: inline-block;
+	line-height: 1;
 
-		button {
-			font-size: inherit;
-			font-weight: inherit;
-			text-transform: inherit;
-			outline: none;
-			opacity: 0.75;
+	button {
+		font-size: inherit;
+		font-weight: inherit;
+		text-transform: inherit;
+		outline: none;
+		opacity: 0.75;
 
-			&:after {
-				content: '→';
-				margin: 0 8px;
-				user-select: none;
-				opacity: 0.5;
-			}
+		&:after {
+			content: '→';
+			margin: 0 8px;
+			user-select: none;
+			opacity: 0.5;
+		}
 
-			&:hover, &:focus {
-				opacity: 1;
-			}
+		&:hover,
+		&:focus {
+			opacity: 1;
 		}
 	}
+}
 </style>

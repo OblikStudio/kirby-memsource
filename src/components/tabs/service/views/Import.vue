@@ -21,11 +21,20 @@
 				:icon="{ type: 'text', back: 'black' }"
 			>
 				<label slot="options" class="k-button" :for="job.uid">
-					<input type="checkbox" :id="job.uid" v-model="selectedJobs" :value="job.uid" />
+					<input
+						type="checkbox"
+						:id="job.uid"
+						v-model="selectedJobs"
+						:value="job.uid"
+					/>
 				</label>
 			</k-list-item>
 			<k-empty v-if="filteredJobs.length < jobs.length" icon="text">
-				{{ $t('memsource.info.hidden_jobs', { count: jobs.length - filteredJobs.length }) }}
+				{{
+					$t('memsource.info.hidden_jobs', {
+						count: jobs.length - filteredJobs.length
+					})
+				}}
 			</k-empty>
 		</k-list>
 
@@ -61,7 +70,7 @@ import freeze from 'deep-freeze-node'
 
 export default {
 	inject: ['$alert', '$jobInfo', '$loading'],
-	data () {
+	data() {
 		return {
 			jobs: [],
 			query: null,
@@ -69,13 +78,13 @@ export default {
 		}
 	},
 	computed: {
-		projectId () {
+		projectId() {
 			return this.$store.state.project.id
 		},
-		filteredJobs () {
-			return this.jobs.filter(job => {
-				var matches = (!this.query || job.filename.indexOf(this.query) >= 0)
-				var selectedIndex = this.selectedJobs.indexOf(job.uid)
+		filteredJobs() {
+			return this.jobs.filter((job) => {
+				let matches = !this.query || job.filename.indexOf(this.query) >= 0
+				let selectedIndex = this.selectedJobs.indexOf(job.uid)
 				if (selectedIndex >= 0 && !matches) {
 					this.selectedJobs.splice(selectedIndex, 1)
 				}
@@ -85,92 +94,108 @@ export default {
 		}
 	},
 	methods: {
-		toggle () {
+		toggle() {
 			if (this.selectedJobs.length !== this.filteredJobs.length) {
-				this.selectedJobs = this.filteredJobs.map(job => job.uid)
+				this.selectedJobs = this.filteredJobs.map((job) => job.uid)
 			} else {
 				this.selectedJobs = []
 			}
 		},
-		importHandler () {
-			var jobs = this.selectedJobs
-				.map(id => this.jobs.find(job => job.uid === id))
-				.filter(job => !!job)
+		importHandler() {
+			let jobs = this.selectedJobs
+				.map((id) => this.jobs.find((job) => job.uid === id))
+				.filter((job) => !!job)
 
 			this.$loading(
-				Promise.all(jobs.map(this.importJob, this)).then(results => {
+				Promise.all(jobs.map(this.importJob, this)).then((results) => {
 					this.$store.commit('SET_RESULTS', results)
 					this.$store.commit('VIEW', 'Results')
 				})
 			)
 		},
-		loadJobs () {
-			return this.$store.dispatch('memsource', {
-				url: `/projects/${ this.projectId }/jobs`
-			}).then(response => {
-				this.jobs = freeze(response.data.content)
-				this.selectedJobs = []
-			}).catch(this.$alert)
+		loadJobs() {
+			return this.$store
+				.dispatch('memsource', {
+					url: `/projects/${this.projectId}/jobs`
+				})
+				.then((response) => {
+					this.jobs = freeze(response.data.content)
+					this.selectedJobs = []
+				})
+				.catch(this.$alert)
 		},
-		importJob (job) {
-			var promise
-			var language = this.$store.getters.availableLanguages.find(lang => {
+		importJob(job) {
+			let promise
+			let language = this.$store.getters.availableLanguages.find((lang) => {
 				return job.targetLang.indexOf(lang.code) === 0
 			})
 
 			if (language) {
-				promise = this.$store.dispatch('memsource', {
-					url: `/projects/${ this.projectId }/jobs/${ job.uid }/targetFile`,
-					responseType: 'blob'
-				}).then(response => {
-					var blob = response.data
-					var config = {
-						language: language.code
-					}
-
-					return this.$store.dispatch('memsource', {
-						url: '/import',
-						method: 'post',
-						headers: {
-							'Memsource': JSON.stringify(config)
-						},
-						data: blob
+				promise = this.$store
+					.dispatch('memsource', {
+						url: `/projects/${this.projectId}/jobs/${job.uid}/targetFile`,
+						responseType: 'blob'
 					})
-				}).then(response => {
-					return Promise.resolve(response.data)
-				})
+					.then((response) => {
+						let blob = response.data
+						let config = {
+							language: language.code
+						}
+
+						return this.$store.dispatch('memsource', {
+							url: '/import',
+							method: 'post',
+							headers: {
+								Memsource: JSON.stringify(config)
+							},
+							data: blob
+						})
+					})
+					.then((response) => {
+						return Promise.resolve(response.data)
+					})
 			} else {
-				promise = Promise.reject(new Error(this.$t('memsource.info.invalid_language')))
+				promise = Promise.reject(
+					new Error(this.$t('memsource.info.invalid_language'))
+				)
 			}
 
-			return promise.then(data => {
-				return Promise.resolve({ job, language, data })
-			}).catch(error => {
-				return Promise.resolve({ job, language, error })
-			})
+			return promise
+				.then((data) => {
+					return Promise.resolve({ job, language, data })
+				})
+				.catch((error) => {
+					return Promise.resolve({ job, language, error })
+				})
 		},
-		deleteJobs () {
-			var jobs = this.selectedJobs
+		deleteJobs() {
+			let jobs = this.selectedJobs
 
 			this.$refs.dialog.close()
 			this.$loading(
-				this.$store.dispatch('memsource', {
-					url: `/projects/${ this.projectId }/jobs/batch`,
-					method: 'delete',
-					data: {
-						jobs: jobs.map(id => ({ uid: id }))
-					}
-				}).then(response => {
-					return this.loadJobs()
-				}).then(response => {
-					this.$alert(this.$t('memsource.info.deleted_jobs', {
-						count: jobs.length
-					}))
-				}).catch(this.$alert)
+				this.$store
+					.dispatch('memsource', {
+						url: `/projects/${this.projectId}/jobs/batch`,
+						method: 'delete',
+						data: {
+							jobs: jobs.map((id) => ({ uid: id }))
+						}
+					})
+					.then((response) => {
+						return this.loadJobs()
+					})
+					.then((response) => {
+						this.$alert(
+							this.$t('memsource.info.deleted_jobs', {
+								count: jobs.length
+							})
+						)
+					})
+					.catch(this.$alert)
 			)
 		}
 	},
-	created () {
+	created() {
 		this.$loading(this.loadJobs())
 	}
 }
@@ -185,7 +210,8 @@ export default {
 			margin-left: -10px;
 			top: 2px;
 
-			&, input {
+			&,
+			input {
 				cursor: pointer;
 			}
 		}

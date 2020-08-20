@@ -1,11 +1,6 @@
 <template>
 	<k-field v-bind="$attrs">
-		<k-input
-			theme="field"
-			type="text"
-			v-model="value"
-			:required="true"
-		/>
+		<k-input theme="field" type="text" v-model="value" :required="true" />
 
 		<template slot="options">
 			<slot name="options" />
@@ -21,7 +16,7 @@
 import dateFormat from 'dateformat'
 import Wordgen from '@/modules/wordgen'
 
-var wordgen = new Wordgen({
+let wordgen = new Wordgen({
 	length: 6
 })
 
@@ -30,15 +25,15 @@ export default {
 		value: true
 	},
 	methods: {
-		generate () {
-			var string = wordgen.generate()
-			var date = dateFormat(new Date(), `-mmm-dd`)
-			var name = (string + date).toLowerCase()
+		generate() {
+			let string = wordgen.generate()
+			let date = dateFormat(new Date(), `-mmm-dd`)
+			let name = (string + date).toLowerCase()
 
 			this.$emit('input', name)
 		}
 	},
-	created () {
+	created() {
 		this.generate()
 	}
 }

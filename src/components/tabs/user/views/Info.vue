@@ -24,11 +24,11 @@ export default {
 		data: Object
 	},
 	computed: {
-		info () {
+		info() {
 			return [
 				{
 					title: this.$t('name'),
-					content: `${ this.data.firstName } ${ this.data.lastName }`
+					content: `${this.data.firstName} ${this.data.lastName}`
 				},
 				{
 					title: this.$t('email'),
@@ -38,7 +38,7 @@ export default {
 		}
 	},
 	methods: {
-		logout () {
+		logout() {
 			this.$store.commit('SET_SESSION', null)
 		}
 	}

@@ -1,10 +1,6 @@
 <template>
 	<div class="ms-diff">
-		<div
-			v-for="entry in entries"
-			:key="entry.name"
-			class="ms-diff-entry"
-		>
+		<div v-for="entry in entries" :key="entry.name" class="ms-diff-entry">
 			<p>{{ entry.name }}</p>
 			<CodeDiff
 				:old-string="entry.oldValue"
@@ -54,34 +50,34 @@ export default {
 		display: flex;
 	}
 
-		.d2h-file-diff,
-		.d2h-file-side-diff {
-			margin: 0;
-			overflow-x: auto;
+	.d2h-file-diff,
+	.d2h-file-side-diff {
+		margin: 0;
+		overflow-x: auto;
 
-			& + .d2h-file-side-diff {
-				border-left: 1px solid #ccc;
+		& + .d2h-file-side-diff {
+			border-left: 1px solid #ccc;
+		}
+	}
+
+	.d2h-diff-tbody {
+		tr {
+			&:first-child {
+				display: none;
+			}
+
+			.d2h-code-line-prefix {
+				display: none;
+			}
+
+			.d2h-code-side-linenumber {
+				display: none;
+			}
+
+			.d2h-code-side-line {
+				margin: 0;
 			}
 		}
-
-			.d2h-diff-tbody {
-				tr {
-					&:first-child {
-						display: none;
-					}
-
-					.d2h-code-line-prefix {
-						display: none;
-					}
-
-					.d2h-code-side-linenumber {
-						display: none;
-					}
-
-					.d2h-code-side-line {
-						margin: 0;
-					}
-				}
-			}
+	}
 }
 </style>
