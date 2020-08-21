@@ -42,7 +42,7 @@ export default {
 						method: 'post',
 						data: this.credentials
 					})
-					.then((response) => {
+					.then(response => {
 						this.$store.commit('SET_SESSION', response.data)
 					})
 					.catch(this.$alert)

@@ -39,8 +39,8 @@
 </template>
 
 <script>
-import Stats from '@/components/Stats.vue'
-import NameGen from '@/components/NameGen.vue'
+import Stats from '../../../Stats.vue'
+import NameGen from '../../../NameGen.vue'
 
 const IMPORT_SETTINGS = {
 	name: 'kirby-1',
@@ -128,13 +128,13 @@ export default {
 			let targetLangs = this.project.targetLangs
 
 			return this.$store.getters.availableLanguages
-				.filter((lang) => !lang.default)
-				.map((lang) => {
+				.filter(lang => !lang.default)
+				.map(lang => {
 					/**
 					 *	Overwrite because site locales can't be used
 					 *	@see https://github.com/getkirby/kirby/issues/2054
 					 */
-					let target = targetLangs.find((code) => code.indexOf(lang.code) === 0)
+					let target = targetLangs.find(code => code.indexOf(lang.code) === 0)
 					if (target) {
 						lang.code = target
 					}
@@ -150,7 +150,7 @@ export default {
 		upload() {
 			this.$alert(this.$t('upload.progress'))
 			this.getImportSettings()
-				.then((settings) => {
+				.then(settings => {
 					let filename = this.jobName + '.json'
 					let memsourceHeader = {
 						targetLangs: this.selectedLangs,
@@ -168,7 +168,7 @@ export default {
 						data: this.data
 					})
 				})
-				.then((response) => {
+				.then(response => {
 					let jobs = response.data && response.data.jobs
 					if (jobs && jobs.length) {
 						this.$alert(
@@ -184,18 +184,16 @@ export default {
 				.dispatch('memsource', {
 					url: '/importSettings'
 				})
-				.then((response) => {
+				.then(response => {
 					let items = (response.data && response.data.content) || [] || foo.bar
-					let settings = items.find(
-						(item) => item.name === IMPORT_SETTINGS.name
-					)
+					let settings = items.find(item => item.name === IMPORT_SETTINGS.name)
 
 					if (settings) {
 						return this.$store
 							.dispatch('memsource', {
 								url: `/importSettings/${settings.uid}`
 							})
-							.then((response) => {
+							.then(response => {
 								return Promise.resolve(response.data)
 							})
 					} else {
@@ -205,7 +203,7 @@ export default {
 								method: 'post',
 								data: IMPORT_SETTINGS
 							})
-							.then((response) => {
+							.then(response => {
 								this.$alert(
 									this.$t('memsource.info.created_settings', {
 										name: IMPORT_SETTINGS.name
@@ -215,7 +213,7 @@ export default {
 							})
 					}
 				})
-				.then((settings) => {
+				.then(settings => {
 					let name = settings.name
 					let date = settings.dateCreated
 
@@ -249,8 +247,8 @@ export default {
 		}
 	},
 	created() {
-		let codes = this.languageOptions.map((lang) => lang.value)
-		this.selectedLangs = this.project.targetLangs.filter((code) => {
+		let codes = this.languageOptions.map(lang => lang.value)
+		this.selectedLangs = this.project.targetLangs.filter(code => {
 			return codes.indexOf(code) >= 0
 		})
 	}

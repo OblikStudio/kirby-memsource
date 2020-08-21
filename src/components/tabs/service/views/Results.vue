@@ -48,8 +48,8 @@
 </template>
 
 <script>
-import Diff from '@/components/Diff.vue'
-import { getEntries } from '@/modules/diff'
+import Diff from '../../../Diff.vue'
+import { getEntries } from '../../../../modules/diff'
 
 export default {
 	inject: ['$jobInfo'],
@@ -63,7 +63,7 @@ export default {
 	},
 	computed: {
 		results() {
-			return this.$store.state.results.map(result => {
+			return this.$store.state.results.map((result) => {
 				let diff = getEntries(result.data)
 				let state = 'imported'
 
@@ -107,7 +107,7 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="postcss" scoped>
 /deep/ {
 	[data-back] {
 		color: #fff;

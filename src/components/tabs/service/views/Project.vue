@@ -16,7 +16,7 @@
 </template>
 
 <script>
-import Stats from '@/components/Stats.vue'
+import Stats from '../../../Stats.vue'
 
 export default {
 	components: {

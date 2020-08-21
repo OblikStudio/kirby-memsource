@@ -28,7 +28,7 @@
 </template>
 
 <script>
-import NameGen from '@/components/NameGen.vue'
+import NameGen from '../../NameGen.vue'
 
 export default {
 	inject: ['$alert'],
@@ -51,7 +51,7 @@ export default {
 					url: '/snapshot',
 					method: 'get'
 				})
-				.then((response) => {
+				.then(response => {
 					this.snapshots = response.data.sort((a, b) => {
 						return a.date > b.date ? -1 : 1
 					})
@@ -67,7 +67,7 @@ export default {
 						name: this.name
 					}
 				})
-				.then((response) => {
+				.then(response => {
 					this.fetch()
 				})
 				.catch(this.$alert)
@@ -81,7 +81,7 @@ export default {
 						name
 					}
 				})
-				.then((response) => {
+				.then(response => {
 					this.fetch()
 				})
 				.catch(this.$alert)

@@ -137,7 +137,7 @@ export default {
 	},
 	beforeCreate() {
 		let Vuex = this.$root.constructor._installedPlugins.find(
-			entry => !!entry.Store
+			(entry) => !!entry.Store
 		)
 		this.$store = createStore(Vuex, this.$root.$store)
 	},
@@ -169,7 +169,7 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="postcss" scoped>
 .k-view {
 	max-width: 50rem;
 

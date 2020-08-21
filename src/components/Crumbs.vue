@@ -40,7 +40,7 @@ export default {
 }
 </script>
 
-<style lang="scss">
+<style lang="postcss">
 .ms-crumbs {
 	padding: 0.625rem;
 	font-size: 0.75rem;

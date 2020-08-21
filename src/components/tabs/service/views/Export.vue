@@ -56,7 +56,7 @@ export default {
 						url: '/export',
 						params
 					})
-					.then((response) => {
+					.then(response => {
 						this.$store.commit('SET_EXPORT', response.data)
 						this.$store.commit('VIEW', 'Upload')
 					})
@@ -71,12 +71,12 @@ export default {
 					url: '/snapshot',
 					method: 'get'
 				})
-				.then((response) => {
+				.then(response => {
 					this.snapshots = response.data
 						.sort((a, b) => {
 							return a.date > b.date ? -1 : 1
 						})
-						.map((snap) => {
+						.map(snap => {
 							return {
 								text: snap.name,
 								value: snap.name
