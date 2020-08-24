@@ -42,19 +42,6 @@
 import Stats from '../../../Stats.vue'
 import NameGen from '../../../NameGen.vue'
 
-const IMPORT_SETTINGS = {
-	name: 'kirby-1',
-	fileImportSettings: {
-		inputCharset: 'UTF-8',
-		outputCharset: 'UTF-8',
-		json: {
-			tagRegexp: '\\{\\{[^\\}]+\\}\\}',
-			htmlSubFilter: true,
-			excludeKeyRegexp: '.*/id$'
-		}
-	}
-}
-
 function countObjectData(data) {
 	let stats = {
 		strings: 0,
@@ -149,24 +136,15 @@ export default {
 	methods: {
 		upload() {
 			this.$alert(this.$t('upload.progress'))
-			this.getImportSettings()
-				.then(settings => {
-					let filename = this.jobName + '.json'
-					let memsourceHeader = {
-						targetLangs: this.selectedLangs,
-						importSettings: {
-							uid: settings.uid
-						}
-					}
 
-					return this.$store.dispatch('memsource', {
-						url: `/upload/${this.project.uid}/${filename}`,
-						method: 'post',
-						headers: {
-							Memsource: JSON.stringify(memsourceHeader)
-						},
-						data: this.data
-					})
+			this.$store
+				.dispatch('memsource', {
+					url: `/upload/${this.project.uid}/${this.jobName}.json`,
+					method: 'post',
+					headers: {
+						'Memsource-Langs': JSON.stringify(this.selectedLangs)
+					},
+					data: this.data
 				})
 				.then(response => {
 					let jobs = response.data && response.data.jobs
@@ -178,60 +156,6 @@ export default {
 					}
 				})
 				.catch(this.$alert)
-		},
-		getImportSettings() {
-			return this.$store
-				.dispatch('memsource', {
-					url: '/importSettings'
-				})
-				.then(response => {
-					let items = (response.data && response.data.content) || [] || foo.bar
-					let settings = items.find(item => item.name === IMPORT_SETTINGS.name)
-
-					if (settings) {
-						return this.$store
-							.dispatch('memsource', {
-								url: `/importSettings/${settings.uid}`
-							})
-							.then(response => {
-								return Promise.resolve(response.data)
-							})
-					} else {
-						return this.$store
-							.dispatch('memsource', {
-								url: '/importSettings',
-								method: 'post',
-								data: IMPORT_SETTINGS
-							})
-							.then(response => {
-								this.$alert(
-									this.$t('memsource.info.created_settings', {
-										name: IMPORT_SETTINGS.name
-									})
-								)
-								return Promise.resolve(response.data)
-							})
-					}
-				})
-				.then(settings => {
-					let name = settings.name
-					let date = settings.dateCreated
-
-					if (name && date) {
-						this.$alert(
-							this.$t('memsource.info.using_settings', {
-								name,
-								date: new Date(date).toLocaleString()
-							})
-						)
-
-						return Promise.resolve(settings)
-					} else {
-						return Promise.reject(
-							new Error(this.$t('memsource.info.invalid_settings'))
-						)
-					}
-				})
 		},
 		downloadExport() {
 			let part = JSON.stringify(this.data, null, 2)
