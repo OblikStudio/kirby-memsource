@@ -7,6 +7,17 @@ use Oblik\Outsource\Util\Diff;
 use Oblik\Outsource\Walker\Exporter;
 use Oblik\Outsource\Walker\Importer;
 
+class MemsourceExporter extends Exporter
+{
+	protected function fieldPredicate($field, $settings, $input)
+	{
+		$pass = parent::fieldPredicate($field, $settings, $input);
+		$translate = $settings['translate'] ?? true;
+
+		return ($pass && $translate);
+	}
+}
+
 return [
 	[
 		'pattern' => 'memsource/login',
@@ -54,7 +65,7 @@ return [
 			$snapshot = $_GET['snapshot'] ?? null;
 			$lang = kirby()->defaultLanguage()->code();
 
-			$exporter = new Exporter(walkerSettings());
+			$exporter = new MemsourceExporter(walkerSettings());
 			$pages = site()->index();
 
 			if ($pattern) {
