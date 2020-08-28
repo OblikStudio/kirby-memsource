@@ -37,6 +37,9 @@ App::plugin('oblik/memsource', [
 			'pages' => [
 				'ignore' => true
 			],
+			'url' => [
+				'ignore' => true
+			],
 			'text' => [
 				'serialize' => [
 					'kirbytags' => true
