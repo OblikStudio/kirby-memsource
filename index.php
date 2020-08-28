@@ -11,9 +11,9 @@ load([
 
 function walkerSettings($config = [])
 {
-	$outsourceConfig = [
-		'blueprint' => option('oblik.outsource.blueprint'),
-		'fields' => option('oblik.outsource.fields')
+	$walkerConfig = [
+		'blueprint' => option('oblik.walker.blueprint'),
+		'fields' => option('oblik.walker.fields')
 	];
 
 	$memsourceConfig = [
@@ -21,7 +21,7 @@ function walkerSettings($config = [])
 	];
 
 	return array_replace_recursive(
-		$outsourceConfig,
+		$walkerConfig,
 		$memsourceConfig,
 		$config
 	);

@@ -3,9 +3,9 @@
 namespace Oblik\Memsource;
 
 use Exception;
-use Oblik\Outsource\Util\Diff;
-use Oblik\Outsource\Walker\Exporter;
-use Oblik\Outsource\Walker\Importer;
+use Oblik\Walker\Util\Diff;
+use Oblik\Walker\Walker\Exporter;
+use Oblik\Walker\Walker\Importer;
 
 class MemsourceExporter extends Exporter
 {

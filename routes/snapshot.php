@@ -2,7 +2,7 @@
 
 namespace Oblik\Memsource;
 
-use Oblik\Outsource\Walker\Exporter;
+use Oblik\Walker\Walker\Exporter;
 
 return [
 	[

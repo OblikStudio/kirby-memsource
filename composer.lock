@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "6e46bdccdd98e21ee0d19e713a78868e",
+    "content-hash": "2ac7254d94455a9532246d06e054ac04",
     "packages": [
         {
             "name": "claviska/simpleimage",
@@ -632,11 +632,11 @@
         },
         {
             "name": "oblik/kirby-walker",
-            "version": "dev-ref-setup",
+            "version": "dev-dev",
             "dist": {
                 "type": "path",
                 "url": "../kirby-walker",
-                "reference": "afa17bc405283a00695245909d3dfa549db6c078"
+                "reference": "c7d94388a9609055e2592d5de62287775524074f"
             },
             "require": {
                 "getkirby/cms": "^3.4",
@@ -650,11 +650,11 @@
             },
             "type": "kirby-plugin",
             "extra": {
-                "installer-name": "outsource"
+                "installer-name": "walker"
             },
             "autoload": {
                 "psr-4": {
-                    "Oblik\\Outsource\\": "src/"
+                    "Oblik\\Walker\\": "src/"
                 }
             },
             "scripts": {
@@ -898,7 +898,7 @@
     ],
     "packages-dev": [],
     "aliases": [],
-    "minimum-stability": "stable",
+    "minimum-stability": "dev",
     "stability-flags": {
         "oblik/kirby-walker": 20
     },
