@@ -31,10 +31,16 @@ App::plugin('oblik/memsource', [
 	'options' => [
 		'snapshots' => kirby()->root('content') . '/_snapshots',
 		'fields' => [
+			'date' => [
+				'ignore' => true
+			],
 			'files' => [
 				'ignore' => true
 			],
 			'pages' => [
+				'ignore' => true
+			],
+			'toggle' => [
 				'ignore' => true
 			],
 			'url' => [
