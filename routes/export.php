@@ -9,6 +9,17 @@ use Oblik\Walker\Walker\Importer;
 
 class MemsourceExporter extends Exporter
 {
+	protected function fieldHandler($field, $settings, $input)
+	{
+		$data = parent::fieldHandler($field, $settings, $input);
+
+		if (!empty($data)) {
+			return $data;
+		} else {
+			return null;
+		}
+	}
+
 	protected function fieldPredicate($field, $settings, $input)
 	{
 		$pass = parent::fieldPredicate($field, $settings, $input);
