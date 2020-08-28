@@ -29,7 +29,7 @@ function walkerSettings($config = [])
 
 App::plugin('oblik/memsource', [
 	'options' => [
-		'snapshots' => kirby()->root('content') . '/__snapshots',
+		'snapshots' => kirby()->root('content') . '/_snapshots',
 		'fields' => [
 			'files' => [
 				'ignore' => true
