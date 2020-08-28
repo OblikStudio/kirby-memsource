@@ -1,8 +1,6 @@
 {
 	"name": "kirby-memsource",
-	"version": "0.0.1",
 	"description": "Memsource integration for Kirby",
-	"main": "gulpfile.js",
 	"scripts": {
 		"dev": "parcel watch src/index.js --no-source-maps -d ./",
 		"build": "parcel build src/index.js --no-source-maps -d ./"
@@ -11,16 +9,6 @@
 		"type": "git",
 		"url": "git+https://github.com/OblikStudio/kirby-memsource.git"
 	},
-	"keywords": [
-		"kirby",
-		"plugin",
-		"memsource",
-		"translate",
-		"localization",
-		"l10n",
-		"import",
-		"exoprt"
-	],
 	"author": "Hristiyan Dodov",
 	"license": "MIT",
 	"bugs": {
