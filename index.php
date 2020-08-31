@@ -43,12 +43,17 @@ App::plugin('oblik/memsource', [
 			'toggle' => [
 				'ignore' => true
 			],
+			'number' => [
+				'ignore' => true
+			],
 			'url' => [
 				'ignore' => true
 			],
 			'text' => [
 				'serialize' => [
-					'kirbytags' => true
+					'kirbytags' => [
+						'tags' => ['text']
+					]
 				]
 			],
 			'textarea' => [
