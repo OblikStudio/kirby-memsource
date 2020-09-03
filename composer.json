@@ -1,20 +1,24 @@
 {
-    "name": "oblik/kirby-memsource",
-    "description": "Kirby integration for the Memsource TMS service.",
-    "type": "kirby-plugin",
-    "license": "MIT",
-    "authors": [
-        {
-            "name": "Hristiyan Dodov",
-            "email": "h.dodov@gmail.com"
-        }
-    ],
-    "require": {
-      "getkirby/composer-installer": "^1.1",
-      "oblik/kirby-outsource": "^1.0",
-      "oblik/kirby-json": "^1.0"
-    },
-    "extra": {
-      "installer-name": "memsource"
-    }
+	"name": "oblik/kirby-memsource",
+	"description": "Kirby integration for the Memsource TMS service.",
+	"type": "kirby-plugin",
+	"license": "MIT",
+	"authors": [
+		{
+			"name": "Hristiyan Dodov",
+			"email": "h.dodov@gmail.com",
+			"homepage": "https://dodov.me"
+		}
+	],
+	"require": {
+		"getkirby/cms": "^3.4",
+		"getkirby/composer-installer": "^1.1",
+		"oblik/kirby-json": "^1.0",
+		"oblik/kirby-variables": "^2.2",
+		"oblik/kirby-variables-field": "^1.2",
+		"oblik/kirby-walker": "^2.0"
+	},
+	"extra": {
+		"installer-name": "memsource"
+	}
 }

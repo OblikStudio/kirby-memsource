@@ -2,15 +2,15 @@
 
 This plugin allows you to translate your entire site content in the powerful TMS [Memsource](https://www.memsource.com/):
 
-- Create Memsource jobs with great control over what's exported
-- Import Memsource jobs with reports for what has changed
-- Functionality to capture the state of your site and use it as a reference so you can later export only the differences
-- Great control over the exported format of fields via [kirby-outsource](https://github.com/OblikStudio/kirby-outsource)
-- Functionality to translate language variables via [kirby-variables](https://github.com/OblikStudio/kirby-variables)
-- Support for the [Kirby Editor](https://github.com/getkirby/editor)
+-   Create Memsource jobs with great control over what's exported
+-   Import Memsource jobs with reports for what has changed
+-   Functionality to capture the state of your site and use it as a reference so you can later export only the differences
+-   Great control over the exported format of fields via [kirby-walker](https://github.com/OblikStudio/kirby-walker)
+-   Functionality to translate language variables via [kirby-variables](https://github.com/OblikStudio/kirby-variables)
+-   Support for the [Kirby Editor](https://github.com/getkirby/editor)
 
-| Exporting Content | Importing Translations |
-| --- | --- |
+| Exporting Content          | Importing Translations     |
+| -------------------------- | -------------------------- |
 | ![export demo](export.gif) | ![import demo](import.gif) |
 
 ## Installation
@@ -29,11 +29,11 @@ You can specify how each filed type should be exported for translation. For exam
 
 ```yml
 fields:
-  data:
-    type: myfield
-    outsource:
-      serialize:
-        yaml: true
+    data:
+        type: myfield
+        walker:
+            serialize:
+                yaml: true
 ```
 
 If you don't want to specify that for each occurrence of the `myfield` field type, use _config.php_:
@@ -50,4 +50,4 @@ return [
 ];
 ```
 
-For more information on that, refer to the [kirby-outsource](https://github.com/OblikStudio/kirby-outsource#field-settings) documentation.
+For more information on that, refer to the [kirby-walker](https://github.com/OblikStudio/kirby-walker#field-settings) documentation.

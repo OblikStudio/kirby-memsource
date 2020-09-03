@@ -1,5 +1,5 @@
 <template>
-  <component :is="$store.getters.view"></component>
+	<component :is="$store.getters.view"></component>
 </template>
 
 <script>
@@ -11,37 +11,39 @@ import Import from './views/Import.vue'
 import Results from './views/Results.vue'
 
 export default {
-  components: {
-    Projects,
-    Project,
-    Export,
-    Upload,
-    Import,
-    Results
-  },
-  provide () {
-    return {
-      $jobInfo: this.jobInfo
-    }
-  },
-  methods: {
-    jobInfo (job) {
-      return `${ (new Date(job.dateCreated)).toLocaleString() } (${ job.status })` +
-        `<strong>${ job.targetLang }</strong>`
-    }
-  },
-  created () {
-    this.$store.commit('VIEW', 'Projects')
-  }
+	components: {
+		Projects,
+		Project,
+		Export,
+		Upload,
+		Import,
+		Results
+	},
+	provide() {
+		return {
+			$jobInfo: this.jobInfo
+		}
+	},
+	methods: {
+		jobInfo(job) {
+			return (
+				`${new Date(job.dateCreated).toLocaleString()} (${job.status})` +
+				`<strong>${job.targetLang}</strong>`
+			)
+		}
+	},
+	created() {
+		this.$store.commit('VIEW', 'Projects')
+	}
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="postcss" scoped>
 /deep/ {
-  .k-list-item-text {
-    strong {
-      margin-left: 10px;
-    }
-  }
+	.k-list-item-text {
+		strong {
+			margin-left: 10px;
+		}
+	}
 }
 </style>
