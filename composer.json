@@ -6,25 +6,17 @@
 	"authors": [
 		{
 			"name": "Hristiyan Dodov",
-			"email": "h.dodov@gmail.com"
+			"email": "h.dodov@gmail.com",
+			"homepage": "https://dodov.me"
 		}
 	],
-	"repositories": [
-		{
-			"type": "path",
-			"url": "../kirby-walker/",
-			"options": {
-				"symlink": true
-			}
-		}
-	],
-	"minimum-stability": "dev",
 	"require": {
+		"getkirby/cms": "^3.4",
 		"getkirby/composer-installer": "^1.1",
 		"oblik/kirby-json": "^1.0",
-		"oblik/kirby-walker": "dev-dev",
 		"oblik/kirby-variables": "^2.2",
-		"oblik/kirby-variables-field": "^1.2"
+		"oblik/kirby-variables-field": "^1.2",
+		"oblik/kirby-walker": "^2.0"
 	},
 	"extra": {
 		"installer-name": "memsource"
