@@ -8,6 +8,24 @@ use Oblik\Walker\Util\Diff;
 use Oblik\Walker\Walker\Exporter;
 use Oblik\Walker\Walker\Importer;
 
+function walkerSettings($config = [])
+{
+	$walkerConfig = [
+		'blueprint' => option('oblik.walker.blueprint'),
+		'fields' => option('oblik.walker.fields')
+	];
+
+	$memsourceConfig = [
+		'fields' => option('oblik.memsource.fields')
+	];
+
+	return array_replace_recursive(
+		$walkerConfig,
+		$memsourceConfig,
+		$config
+	);
+}
+
 class MemsourceExporter extends Exporter
 {
 	protected function fieldPredicate($field, $settings, $input)
@@ -116,6 +134,37 @@ return [
 			}
 
 			return $data;
+		}
+	],
+	[
+		'pattern' => 'memsource/snapshot',
+		'method' => 'GET',
+		'action' => function () {
+			return array_map(function ($file) {
+				return [
+					'name' => basename($file, '.json'),
+					'date' => filemtime($file)
+				];
+			}, Snapshot::list());
+		}
+	],
+	[
+		'pattern' => 'memsource/snapshot',
+		'method' => 'POST',
+		'action' => function () {
+			$lang = kirby()->defaultLanguage()->code();
+			$exporter = new Exporter(walkerSettings());
+			$exporter->export(site(), $lang);
+			$data = $exporter->data();
+
+			return Snapshot::create($_GET['name'], $data);
+		}
+	],
+	[
+		'pattern' => 'memsource/snapshot',
+		'method' => 'DELETE',
+		'action' => function () {
+			return Snapshot::remove($_GET['name']);
 		}
 	],
 	[
