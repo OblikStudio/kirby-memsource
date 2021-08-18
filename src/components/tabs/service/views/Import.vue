@@ -79,10 +79,10 @@ export default {
 	},
 	computed: {
 		projectId() {
-			return this.$store.state.project.id
+			return this.$store.state.memsource.project.id
 		},
 		filteredJobs() {
-			return this.jobs.filter((job) => {
+			return this.jobs.filter(job => {
 				let matches = !this.query || job.filename.indexOf(this.query) >= 0
 				let selectedIndex = this.selectedJobs.indexOf(job.uid)
 				if (selectedIndex >= 0 && !matches) {
@@ -96,29 +96,29 @@ export default {
 	methods: {
 		toggle() {
 			if (this.selectedJobs.length !== this.filteredJobs.length) {
-				this.selectedJobs = this.filteredJobs.map((job) => job.uid)
+				this.selectedJobs = this.filteredJobs.map(job => job.uid)
 			} else {
 				this.selectedJobs = []
 			}
 		},
 		importHandler() {
 			let jobs = this.selectedJobs
-				.map((id) => this.jobs.find((job) => job.uid === id))
-				.filter((job) => !!job)
+				.map(id => this.jobs.find(job => job.uid === id))
+				.filter(job => !!job)
 
 			this.$loading(
-				Promise.all(jobs.map(this.importJob, this)).then((results) => {
-					this.$store.commit('SET_RESULTS', results)
-					this.$store.commit('VIEW', 'Results')
+				Promise.all(jobs.map(this.importJob, this)).then(results => {
+					this.$store.commit('memsource/SET_RESULTS', results)
+					this.$store.commit('memsource/VIEW', 'Results')
 				})
 			)
 		},
 		loadJobs() {
 			return this.$store
-				.dispatch('memsource', {
+				.dispatch('memsource/memsource', {
 					url: `/projects/${this.projectId}/jobs`
 				})
-				.then((response) => {
+				.then(response => {
 					this.jobs = freeze(response.data.content)
 					this.selectedJobs = []
 				})
@@ -126,23 +126,25 @@ export default {
 		},
 		importJob(job) {
 			let promise
-			let language = this.$store.getters.availableLanguages.find((lang) => {
-				return job.targetLang.indexOf(lang.code) === 0
-			})
+			let language = this.$store.getters['memsource/availableLanguages'].find(
+				lang => {
+					return job.targetLang.indexOf(lang.code) === 0
+				}
+			)
 
 			if (language) {
 				promise = this.$store
-					.dispatch('memsource', {
+					.dispatch('memsource/memsource', {
 						url: `/projects/${this.projectId}/jobs/${job.uid}/targetFile`,
 						responseType: 'blob'
 					})
-					.then((response) => {
+					.then(response => {
 						let blob = response.data
 						let config = {
 							language: language.code
 						}
 
-						return this.$store.dispatch('memsource', {
+						return this.$store.dispatch('memsource/memsource', {
 							url: '/import',
 							method: 'post',
 							headers: {
@@ -151,7 +153,7 @@ export default {
 							data: blob
 						})
 					})
-					.then((response) => {
+					.then(response => {
 						return Promise.resolve(response.data)
 					})
 			} else {
@@ -161,10 +163,10 @@ export default {
 			}
 
 			return promise
-				.then((data) => {
+				.then(data => {
 					return Promise.resolve({ job, language, data })
 				})
-				.catch((error) => {
+				.catch(error => {
 					return Promise.resolve({ job, language, error })
 				})
 		},
@@ -174,17 +176,17 @@ export default {
 			this.$refs.dialog.close()
 			this.$loading(
 				this.$store
-					.dispatch('memsource', {
+					.dispatch('memsource/memsource', {
 						url: `/projects/${this.projectId}/jobs/batch`,
 						method: 'delete',
 						data: {
-							jobs: jobs.map((id) => ({ uid: id }))
+							jobs: jobs.map(id => ({ uid: id }))
 						}
 					})
-					.then((response) => {
+					.then(response => {
 						return this.loadJobs()
 					})
-					.then((response) => {
+					.then(response => {
 						this.$alert(
 							this.$t('memsource.info.deleted_jobs', {
 								count: jobs.length

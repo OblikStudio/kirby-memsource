@@ -37,13 +37,13 @@ export default {
 		submit() {
 			this.$loading(
 				this.$store
-					.dispatch('memsource', {
+					.dispatch('memsource/memsource', {
 						url: '/login',
 						method: 'post',
 						data: this.credentials
 					})
 					.then(response => {
-						this.$store.commit('SET_SESSION', response.data)
+						this.$store.commit('memsource/SET_SESSION', response.data)
 					})
 					.catch(this.$alert)
 			)

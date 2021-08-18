@@ -63,7 +63,7 @@ export default {
 	},
 	computed: {
 		results() {
-			return this.$store.state.results.map((result) => {
+			return this.$store.state.memsource.results.map(result => {
 				let diff = getEntries(result.data)
 				let state = 'imported'
 

@@ -52,13 +52,13 @@ export default {
 
 			this.$loading(
 				this.$store
-					.dispatch('memsource', {
+					.dispatch('memsource/memsource', {
 						url: '/export',
 						params
 					})
 					.then(response => {
-						this.$store.commit('SET_EXPORT', response.data)
-						this.$store.commit('VIEW', 'Upload')
+						this.$store.commit('memsource/SET_EXPORT', response.data)
+						this.$store.commit('memsource/VIEW', 'Upload')
 					})
 					.catch(this.$alert)
 			)
@@ -67,7 +67,7 @@ export default {
 	created() {
 		this.$loading(
 			this.$store
-				.dispatch('memsource', {
+				.dispatch('memsource/memsource', {
 					url: '/snapshot',
 					method: 'get'
 				})

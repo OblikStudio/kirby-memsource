@@ -39,7 +39,7 @@ export default {
 	},
 	methods: {
 		logout() {
-			this.$store.commit('SET_SESSION', null)
+			this.$store.commit('memsource/SET_SESSION', null)
 		}
 	}
 }

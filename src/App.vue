@@ -1,5 +1,5 @@
 <template>
-	<k-view :class="{ 'ms-loading': $store.state.loading }">
+	<k-view :class="{ 'ms-loading': $store.state.memsource.loading }">
 		<div class="k-header">
 			<div class="k-header-tabs">
 				<nav>
@@ -18,7 +18,10 @@
 			<Crumbs v-if="crumbs.length" v-model="crumbs"></Crumbs>
 		</div>
 
-		<component :is="currentTab" v-show="!$store.state.loading"></component>
+		<component
+			:is="currentTab"
+			v-show="!$store.state.memsource.loading"
+		></component>
 
 		<k-dialog ref="alerts" size="medium">
 			<k-text>
@@ -42,7 +45,7 @@
 
 <script>
 import whenExpired from 'when-expired'
-import createStore from './store'
+import { store } from './store'
 import Crumbs from './components/Crumbs.vue'
 import User from './components/tabs/user/User.vue'
 import Service from './components/tabs/service/Service.vue'
@@ -85,22 +88,22 @@ export default {
 	computed: {
 		currentTab: {
 			get() {
-				return this.$store.state.tab
+				return this.$store.state.memsource.tab
 			},
 			set(value) {
-				return this.$store.commit('TAB', value)
+				return this.$store.commit('memsource/TAB', value)
 			}
 		},
 		crumbs: {
 			get() {
-				return this.$store.state.crumbs
+				return this.$store.state.memsource.crumbs
 			},
 			set(value) {
-				return this.$store.commit('CRUMBS', value)
+				return this.$store.commit('memsource/CRUMBS', value)
 			}
 		},
 		alerts() {
-			return this.$store.state.alerts
+			return this.$store.state.memsource.alerts
 		}
 	},
 	methods: {
@@ -122,40 +125,37 @@ export default {
 				conf.theme = theme
 			}
 
-			this.$store.commit('ALERT', conf)
+			this.$store.commit('memsource/ALERT', conf)
 		},
 		$loading(promise) {
-			this.$store.commit('LOADING', true)
+			this.$store.commit('memsource/LOADING', true)
 			return promise.then(() => {
-				this.$store.commit('LOADING', false)
+				this.$store.commit('memsource/LOADING', false)
 			})
 		},
 		closeAlerts() {
-			this.$store.commit('CLEAR_ALERTS')
+			this.$store.commit('memsource/CLEAR_ALERTS')
 			this.$refs.alerts.close()
 		}
 	},
 	beforeCreate() {
-		let Vuex = this.$root.constructor._installedPlugins.find(
-			(entry) => !!entry.Store
-		)
-		this.$store = createStore(Vuex, this.$root.$store)
+		this.$store.registerModule('memsource', store)
 	},
 	created() {
-		if (this.$store.state.session) {
+		if (this.$store.state.memsource.session) {
 			this.currentTab = 'Service'
 		} else {
 			this.currentTab = 'User'
 		}
 	},
 	watch: {
-		'$store.state.session.expires': {
+		'$store.state.memsource.session.expires': {
 			immediate: true,
 			handler(value) {
 				if (value) {
 					whenExpired('session', value).then(() => {
 						this.$alert(this.$t('memsource.info.session_expired'))
-						this.$store.dispatch('logOut')
+						this.$store.dispatch('memsource/logOut')
 					})
 				}
 			}

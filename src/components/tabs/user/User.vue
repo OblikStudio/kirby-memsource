@@ -1,5 +1,8 @@
 <template>
-	<Info v-if="$store.state.session" :data="$store.state.session.user"></Info>
+	<Info
+		v-if="$store.state.memsource.session"
+		:data="$store.state.memsource.session.user"
+	></Info>
 	<Login v-else></Login>
 </template>
 

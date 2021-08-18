@@ -6,7 +6,7 @@
 
 		<section class="k-section">
 			<k-json-editor
-				v-model="$store.state.export"
+				v-model="$store.state.memsource.export"
 				:label="$t('data')"
 			></k-json-editor>
 		</section>
@@ -87,10 +87,10 @@ export default {
 	},
 	computed: {
 		data() {
-			return this.$store.state.export
+			return this.$store.state.memsource.export
 		},
 		project() {
-			return this.$store.state.project
+			return this.$store.state.memsource.project
 		},
 		stats() {
 			if (!this.data) {
@@ -114,7 +114,7 @@ export default {
 		languageOptions() {
 			let targetLangs = this.project.targetLangs
 
-			return this.$store.getters.availableLanguages
+			return this.$store.getters['memsource/availableLanguages']
 				.filter(lang => !lang.default)
 				.map(lang => {
 					/**
@@ -138,7 +138,7 @@ export default {
 			this.$alert(this.$t('upload.progress'))
 
 			this.$store
-				.dispatch('memsource', {
+				.dispatch('memsource/memsource', {
 					url: `/upload/${this.project.uid}/${this.jobName}.json`,
 					method: 'post',
 					headers: {

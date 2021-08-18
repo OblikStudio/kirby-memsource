@@ -1,5 +1,5 @@
 <template>
-	<component :is="$store.getters.view"></component>
+	<component :is="$store.getters['memsource/view']"></component>
 </template>
 
 <script>
@@ -33,7 +33,7 @@ export default {
 		}
 	},
 	created() {
-		this.$store.commit('VIEW', 'Projects')
+		this.$store.commit('memsource/VIEW', 'Projects')
 	}
 }
 </script>

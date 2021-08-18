@@ -47,7 +47,7 @@ export default {
 		},
 		fetch() {
 			this.$store
-				.dispatch('memsource', {
+				.dispatch('memsource/memsource', {
 					url: '/snapshot',
 					method: 'get'
 				})
@@ -60,7 +60,7 @@ export default {
 		},
 		create() {
 			this.$store
-				.dispatch('memsource', {
+				.dispatch('memsource/memsource', {
 					url: '/snapshot',
 					method: 'post',
 					params: {
@@ -74,7 +74,7 @@ export default {
 		},
 		remove(name) {
 			this.$store
-				.dispatch('memsource', {
+				.dispatch('memsource/memsource', {
 					url: '/snapshot',
 					method: 'delete',
 					params: {

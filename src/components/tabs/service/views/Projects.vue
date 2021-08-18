@@ -21,8 +21,8 @@ export default {
 	},
 	methods: {
 		open(project) {
-			this.$store.commit('SET_PROJECT', project)
-			this.$store.commit('VIEW', {
+			this.$store.commit('memsource/SET_PROJECT', project)
+			this.$store.commit('memsource/VIEW', {
 				text: project.name,
 				value: 'Project'
 			})
@@ -33,14 +33,14 @@ export default {
 		}
 	},
 	created() {
-		this.$store.commit('SET_PROJECT', null)
+		this.$store.commit('memsource/SET_PROJECT', null)
 		this.$loading(
 			this.$store
-				.dispatch('memsource', {
+				.dispatch('memsource/memsource', {
 					url: '/projects',
 					method: 'get'
 				})
-				.then((response) => {
+				.then(response => {
 					this.projects = response.data.content
 				})
 				.catch(this.$alert)

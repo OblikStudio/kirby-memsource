@@ -24,7 +24,7 @@ export default {
 	},
 	computed: {
 		project() {
-			return this.$store.state.project
+			return this.$store.state.memsource.project
 		},
 		properties() {
 			return [
@@ -45,10 +45,10 @@ export default {
 	},
 	methods: {
 		exportView() {
-			this.$store.commit('VIEW', 'Export')
+			this.$store.commit('memsource/VIEW', 'Export')
 		},
 		importView() {
-			this.$store.commit('VIEW', 'Import')
+			this.$store.commit('memsource/VIEW', 'Import')
 		}
 	}
 }
