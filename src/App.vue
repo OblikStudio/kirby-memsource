@@ -1,7 +1,7 @@
 <template>
 	<k-view :class="{ 'ms-loading': $store.state.memsource.loading }">
 		<div class="k-header">
-			<div class="k-header-tabs">
+			<div class="k-tabs">
 				<nav>
 					<k-button
 						v-for="tab in tabs"
@@ -186,13 +186,7 @@ export default {
 }
 
 .k-tab-button {
-	&[aria-current]:after {
-		display: none;
-	}
-
-	&.k-button {
-		width: 100%;
-	}
+	width: 100%;
 }
 
 .k-box + .k-box {
