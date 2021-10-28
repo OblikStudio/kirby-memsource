@@ -3,64 +3,6 @@
 namespace Oblik\Memsource;
 
 use Exception;
-use Kirby\Cms\Structure;
-use Oblik\Walker\Util\Diff;
-use Oblik\Walker\Walker\Exporter;
-use Oblik\Walker\Walker\Importer;
-
-function walkerSettings($config = [])
-{
-	$walkerConfig = [
-		'blueprint' => option('oblik.walker.blueprint'),
-		'fields' => option('oblik.walker.fields')
-	];
-
-	$memsourceConfig = [
-		'fields' => option('oblik.memsource.fields')
-	];
-
-	return array_replace_recursive(
-		$walkerConfig,
-		$memsourceConfig,
-		$config
-	);
-}
-
-class MemsourceExporter extends Exporter
-{
-	protected function fieldPredicate($field, $settings, $input)
-	{
-		$pass = parent::fieldPredicate($field, $settings, $input);
-		$translate = $settings['translate'] ?? true;
-
-		return ($pass && $translate);
-	}
-
-	protected function fieldHandler($field, $settings, $input)
-	{
-		$data = parent::fieldHandler($field, $settings, $input);
-
-		if (empty($data)) {
-			$data = null;
-		}
-
-		return $data;
-	}
-
-	protected function structureHandler(Structure $structure, array $blueprint, $input, $sync)
-	{
-		$data = parent::structureHandler($structure, $blueprint, $input, $sync);
-
-		// The data is not filtered with `array_filter()` by default because if
-		// empty entries are removed, all non-empty entries will be located at a
-		// different index. However, if *all* entries are empty, return null.
-		if (is_array($data) && count(array_filter($data)) === 0) {
-			$data = null;
-		}
-
-		return $data;
-	}
-}
 
 return [
 	[
@@ -97,39 +39,31 @@ return [
 				throw new Exception('Missing content', 400);
 			}
 
-			$importer = new Importer(walkerSettings());
-			return $importer->import($content, $language);
+			// $importer = new Importer(walkerSettings());
+			// return $importer->import($content, $language);
 		}
 	],
 	[
 		'pattern' => 'memsource/export',
 		'method' => 'GET',
+		'auth' => false,
 		'action' => function () {
-			$pattern = $_GET['pages'] ?? null;
-			$snapshot = $_GET['snapshot'] ?? null;
-			$lang = kirby()->defaultLanguage()->code();
-
-			$exporter = new MemsourceExporter(walkerSettings());
 			$pages = site()->index();
+			$pattern = $_GET['pages'] ?? null;
 
 			if ($pattern) {
 				$pages = $pages->filter(function ($page) use ($pattern) {
-					return empty($pattern) || preg_match($pattern, $page->id()) === 1;
+					return preg_match($pattern, $page->id()) === 1;
 				});
 			}
 
-			$exporter->export(site(), $lang, false);
-			$exporter->export($pages, $lang, false);
-			$exporter->exportVariables($lang);
+			$lang = kirby()->defaultLanguage()->code();
+			$exporter = new Exporter($lang);
+			$exporter->exportSite();
+			$exporter->exportPages($pages);
+			$data = $exporter->toArray();
 
-			$data = $exporter->data();
-
-			if ($snapshot) {
-				$snapshotData = Snapshot::read($snapshot);
-				$data = Diff::process($data, $snapshotData);
-			}
-
-			if ($data === null) {
+			if (empty($data)) {
 				throw new Exception('Nothing to export', 400);
 			}
 
@@ -152,12 +86,12 @@ return [
 		'pattern' => 'memsource/snapshot',
 		'method' => 'POST',
 		'action' => function () {
-			$lang = kirby()->defaultLanguage()->code();
-			$exporter = new Exporter(walkerSettings());
-			$exporter->export(site(), $lang);
-			$data = $exporter->data();
+			// $lang = kirby()->defaultLanguage()->code();
+			// $exporter = new Exporter(walkerSettings());
+			// $exporter->export(site(), $lang);
+			// $data = $exporter->data();
 
-			return Snapshot::create($_GET['name'], $data);
+			// return Snapshot::create($_GET['name'], $data);
 		}
 	],
 	[

@@ -5,6 +5,7 @@ namespace Oblik\Memsource;
 use Kirby\Cms\App;
 
 load([
+	'Oblik\\Memsource\\Exporter' => 'Exporter.php',
 	'Oblik\\Memsource\\Service' => 'Service.php',
 	'Oblik\\Memsource\\Snapshot' => 'Snapshot.php'
 ], __DIR__ . '/lib');
