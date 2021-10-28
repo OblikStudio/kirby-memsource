@@ -10,13 +10,19 @@
 			"homepage": "https://dodov.me"
 		}
 	],
+	"repositories": [
+		{
+			"type": "path",
+			"url": "../kirby-walker"
+		}
+	],
 	"require": {
 		"getkirby/cms": "^3.5",
 		"getkirby/composer-installer": "^1.1",
 		"oblik/kirby-json": "^1.0",
 		"oblik/kirby-variables": "^2.2",
 		"oblik/kirby-variables-field": "^1.2",
-		"oblik/kirby-walker": "^2.0"
+		"oblik/kirby-walker": "dev-master"
 	},
 	"extra": {
 		"installer-name": "memsource"

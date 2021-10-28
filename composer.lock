@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "ef79136cc36f0e7bc73aa83efbd27a8b",
+    "content-hash": "e90c455b312205a625d13c9119950f5d",
     "packages": [
         {
             "name": "claviska/simpleimage",
@@ -706,17 +706,11 @@
         },
         {
             "name": "oblik/kirby-walker",
-            "version": "2.0.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/OblikStudio/kirby-walker.git",
-                "reference": "cd53f5def6b3ae28f7b4057f7d08ab219eb77eed"
-            },
+            "version": "dev-master",
             "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/OblikStudio/kirby-walker/zipball/cd53f5def6b3ae28f7b4057f7d08ab219eb77eed",
-                "reference": "cd53f5def6b3ae28f7b4057f7d08ab219eb77eed",
-                "shasum": ""
+                "type": "path",
+                "url": "../kirby-walker",
+                "reference": "bb15a1f76e550e1032653556e0390ed807ef8a51"
             },
             "require": {
                 "getkirby/cms": "^3.4",
@@ -737,7 +731,11 @@
                     "Oblik\\Walker\\": "src/"
                 }
             },
-            "notification-url": "https://packagist.org/downloads/",
+            "scripts": {
+                "test": [
+                    "phpunit"
+                ]
+            },
             "license": [
                 "MIT"
             ],
@@ -749,7 +747,9 @@
                 }
             ],
             "description": "Kirby plugin for exporting, importing, and iterating over site content.",
-            "time": "2020-09-03T09:54:09+00:00"
+            "transport-options": {
+                "relative": true
+            }
         },
         {
             "name": "phpmailer/phpmailer",
@@ -1011,7 +1011,9 @@
     "packages-dev": [],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {
+        "oblik/kirby-walker": 20
+    },
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": [],
