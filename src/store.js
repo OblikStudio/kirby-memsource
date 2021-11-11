@@ -1,6 +1,6 @@
 import axios from 'axios'
 import freeze from 'deep-freeze-node'
-import session from './modules/session'
+import * as session from './modules/session'
 
 class MemsourceError extends Error {
 	constructor(response) {

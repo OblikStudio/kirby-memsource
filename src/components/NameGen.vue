@@ -2,7 +2,7 @@
 	<div class="ms-namegen">
 		<k-text-field v-bind="$attrs" v-model="value">
 			<template slot="options">
-				<slot name="options">
+				<slot name="options"></slot>
 			</template>
 		</k-text-field>
 
