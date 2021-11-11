@@ -1,6 +1,5 @@
 import axios from 'axios'
 import freeze from 'deep-freeze-node'
-import * as session from './modules/session'
 
 class MemsourceError extends Error {
 	constructor(response) {
@@ -27,7 +26,6 @@ export let store = {
 		alerts: [],
 		crumbs: [],
 		tab: null,
-		session: session.load(),
 		export: null,
 		project: null,
 		results: null,
@@ -37,9 +35,6 @@ export let store = {
 		view: state => {
 			let last = state.crumbs[state.crumbs.length - 1]
 			return last ? last.value : null
-		},
-		user: state => {
-			return state.session && state.session.user
 		},
 		languages: function(state, getters, rootState) {
 			return rootState.languages
@@ -87,10 +82,6 @@ export let store = {
 		},
 		CRUMBS(state, value) {
 			state.crumbs = value
-		},
-		SET_SESSION: function(state, data) {
-			state.session = freeze(data)
-			session.save(data)
 		},
 		SET_PROJECT: function(state, value) {
 			state.project = freeze(value)

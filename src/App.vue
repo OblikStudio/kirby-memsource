@@ -44,17 +44,14 @@
 </template>
 
 <script>
-import whenExpired from 'when-expired'
 import { store } from './store'
 import Crumbs from './components/Crumbs.vue'
-import User from './components/tabs/user/User.vue'
 import Service from './components/tabs/service/Service.vue'
 import Snapshots from './components/tabs/snapshots/Snapshots.vue'
 
 export default {
 	components: {
 		Crumbs,
-		User,
 		Service,
 		Snapshots
 	},
@@ -67,11 +64,6 @@ export default {
 	data() {
 		return {
 			tabs: [
-				{
-					icon: 'user',
-					text: this.$t('user'),
-					component: 'User'
-				},
 				{
 					icon: 'globe',
 					text: this.$t('service'),
@@ -142,24 +134,9 @@ export default {
 		this.$store.registerModule('memsource', store)
 	},
 	created() {
-		if (this.$store.state.memsource.session) {
-			this.currentTab = 'Service'
-		} else {
-			this.currentTab = 'User'
-		}
+		this.currentTab = 'Service'
 	},
 	watch: {
-		'$store.state.memsource.session.expires': {
-			immediate: true,
-			handler(value) {
-				if (value) {
-					whenExpired('session', value).then(() => {
-						this.$alert(this.$t('memsource.info.session_expired'))
-						this.$store.dispatch('memsource/logOut')
-					})
-				}
-			}
-		},
 		alerts(value) {
 			if (value.length) {
 				this.$refs.alerts.open()

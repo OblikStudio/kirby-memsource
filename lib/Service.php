@@ -25,39 +25,50 @@ class Service
 
 	public $token = null;
 
+	/**
+	 * @var \Kirby\Cache\Cache
+	 */
+	public $cache;
+
 	public function __construct()
 	{
-		$this->token = Cookie::get('memsource_session');
+		$this->cache = kirby()->cache('oblik.memsource');
+		$session = $this->cache->get('session');
+
+		if (!$session) {
+			$session = $this->login();
+			$expires = strtotime($session['expires'] ?? null);
+			$this->cache->set('session', $session, $expires);
+		}
+
+		$this->token = $session['token'] ?? null;
+		return $this;
 	}
 
 	public function login()
 	{
 		$remote = Remote::request(self::API_URL . '/auth/login', [
 			'method' => 'POST',
-			'data' => json_encode(kirby()->request()->data()),
+			'data' => json_encode([
+				'userName' => option('oblik.memsource.login.username'),
+				'password' => option('oblik.memsource.login.password')
+			]),
 			'headers' => [
 				'Content-Type' => 'application/json'
 			]
 		]);
 
-		if ($remote->code() === 200) {
-			$data = json_decode($remote->content(), true);
-			$token = $data['token'] ?? null;
-			$expires = $data['expires'] ?? null;
+		return json_decode($remote->content(), true);
+	}
 
-			if ($token) {
-				Cookie::set('memsource_session', $token, [
-					'lifetime' => strtotime($expires)
-				]);
-			}
-		}
-
-		return new Response($remote->content(), 'application/json', $remote->code());
+	public function request(string $path, array $params)
+	{
+		return Remote::request(self::API_URL . '/' . $path . '?token=' . $this->token, $params);
 	}
 
 	public function get(string $resource)
 	{
-		$remote = Remote::request(self::API_URL . '/' . $resource . '?token=' . $this->token, [
+		$remote = $this->request($resource, [
 			'method' => 'GET'
 		]);
 
