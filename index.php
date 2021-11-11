@@ -6,6 +6,7 @@ use Kirby\Cms\App;
 
 load([
 	'Oblik\\Memsource\\Exporter' => 'Exporter.php',
+	'Oblik\\Memsource\\Importer' => 'Importer.php',
 	'Oblik\\Memsource\\Service' => 'Service.php',
 	'Oblik\\Memsource\\Snapshot' => 'Snapshot.php'
 ], __DIR__ . '/lib');

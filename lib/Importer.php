@@ -3,47 +3,16 @@
 namespace Oblik\Memsource;
 
 use Kirby\Cms\ModelWithContent;
-use Oblik\Walker\Walker\Importer as ImportWalker;
-use Oblik\Walker\Walker\Walker as BaseWalker;
-
-/**
- * @todo should compare arrays with `id` accordingly
- */
-function compare($arrA, $arrB)
-{
-	$result = [];
-	foreach ($arrA as $key => $a) {
-		$b = $arrB[$key] ?? null;
-
-		if (is_array($a) && is_array($b)) {
-			$result[$key] = compare($a, $b);
-		} else if ($a !== $b) {
-			$result[$key] = [
-				'$old' => $a,
-				'$new' => $b
-			];
-		}
-	}
-
-	return array_filter($result);
-}
+use Oblik\Walker\Walker\Importer as Walker;
 
 class Importer
 {
 	/**
-	 * @var BaseWalker
+	 * @var Walker
 	 */
-	public static $baseWalker = BaseWalker::class;
-
-	/**
-	 * @var ImportWalker
-	 */
-	public static $importWalker = ImportWalker::class;
+	public static $walker = walker::class;
 
 	public $lang;
-	public $site;
-	public $pages = [];
-	public $files = [];
 
 	public function __construct($lang = null)
 	{
@@ -52,28 +21,34 @@ class Importer
 
 	public function importModel(ModelWithContent $model, array $data)
 	{
-		$tl = $model->translation($this->lang);
-
-		if ($tl && $tl->exists()) {
-			$lang = $this->lang;
-		} else {
-			$lang = null;
-		}
-
-		$old = static::$baseWalker::walk($model, $lang);
-		$new = static::$importWalker::walk($model, $this->lang, $data);
-
-		$model->update($new, $this->lang);
-
-		return compare($old, $new);
+		$data = static::$walker::walk($model, $this->lang, $data);
+		return $model->update($data, $this->lang);
 	}
 
-	public function toArray()
+	public function import(array $data)
 	{
-		return array_filter([
-			'site' => $this->site,
-			'pages' => $this->pages,
-			'files' => $this->files
-		]);
+		$site = $data['site'] ?? null;
+		$pages = $data['pages'] ?? null;
+		$files = $data['files'] ?? null;
+
+		if (is_array($site)) {
+			$this->importModel(site(), $site);
+		}
+
+		if (is_array($pages)) {
+			foreach ($pages as $id => $data) {
+				if ($page = page($id)) {
+					$this->importModel($page, $data);
+				}
+			}
+		}
+
+		if (is_array($files)) {
+			foreach ($files as $id => $data) {
+				if ($file = site()->file($id)) {
+					$this->importModel($file, $data);
+				}
+			}
+		}
 	}
 }

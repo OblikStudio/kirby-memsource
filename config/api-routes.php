@@ -3,7 +3,6 @@
 namespace Oblik\Memsource;
 
 use Exception;
-use Oblik\Walker\Walker\Importer;
 
 return [
 	[
@@ -40,18 +39,10 @@ return [
 				throw new Exception('Missing content', 400);
 			}
 
-			$pages = $content['pages'] ?? null;
+			kirby()->impersonate('kirby');
 
-			if (is_array($pages)) {
-				kirby()->impersonate('kirby');
-
-				foreach ($pages as $id => $input) {
-					if ($page = page($id)) {
-						$data = Importer::walk($page, $language, $input);
-						$page->update($data, $language);
-					}
-				}
-			}
+			$importer = new Importer($config['language']);
+			$importer->import($content);
 		}
 	],
 	[
