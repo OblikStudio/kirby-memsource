@@ -48,12 +48,14 @@ import { store } from './store'
 import Crumbs from './components/Crumbs.vue'
 import Service from './components/tabs/service/Service.vue'
 import Snapshots from './components/tabs/snapshots/Snapshots.vue'
+import Export from './components/tabs/Export.vue'
 
 export default {
 	components: {
 		Crumbs,
 		Service,
-		Snapshots
+		Snapshots,
+		Export
 	},
 	provide() {
 		return {
@@ -134,7 +136,7 @@ export default {
 		this.$store.registerModule('memsource', store)
 	},
 	created() {
-		this.currentTab = 'Service'
+		this.currentTab = 'Export'
 	},
 	watch: {
 		alerts(value) {

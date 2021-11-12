@@ -3,6 +3,7 @@
 namespace Oblik\Memsource;
 
 use Exception;
+use Kirby\Cms\PagePicker;
 
 return [
 	[
@@ -101,6 +102,17 @@ return [
 		'method' => 'DELETE',
 		'action' => function () {
 			return Snapshot::remove($_GET['name']);
+		}
+	],
+	[
+		'pattern' => 'memsource/pages',
+		'method' => 'GET',
+		'action' => function () {
+			return (new PagePicker([
+				'page' => $this->requestQuery('page'),
+				'parent' => $this->requestQuery('parent'),
+				'search' => $this->requestQuery('search')
+			]))->toArray();
 		}
 	],
 	[
