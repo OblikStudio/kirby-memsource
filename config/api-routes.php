@@ -49,21 +49,40 @@ return [
 	[
 		'pattern' => 'memsource/export',
 		'method' => 'GET',
-		'auth' => false,
 		'action' => function () {
-			$pages = site()->index();
-			$pattern = $_GET['pages'] ?? null;
-
-			if ($pattern) {
-				$pages = $pages->filter(function ($page) use ($pattern) {
-					return preg_match($pattern, $page->id()) === 1;
-				});
-			}
-
+			$data = kirby()->request()->data();
 			$lang = kirby()->defaultLanguage()->code();
 			$exporter = new Exporter($lang);
-			$exporter->exportSite();
-			$exporter->exportPages($pages);
+			$exportFiles = $data['files'] ?? null;
+
+			if (!empty($data['site'])) {
+				if ($exportFiles !== 'only') {
+					$exporter->exportSite();
+				}
+
+				if ($exportFiles !== 'off') {
+					foreach (site()->files() as $file) {
+						$exporter->exportFile($file);
+					}
+				}
+			}
+
+			if (!empty($data['pages'])) {
+				foreach (explode(',', $data['pages']) as $pageId) {
+					if ($page = page($pageId)) {
+						if ($exportFiles !== 'only') {
+							$exporter->exportPage($page);
+						}
+
+						if ($exportFiles !== 'off') {
+							foreach ($page->files() as $file) {
+								$exporter->exportFile($file);
+							}
+						}
+					}
+				}
+			}
+
 			$data = $exporter->toArray();
 
 			if (empty($data)) {

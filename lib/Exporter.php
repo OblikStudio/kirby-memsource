@@ -30,25 +30,19 @@ class Exporter
 		}
 	}
 
-	public function exportPages(Pages $pages, $files = true)
+	public function exportPages(Pages $pages)
 	{
 		foreach ($pages as $page) {
-			$this->exportPage($page, $files);
+			$this->exportPage($page);
 		}
 	}
 
-	public function exportPage(Page $page, $files = true)
+	public function exportPage(Page $page)
 	{
 		$data = static::$walker::walk($page, $this->lang);
 
 		if (!empty($data)) {
 			$this->pages[$page->id()] = $data;
-		}
-
-		if ($files) {
-			foreach ($page->files() as $file) {
-				$this->exportFile($file);
-			}
 		}
 	}
 
