@@ -5,10 +5,12 @@ namespace Oblik\Memsource;
 use Kirby\Cms\File;
 use Kirby\Cms\Page;
 use Kirby\Cms\Pages;
-use Oblik\Walker\Walker\Exporter as ExportWalker;
 
 class Exporter
 {
+	/**
+	 * @var ExportWalker
+	 */
 	public static $walker = ExportWalker::class;
 
 	public $lang;

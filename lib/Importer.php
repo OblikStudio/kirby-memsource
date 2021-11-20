@@ -3,14 +3,13 @@
 namespace Oblik\Memsource;
 
 use Kirby\Cms\ModelWithContent;
-use Oblik\Walker\Walker\Importer as Walker;
 
 class Importer
 {
 	/**
-	 * @var Walker
+	 * @var ImportWalker
 	 */
-	public static $walker = walker::class;
+	public static $walker = ImportWalker::class;
 
 	public $lang;
 
