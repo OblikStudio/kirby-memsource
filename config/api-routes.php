@@ -69,7 +69,7 @@ return [
 
 			if (!empty($data['pages'])) {
 				foreach (explode(',', $data['pages']) as $pageId) {
-					if ($page = page($pageId)) {
+					if ($page = site()->findPageOrDraft($pageId)) {
 						if ($exportFiles !== 'only') {
 							$exporter->exportPage($page);
 						}
