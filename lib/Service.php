@@ -37,8 +37,11 @@ class Service
 
 		if (!$session) {
 			$session = $this->login();
-			$expires = strtotime($session['expires'] ?? null);
-			$this->cache->set('session', $session, $expires);
+
+			if (!empty($session['expires'])) {
+				$timestamp = strtotime($session['expires']);
+				$this->cache->set('session', $session, $timestamp);
+			}
 		}
 
 		$this->token = $session['token'] ?? null;
