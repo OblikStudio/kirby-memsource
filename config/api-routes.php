@@ -42,17 +42,24 @@ return [
 
 			kirby()->impersonate('kirby');
 
-			$importer = new Importer($config['language']);
+			$importer = new Importer([
+				'lang' => $config['language'],
+				'options' => option('oblik.memsource.options')
+			]);
+
 			$importer->import($content);
 		}
 	],
 	[
 		'pattern' => 'memsource/export',
 		'method' => 'GET',
+		'auth' => false,
 		'action' => function () {
 			$data = kirby()->request()->data();
-			$lang = kirby()->defaultLanguage()->code();
-			$exporter = new Exporter($lang);
+			$exporter = new Exporter([
+				'options' => option('oblik.memsource.options')
+			]);
+
 			$exportFiles = $data['files'] ?? null;
 
 			if (!empty($data['site'])) {

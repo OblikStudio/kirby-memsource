@@ -5,29 +5,23 @@ namespace Oblik\Memsource;
 use Kirby\Cms\File;
 use Kirby\Cms\Page;
 use Kirby\Cms\Pages;
+use Oblik\Walker\Walker\Exporter as WalkerExporter;
 
 class Exporter
 {
-	/**
-	 * @var ExportWalker
-	 */
-	public static $walker = ExportWalker::class;
-
-	public $lang;
+	public $context;
 	public $site;
 	public $pages = [];
 	public $files = [];
 
-	public function __construct($lang = null)
+	public function __construct(array $context = [])
 	{
-		$this->lang = $lang;
+		$this->context = $context;
 	}
 
 	public function exportSite()
 	{
-		$data = static::$walker::walk(site(), [
-			'lang' => $this->lang
-		]);
+		$data = WalkerExporter::walk(site(), $this->context);
 
 		if (!empty($data)) {
 			$this->site = $data;
@@ -43,9 +37,7 @@ class Exporter
 
 	public function exportPage(Page $page)
 	{
-		$data = static::$walker::walk($page, [
-			'lang' => $this->lang
-		]);
+		$data = WalkerExporter::walk($page, $this->context);
 
 		if (!empty($data)) {
 			$this->pages[$page->id()] = $data;
@@ -54,9 +46,7 @@ class Exporter
 
 	public function exportFile(File $file)
 	{
-		$data = static::$walker::walk($file, [
-			'lang' => $this->lang
-		]);
+		$data = WalkerExporter::walk($file, $this->context);
 
 		if (!empty($data)) {
 			$this->files[$file->id()] = $data;

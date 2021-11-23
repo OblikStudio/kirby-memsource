@@ -3,27 +3,23 @@
 namespace Oblik\Memsource;
 
 use Kirby\Cms\ModelWithContent;
+use Oblik\Walker\Walker\Importer as WalkerImporter;
 
 class Importer
 {
-	/**
-	 * @var ImportWalker
-	 */
-	public static $walker = ImportWalker::class;
+	public $context;
 
-	public $lang;
-
-	public function __construct($lang = null)
+	public function __construct(array $context = [])
 	{
-		$this->lang = $lang;
+		$this->context = $context;
 	}
 
 	public function importModel(ModelWithContent $model, array $data)
 	{
-		$data = static::$walker::walk($model, [
-			'lang' => $this->lang,
-			'input' => $data
-		]);
+		$context = $this->context;
+		$context['input'] = $data;
+
+		$data = WalkerImporter::walk($model, $context);
 
 		return $model->update($data, $this->lang);
 	}
