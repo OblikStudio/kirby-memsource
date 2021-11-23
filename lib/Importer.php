@@ -20,7 +20,11 @@ class Importer
 
 	public function importModel(ModelWithContent $model, array $data)
 	{
-		$data = static::$walker::walk($model, $this->lang, $data);
+		$data = static::$walker::walk($model, [
+			'lang' => $this->lang,
+			'input' => $data
+		]);
+
 		return $model->update($data, $this->lang);
 	}
 

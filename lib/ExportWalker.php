@@ -7,11 +7,9 @@ use Oblik\Walker\Walker\Exporter;
 
 class ExportWalker extends Exporter
 {
-	protected static function walkText($text)
+	protected static function walkText(string $text, $context)
 	{
-		if (is_string($text)) {
-			$text = KirbyTags::decode($text);
-		}
+		$text = KirbyTags::decode($text);
 
 		return $text;
 	}

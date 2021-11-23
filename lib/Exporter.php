@@ -25,7 +25,9 @@ class Exporter
 
 	public function exportSite()
 	{
-		$data = static::$walker::walk(site(), $this->lang);
+		$data = static::$walker::walk(site(), [
+			'lang' => $this->lang
+		]);
 
 		if (!empty($data)) {
 			$this->site = $data;
@@ -41,7 +43,9 @@ class Exporter
 
 	public function exportPage(Page $page)
 	{
-		$data = static::$walker::walk($page, $this->lang);
+		$data = static::$walker::walk($page, [
+			'lang' => $this->lang
+		]);
 
 		if (!empty($data)) {
 			$this->pages[$page->id()] = $data;
@@ -50,7 +54,9 @@ class Exporter
 
 	public function exportFile(File $file)
 	{
-		$data = static::$walker::walk($file, $this->lang);
+		$data = static::$walker::walk($file, [
+			'lang' => $this->lang
+		]);
 
 		if (!empty($data)) {
 			$this->files[$file->id()] = $data;

@@ -7,11 +7,9 @@ use Oblik\Walker\Walker\Importer;
 
 class ImportWalker extends Importer
 {
-	protected static function walkText($text)
+	protected static function walkText(string $text, $context)
 	{
-		if (is_string($text)) {
-			$text = KirbyTags::encode($text);
-		}
+		$text = KirbyTags::encode($text);
 
 		return $text;
 	}
