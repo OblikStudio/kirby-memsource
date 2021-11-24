@@ -99,7 +99,8 @@ export default {
 					pages: this.exportPages.map((p) => p.id),
 				})
 				.then((data) => {
-					console.log(data);
+					this.$store.commit("memsource/SET_EXPORT", data);
+					this.$store.commit("memsource/SET_SCREEN", "Upload");
 				})
 				.catch((error) => {
 					this.$store.dispatch("notification/error", error);

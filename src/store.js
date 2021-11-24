@@ -88,7 +88,7 @@ export let store = {
 			state.project = freeze(value);
 		},
 		SET_EXPORT: (state, value) => {
-			state.export = value;
+			state.export = freeze(value);
 		},
 		SET_RESULTS: function (state, value) {
 			state.results = freeze(value);

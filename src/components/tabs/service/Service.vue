@@ -6,7 +6,7 @@
 import Projects from "./views/Projects.vue";
 import Project from "./views/Project.vue";
 import Export from "./views/Export.vue";
-import Upload from "./views/Upload.vue";
+import Upload from "../Upload.vue";
 import Import from "./views/Import.vue";
 import Results from "./views/Results.vue";
 

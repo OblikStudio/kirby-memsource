@@ -1,0 +1,176 @@
+<template>
+	<div>
+		<k-grid class="k-section" gutter="medium">
+			<k-column width="1/1" v-if="stats">
+				<ul class="k-system-info-box">
+					<li>
+						<dl>
+							<dt>{{ $t("strings") }}</dt>
+							<dd>{{ stats.strings }}</dd>
+						</dl>
+					</li>
+					<li>
+						<dl>
+							<dt>{{ $t("words") }}</dt>
+							<dd>{{ stats.words }}</dd>
+						</dl>
+					</li>
+					<li>
+						<k-button-group>
+							<k-button icon="edit" @click="editorOpen">
+								Edit
+							</k-button>
+						</k-button-group>
+					</li>
+				</ul>
+			</k-column>
+
+			<k-column width="1/2">
+				<k-text-field
+					v-model="jobName"
+					:label="$t('memsource.label.job')"
+				/>
+			</k-column>
+
+			<k-column width="1/2">
+				<k-checkboxes-field
+					type="checkboxes"
+					v-model="selectedLangs"
+					:options="languageOptions"
+					:label="$t('memsource.label.target_langs')"
+				/>
+			</k-column>
+
+			<k-dialog
+				ref="editDialog"
+				class="ms-edit-dialog"
+				@submit="applyEdits"
+			>
+				<k-textarea-field
+					label="Data"
+					font="monospace"
+					v-model="dataString"
+					:buttons="false"
+				></k-textarea-field>
+			</k-dialog>
+		</k-grid>
+
+		<k-button-group align="center">
+			<k-button icon="download" @click="downloadExport">
+				{{ $t("file") }}
+			</k-button>
+
+			<k-button theme="positive" icon="upload" @click="upload">
+				{{ $t("upload") }}
+			</k-button>
+		</k-button-group>
+	</div>
+</template>
+
+<script>
+import Stats from "../Stats.vue";
+
+function countObjectData(data) {
+	let stats = {
+		strings: 0,
+		words: 0,
+	};
+
+	for (let k in data) {
+		let value = data[k];
+
+		if (typeof value === "object" && value !== null) {
+			let childStats = countObjectData(value);
+			stats.strings += childStats.strings;
+			stats.words += childStats.words;
+		} else if (data.hasOwnProperty(k) && k !== "id") {
+			stats.strings++;
+
+			if (typeof value === "string") {
+				stats.words += value.trim().split(/\s+/).length;
+			}
+		}
+	}
+
+	return stats;
+}
+
+export default {
+	components: {
+		Stats,
+	},
+	data() {
+		return {
+			dataString: "testing",
+			selectedLangs: [],
+			jobName: null,
+		};
+	},
+	computed: {
+		data() {
+			return this.$store.state.memsource.export;
+		},
+		stats() {
+			return countObjectData(this.data);
+		},
+	},
+	methods: {
+		editorOpen() {
+			this.dataString = JSON.stringify(this.data, undefined, 2);
+			this.$refs.editDialog.open();
+		},
+		applyEdits() {
+			console.log(JSON.stringify(this.dataString));
+			this.$refs.editDialog.error("Invalid JSON.");
+		},
+		upload() {
+			this.$alert(this.$t("upload.progress"));
+
+			this.$store
+				.dispatch("memsource/memsource", {
+					url: `/upload/${this.project.uid}/${this.jobName}.json`,
+					method: "post",
+					headers: {
+						"Memsource-Langs": JSON.stringify(this.selectedLangs),
+					},
+					data: this.data,
+				})
+				.then((response) => {
+					let jobs = response.data && response.data.jobs;
+					if (jobs && jobs.length) {
+						this.$alert(
+							this.$t("memsource.info.created_jobs", {
+								count: jobs.length,
+							}),
+							"positive"
+						);
+					}
+				})
+				.catch(this.$alert);
+		},
+		downloadExport() {
+			let part = JSON.stringify(this.data, null, 2);
+			let blob = new Blob([part], {
+				type: "application/json",
+			});
+
+			let url = URL.createObjectURL(blob);
+			let anchor = document.createElement("a");
+			anchor.download = this.jobName;
+			anchor.href = url;
+			anchor.click();
+		},
+	},
+};
+</script>
+
+<style>
+.k-system-info-box {
+	text-align: center;
+}
+
+.ms-edit-dialog {
+	width: 100% !important;
+	max-width: 75vw;
+}
+</style>

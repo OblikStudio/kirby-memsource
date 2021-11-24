@@ -24,10 +24,12 @@
 <script>
 import { store } from "./store";
 import Export from "./components/tabs/Export.vue";
+import Upload from "./components/tabs/Upload.vue";
 
 export default {
 	components: {
 		Export,
+		Upload,
 	},
 	data() {
 		return {
@@ -54,7 +56,12 @@ export default {
 		this.$store.registerModule("memsource", store);
 	},
 	created() {
-		this.screen = "Export";
+		this.$store.commit("memsource/SET_EXPORT", {
+			site: {
+				title: "Nam pretium turpis et arcu. In turpis. Sed aliquam ultrices mauris. Praesent nec nisl a purus blandit viverra. Nam commodo suscipit quam.",
+			},
+		});
+		this.screen = "Upload";
 	},
 };
 </script>
