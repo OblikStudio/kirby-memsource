@@ -44,7 +44,7 @@ return [
 
 			$importer = new Importer([
 				'lang' => $config['language'],
-				'options' => option('oblik.memsource.options')
+				'options' => option('oblik.memsource.walker')
 			]);
 
 			$importer->import($content);
@@ -57,7 +57,7 @@ return [
 		'action' => function () {
 			$data = kirby()->request()->data();
 			$exporter = new Exporter([
-				'options' => option('oblik.memsource.options')
+				'options' => option('oblik.memsource.walker')
 			]);
 
 			$exportFiles = $data['files'] ?? null;
