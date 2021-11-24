@@ -1,5 +1,5 @@
-let nesting = require('postcss-nested')
+let nesting = require("postcss-nested");
 
 module.exports = {
-	plugins: [nesting]
-}
+	plugins: [nesting],
+};

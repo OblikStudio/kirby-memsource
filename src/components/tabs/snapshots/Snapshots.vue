@@ -3,7 +3,7 @@
 		<div class="k-section">
 			<NameGen :label="$t('name')" v-model="name">
 				<k-button slot="options" icon="add" @click="create">
-					{{ $t('add') }}
+					{{ $t("add") }}
 				</k-button>
 			</NameGen>
 		</div>
@@ -14,13 +14,13 @@
 				:key="snapshot.name"
 				:icon="{
 					type: 'page',
-					back: 'black'
+					back: 'black',
 				}"
 				:text="snapshot.name"
 				:info="time(snapshot.date)"
 				:flag="{
 					icon: 'trash',
-					click: removeClosure(snapshot.name)
+					click: removeClosure(snapshot.name),
 				}"
 			></k-list-item>
 		</k-list>
@@ -28,72 +28,72 @@
 </template>
 
 <script>
-import NameGen from '../../NameGen.vue'
+import NameGen from "../../NameGen.vue";
 
 export default {
-	inject: ['$alert'],
+	inject: ["$alert"],
 	components: {
-		NameGen
+		NameGen,
 	},
 	data() {
 		return {
 			name: null,
-			snapshots: []
-		}
+			snapshots: [],
+		};
 	},
 	methods: {
 		time(seconds) {
-			return new Date(seconds * 1000).toLocaleString()
+			return new Date(seconds * 1000).toLocaleString();
 		},
 		fetch() {
 			this.$store
-				.dispatch('memsource/memsource', {
-					url: '/snapshot',
-					method: 'get'
+				.dispatch("memsource/memsource", {
+					url: "/snapshot",
+					method: "get",
 				})
-				.then(response => {
+				.then((response) => {
 					this.snapshots = response.data.sort((a, b) => {
-						return a.date > b.date ? -1 : 1
-					})
+						return a.date > b.date ? -1 : 1;
+					});
 				})
-				.catch(this.$alert)
+				.catch(this.$alert);
 		},
 		create() {
 			this.$store
-				.dispatch('memsource/memsource', {
-					url: '/snapshot',
-					method: 'post',
+				.dispatch("memsource/memsource", {
+					url: "/snapshot",
+					method: "post",
 					params: {
-						name: this.name
-					}
+						name: this.name,
+					},
 				})
-				.then(response => {
-					this.fetch()
+				.then((response) => {
+					this.fetch();
 				})
-				.catch(this.$alert)
+				.catch(this.$alert);
 		},
 		remove(name) {
 			this.$store
-				.dispatch('memsource/memsource', {
-					url: '/snapshot',
-					method: 'delete',
+				.dispatch("memsource/memsource", {
+					url: "/snapshot",
+					method: "delete",
 					params: {
-						name
-					}
+						name,
+					},
 				})
-				.then(response => {
-					this.fetch()
+				.then((response) => {
+					this.fetch();
 				})
-				.catch(this.$alert)
+				.catch(this.$alert);
 		},
 		removeClosure(name) {
 			return () => {
-				this.remove(name)
-			}
-		}
+				this.remove(name);
+			};
+		},
 	},
 	created() {
-		this.fetch()
-	}
-}
+		this.fetch();
+	},
+};
 </script>

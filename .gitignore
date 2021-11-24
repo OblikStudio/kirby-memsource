@@ -3,7 +3,7 @@
 /site/accounts/
 /site/cache/
 /site/plugins/*
-/!site/plugins/memsource
+!site/plugins/memsource
 /site/sessions/
 /node_modules/
 /vendor/

@@ -2,16 +2,8 @@
 charset = utf-8
 end_of_line = lf
 
-[*.{php,json,lock}]
-indent_style = tab
-trim_trailing_whitespace = true
-insert_final_newline = false
-
-[*.yml]
-indent_size = 2
-indent_style = space
-trim_trailing_whitespace = true
-
-[*.md]
+[*.{js,vue}]
 indent_size = 4
-indent_style = space
+indent_style = tab
+insert_final_newline = true
+trim_trailing_whitespace = true

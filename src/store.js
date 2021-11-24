@@ -1,23 +1,23 @@
-import axios from 'axios'
-import freeze from 'deep-freeze-node'
+import axios from "axios";
+import freeze from "deep-freeze-node";
 
 class MemsourceError extends Error {
 	constructor(response) {
-		super(response.data.errorDescription)
-		this.name = 'MemsourceError'
-		this.type = response.data.errorCode
-		this.response = response
+		super(response.data.errorDescription);
+		this.name = "MemsourceError";
+		this.type = response.data.errorCode;
+		this.response = response;
 	}
 }
 
 function formatRejection(Error) {
-	return function(error) {
+	return function (error) {
 		if (error.response && error.response.data) {
-			error = new Error(error.response)
+			error = new Error(error.response);
 		}
 
-		return Promise.reject(error)
-	}
+		return Promise.reject(error);
+	};
 }
 
 export let store = {
@@ -29,87 +29,89 @@ export let store = {
 		export: null,
 		project: null,
 		results: null,
-		loading: false
+		loading: false,
 	},
 	getters: {
-		view: state => {
-			let last = state.crumbs[state.crumbs.length - 1]
-			return last ? last.value : null
+		view: (state) => {
+			let last = state.crumbs[state.crumbs.length - 1];
+			return last ? last.value : null;
 		},
-		languages: function(state, getters, rootState) {
-			return rootState.languages
+		languages: function (state, getters, rootState) {
+			return rootState.languages;
 		},
 		availableLanguages: (state, getters) => {
-			return getters.languages.all
+			return getters.languages.all;
 		},
-		siteLanguage: function(state, getters) {
-			return getters.languages.default.code
+		siteLanguage: function (state, getters) {
+			return getters.languages.default.code;
 		},
-		sourceLanguage: function(state, getters) {
-			return getters.languages.current.code
+		sourceLanguage: function (state, getters) {
+			return getters.languages.current.code;
 		},
-		msClient: function() {
+		msClient: function () {
 			return axios.create({
-				baseURL: panel.api + '/memsource',
-				method: 'get',
+				baseURL: panel.api + "/memsource",
+				method: "get",
 				headers: {
-					'X-CSRF': panel.csrf
-				}
-			})
-		}
+					"X-CSRF": panel.csrf,
+				},
+			});
+		},
 	},
 	mutations: {
 		TAB(state, value) {
-			state.crumbs = []
-			state.tab = value
+			state.crumbs = [];
+			state.tab = value;
 		},
 		LOADING(state, value) {
-			state.loading = !!value
+			state.loading = !!value;
 		},
 		VIEW(state, value) {
-			if (typeof value === 'string') {
+			if (typeof value === "string") {
 				value = {
 					text: value.toLowerCase(), // for translation key
-					value
-				}
+					value,
+				};
 			}
 
 			if (value !== null) {
-				state.crumbs.push(value)
+				state.crumbs.push(value);
 			} else {
-				state.crumbs = []
+				state.crumbs = [];
 			}
 		},
 		CRUMBS(state, value) {
-			state.crumbs = value
+			state.crumbs = value;
 		},
-		SET_PROJECT: function(state, value) {
-			state.project = freeze(value)
+		SET_PROJECT: function (state, value) {
+			state.project = freeze(value);
 		},
 		SET_EXPORT: (state, value) => {
-			state.export = value
+			state.export = value;
 		},
-		SET_RESULTS: function(state, value) {
-			state.results = freeze(value)
+		SET_RESULTS: function (state, value) {
+			state.results = freeze(value);
 		},
 		ALERT(state, alert) {
 			if (!alert.theme) {
-				alert.theme = 'info'
+				alert.theme = "info";
 			}
 
 			if (!alert.text && alert.error) {
-				alert.text = `${alert.error.name}: ${alert.error.message}`
+				alert.text = `${alert.error.name}: ${alert.error.message}`;
 			}
 
-			state.alerts.push(alert)
+			state.alerts.push(alert);
 		},
 		CLEAR_ALERTS(state) {
-			state.alerts = []
-		}
+			state.alerts = [];
+		},
 	},
 	actions: {
 		memsource: ({ getters }, payload) => {
-			return getters.msClient(payload).catch(formatRejection(MemsourceError))
-		}
-	}
-}
+			return getters
+				.msClient(payload)
+				.catch(formatRejection(MemsourceError));
+		},
+	},
+};

@@ -15,29 +15,29 @@
 export default {
 	props: {
 		value: {
-			type: Array
-		}
+			type: Array,
+		},
 	},
 	data() {
 		return {
-			crumbs: []
-		}
+			crumbs: [],
+		};
 	},
 	methods: {
 		open(crumb) {
-			this.crumbs.splice(this.crumbs.indexOf(crumb) + 1)
-			this.$emit('input', this.crumbs)
-		}
+			this.crumbs.splice(this.crumbs.indexOf(crumb) + 1);
+			this.$emit("input", this.crumbs);
+		},
 	},
 	watch: {
 		value: {
 			immediate: true,
 			handler(value) {
-				this.crumbs = [...value]
-			}
-		}
-	}
-}
+				this.crumbs = [...value];
+			},
+		},
+	},
+};
 </script>
 
 <style lang="postcss">
@@ -62,7 +62,7 @@ export default {
 		opacity: 0.75;
 
 		&:after {
-			content: '→';
+			content: "→";
 			margin: 0 8px;
 			user-select: none;
 			opacity: 0.5;

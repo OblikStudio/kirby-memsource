@@ -24,5 +24,8 @@
 	"devDependencies": {
 		"kirbyup": "^0.21.0",
 		"postcss-nested": "^5.0.6"
+	},
+	"prettier": {
+		"htmlWhitespaceSensitivity": "ignore"
 	}
 }

@@ -16,31 +16,34 @@
 				<k-headline>
 					<template v-if="activeResult.state === 'imported'">
 						{{
-							$t('memsource.info.changed_values', {
+							$t("memsource.info.changed_values", {
 								count: activeResult.diff.length,
-								language: activeResult.language.name
+								language: activeResult.language.name,
 							})
 						}}
 					</template>
 					<template v-else-if="activeResult.state === 'error'">
 						{{
-							$t('memsource.info.error', {
-								message: activeResult.error.message
+							$t("memsource.info.error", {
+								message: activeResult.error.message,
 							})
 						}}
 					</template>
 					<template v-if="activeResult.state === 'empty'">
-						{{ $t('memsource.info.no_changed') }}
+						{{ $t("memsource.info.no_changed") }}
 					</template>
 				</k-headline>
 
-				<Diff v-if="activeResult.diff.length" :entries="activeResult.diff" />
+				<Diff
+					v-if="activeResult.diff.length"
+					:entries="activeResult.diff"
+				/>
 			</template>
 
 			<k-button-group slot="footer">
 				<div></div>
 				<k-button icon="check" @click="close">
-					{{ $t('close') }}
+					{{ $t("close") }}
 				</k-button>
 			</k-button-group>
 		</k-dialog>
@@ -48,29 +51,29 @@
 </template>
 
 <script>
-import Diff from '../../../Diff.vue'
-import { getEntries } from '../../../../modules/diff'
+import Diff from "../../../Diff.vue";
+import { getEntries } from "../../../../modules/diff";
 
 export default {
-	inject: ['$jobInfo'],
+	inject: ["$jobInfo"],
 	components: {
-		Diff
+		Diff,
 	},
 	data() {
 		return {
-			activeResult: null
-		}
+			activeResult: null,
+		};
 	},
 	computed: {
 		results() {
-			return this.$store.state.memsource.results.map(result => {
-				let diff = getEntries(result.data)
-				let state = 'imported'
+			return this.$store.state.memsource.results.map((result) => {
+				let diff = getEntries(result.data);
+				let state = "imported";
 
 				if (result.error) {
-					state = 'error'
+					state = "error";
 				} else if (diff.length === 0) {
-					state = 'empty'
+					state = "empty";
 				}
 
 				return {
@@ -79,32 +82,32 @@ export default {
 					error: result.error,
 					language: result.language,
 					state,
-					diff
-				}
-			})
-		}
+					diff,
+				};
+			});
+		},
 	},
 	methods: {
 		statusIcon(state) {
 			switch (state) {
-				case 'imported':
-					return 'check'
-				case 'error':
-					return 'cancel'
-				case 'empty':
-					return 'circle-outline'
+				case "imported":
+					return "check";
+				case "error":
+					return "cancel";
+				case "empty":
+					return "circle-outline";
 			}
 		},
 		open(result) {
-			this.activeResult = result
-			this.$refs.dialog.open()
+			this.activeResult = result;
+			this.$refs.dialog.open();
 		},
 		close() {
-			this.$refs.dialog.close()
-			this.activeResult = null
-		}
-	}
-}
+			this.$refs.dialog.close();
+			this.activeResult = null;
+		},
+	},
+};
 </script>
 
 <style lang="postcss" scoped>
@@ -112,13 +115,13 @@ export default {
 	[data-back] {
 		color: #fff;
 	}
-	[data-back='imported'] {
+	[data-back="imported"] {
 		background: #5d800d;
 	}
-	[data-back='empty'] {
+	[data-back="empty"] {
 		background: #000;
 	}
-	[data-back='error'] {
+	[data-back="error"] {
 		background: #800d0d;
 	}
 }

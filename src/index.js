@@ -1,11 +1,11 @@
-import App from './App.vue'
+import App from "./App.vue";
 
-panel.plugin('oblik/memsource', {
+panel.plugin("oblik/memsource", {
 	views: {
 		memsource: {
-			icon: 'globe',
-			label: 'Memsource',
-			component: App
-		}
-	}
-})
+			icon: "globe",
+			label: "Memsource",
+			component: App,
+		},
+	},
+});

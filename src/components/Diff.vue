@@ -11,9 +11,9 @@
 <script>
 export default {
 	props: {
-		entries: Array
-	}
-}
+		entries: Array,
+	},
+};
 </script>
 
 <style lang="postcss" scoped>

@@ -13,40 +13,42 @@
 
 <script>
 export default {
-	inject: ['$alert', '$loading'],
+	inject: ["$alert", "$loading"],
 	data() {
 		return {
-			projects: []
-		}
+			projects: [],
+		};
 	},
 	methods: {
 		open(project) {
-			this.$store.commit('memsource/SET_PROJECT', project)
-			this.$store.commit('memsource/VIEW', {
+			this.$store.commit("memsource/SET_PROJECT", project);
+			this.$store.commit("memsource/VIEW", {
 				text: project.name,
-				value: 'Project'
-			})
+				value: "Project",
+			});
 		},
 		info(project) {
-			let date = new Date(project.dateCreated)
-			return `${date.toLocaleString()}<strong>#${project.internalId}</strong>`
-		}
+			let date = new Date(project.dateCreated);
+			return `${date.toLocaleString()}<strong>#${
+				project.internalId
+			}</strong>`;
+		},
 	},
 	created() {
-		this.$store.commit('memsource/SET_PROJECT', null)
+		this.$store.commit("memsource/SET_PROJECT", null);
 		this.$loading(
 			this.$store
-				.dispatch('memsource/memsource', {
-					url: '/projects',
-					method: 'get'
+				.dispatch("memsource/memsource", {
+					url: "/projects",
+					method: "get",
 				})
-				.then(response => {
-					this.projects = response.data.content
+				.then((response) => {
+					this.projects = response.data.content;
 				})
 				.catch(this.$alert)
-		)
-	}
-}
+		);
+	},
+};
 </script>
 
 <style lang="postcss" scoped>

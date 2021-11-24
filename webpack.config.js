@@ -1,22 +1,22 @@
-const path = require('path')
-const VueLoaderPlugin = require('vue-loader/lib/plugin')
-const MiniCssExtractPlugin = require('mini-css-extract-plugin')
+const path = require("path");
+const VueLoaderPlugin = require("vue-loader/lib/plugin");
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
 module.exports = {
 	output: {
-		filename: 'index.js',
-		path: __dirname
+		filename: "index.js",
+		path: __dirname,
 	},
 	resolve: {
 		alias: {
-			'@': path.join(__dirname, 'src')
-		}
+			"@": path.join(__dirname, "src"),
+		},
 	},
 	plugins: [
 		new MiniCssExtractPlugin({
-			filename: 'index.css'
+			filename: "index.css",
 		}),
-		new VueLoaderPlugin()
+		new VueLoaderPlugin(),
 	],
 	module: {
 		rules: [
@@ -24,26 +24,26 @@ module.exports = {
 				test: /\.scss$/,
 				use: [
 					{
-						loader: MiniCssExtractPlugin.loader
+						loader: MiniCssExtractPlugin.loader,
 					},
-					'css-loader',
-					'sass-loader'
-				]
+					"css-loader",
+					"sass-loader",
+				],
 			},
 			{
 				test: /\.js$/,
 				exclude: /node_modules/,
 				use: {
-					loader: 'babel-loader',
+					loader: "babel-loader",
 					options: {
-						presets: ['@babel/preset-env']
-					}
-				}
+						presets: ["@babel/preset-env"],
+					},
+				},
 			},
 			{
 				test: /\.vue$/,
-				use: 'vue-loader'
-			}
-		]
-	}
-}
+				use: "vue-loader",
+			},
+		],
+	},
+};

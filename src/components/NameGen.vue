@@ -11,30 +11,30 @@
 </template>
 
 <script>
-import dateFormat from 'dateformat'
-import Wordgen from '../modules/wordgen'
+import dateFormat from "dateformat";
+import Wordgen from "../modules/wordgen";
 
 let wordgen = new Wordgen({
-	length: 6
-})
+	length: 6,
+});
 
 export default {
 	props: {
-		value: true
+		value: true,
 	},
 	methods: {
 		generate() {
-			let string = wordgen.generate()
-			let date = dateFormat(new Date(), `-mmm-dd`)
-			let name = (string + date).toLowerCase()
+			let string = wordgen.generate();
+			let date = dateFormat(new Date(), `-mmm-dd`);
+			let name = (string + date).toLowerCase();
 
-			this.$emit('input', name)
-		}
+			this.$emit("input", name);
+		},
 	},
 	created() {
-		this.generate()
-	}
-}
+		this.generate();
+	},
+};
 </script>
 
 <style lang="postcss" scoped>
