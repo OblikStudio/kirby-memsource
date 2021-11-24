@@ -30,6 +30,7 @@ export let store = {
 		project: null,
 		results: null,
 		loading: false,
+		screen: null,
 	},
 	getters: {
 		view: (state) => {
@@ -105,6 +106,9 @@ export let store = {
 		},
 		CLEAR_ALERTS(state) {
 			state.alerts = [];
+		},
+		SET_SCREEN(state, value) {
+			state.screen = value;
 		},
 	},
 	actions: {
