@@ -7,7 +7,7 @@
 				:search="true"
 				:multiple="true"
 				:endpoints="{
-					field: 'memsource/pages'
+					field: 'memsource/pages',
 				}"
 			></k-pages-field>
 		</k-column>
@@ -17,7 +17,7 @@
 				v-model="exportSite"
 				:options="[
 					{ value: false, text: 'Off' },
-					{ value: true, text: 'On' }
+					{ value: true, text: 'On' },
 				]"
 				:columns="2"
 				:help="exportSiteHelp"
@@ -35,7 +35,11 @@
 		</k-column>
 		<k-column align="center">
 			<k-button-group>
-				<k-button icon="upload" :disabled="!isCanExport" @click="doExport">
+				<k-button
+					icon="upload"
+					:disabled="!isCanExport"
+					@click="doExport"
+				>
 					Export
 				</k-button>
 			</k-button-group>
@@ -48,59 +52,59 @@ export default {
 	data: () => {
 		return {
 			exportSite: false,
-			exportFiles: 'off',
-			exportPages: []
-		}
+			exportFiles: "off",
+			exportPages: [],
+		};
 	},
 	computed: {
 		exportSiteHelp() {
 			if (this.exportSite === true) {
-				return 'Export global site content.'
+				return "Export global site content.";
 			} else {
-				return 'Do not export global site content.'
+				return "Do not export global site content.";
 			}
 		},
 		filesOptions() {
 			return [
 				{
-					value: 'off',
-					text: 'Off',
-					help: 'Do not export file fields, such as alt texts.'
+					value: "off",
+					text: "Off",
+					help: "Do not export file fields, such as alt texts.",
 				},
 				{
-					value: 'include',
-					text: 'Include',
-					help: 'Include all translatable content in files.'
+					value: "include",
+					text: "Include",
+					help: "Include all translatable content in files.",
 				},
 				{
-					value: 'only',
-					text: 'Only',
-					help: 'Export only site and page files, without their content.'
-				}
-			]
+					value: "only",
+					text: "Only",
+					help: "Export only site and page files, without their content.",
+				},
+			];
 		},
 		activeFilesOption() {
-			return this.filesOptions.find((e) => e.value === this.exportFiles)
+			return this.filesOptions.find((e) => e.value === this.exportFiles);
 		},
 		isCanExport() {
-			return this.exportSite || this.exportPages.length
-		}
+			return this.exportSite || this.exportPages.length;
+		},
 	},
 	methods: {
 		doExport() {
 			this.$api
-				.get('memsource/export', {
-					site: this.exportSite ? '1' : null,
+				.get("memsource/export", {
+					site: this.exportSite ? "1" : null,
 					files: this.exportFiles,
-					pages: this.exportPages.map((p) => p.id)
+					pages: this.exportPages.map((p) => p.id),
 				})
 				.then((data) => {
-					console.log(data)
+					console.log(data);
 				})
 				.catch((error) => {
-					this.$store.dispatch('notification/error', error)
-				})
-		}
-	}
-}
+					this.$store.dispatch("notification/error", error);
+				});
+		},
+	},
+};
 </script>
