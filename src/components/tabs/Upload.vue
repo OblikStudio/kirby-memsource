@@ -63,19 +63,19 @@
 				</k-box>
 			</k-column>
 
-			<k-column width="1/2">
-				<k-text-field
-					v-model="jobName"
-					:label="$t('memsource.label.job')"
+			<k-column>
+				<k-checkboxes-field
+					v-model="selectedLangs"
+					:label="$t('memsource.label.target_langs')"
+					:options="availableLangs"
+					:columns="6"
 				/>
 			</k-column>
 
 			<k-column width="1/2">
-				<k-checkboxes-field
-					type="checkboxes"
-					v-model="selectedLangs"
-					:options="languageOptions"
-					:label="$t('memsource.label.target_langs')"
+				<k-text-field
+					v-model="jobName"
+					:label="$t('memsource.label.job')"
 				/>
 			</k-column>
 
@@ -182,6 +182,12 @@ export default {
 					.map((lang) => lang.code)
 			);
 		},
+		availableLangs() {
+			return this.projectLangs?.map((code) => ({
+				text: code.toUpperCase(),
+				value: code,
+			}));
+		},
 	},
 	methods: {
 		editorOpen() {
@@ -238,6 +244,13 @@ export default {
 			anchor.download = this.jobName;
 			anchor.href = url;
 			anchor.click();
+		},
+	},
+	watch: {
+		selectedProject(value) {
+			if (value) {
+				this.selectedLangs = [...this.projectLangs];
+			}
 		},
 	},
 };
