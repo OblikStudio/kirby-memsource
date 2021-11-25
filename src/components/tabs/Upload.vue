@@ -1,46 +1,57 @@
 <template>
-	<div>
-		<k-grid class="k-section" gutter="medium">
-			<k-column width="1/1" v-if="stats">
-				<ul class="k-system-info-box">
-					<li>
-						<dl>
-							<dt>{{ $t("strings") }}</dt>
-							<dd>{{ stats.strings }}</dd>
-						</dl>
-					</li>
-					<li>
-						<dl>
-							<dt>{{ $t("words") }}</dt>
-							<dd>{{ stats.words }}</dd>
-						</dl>
-					</li>
-					<li>
-						<k-button-group>
-							<k-button icon="edit" @click="editorOpen">
-								Edit
-							</k-button>
-						</k-button-group>
-					</li>
-				</ul>
-			</k-column>
+	<k-grid gutter="medium">
+		<k-column v-if="stats">
+			<ul class="k-system-info-box">
+				<li>
+					<dl>
+						<dt>{{ $t("strings") }}</dt>
+						<dd>{{ stats.strings }}</dd>
+					</dl>
+				</li>
+				<li>
+					<dl>
+						<dt>{{ $t("words") }}</dt>
+						<dd>{{ stats.words }}</dd>
+					</dl>
+				</li>
+				<li>
+					<k-button-group>
+						<k-button icon="edit" @click="editorOpen">
+							Edit
+						</k-button>
 
-			<k-column width="1/1">
-				<k-pages-field
-					label="Project"
-					empty="No project selected yet"
-					v-model="project"
-					:search="true"
-					:endpoints="{
-						field: 'memsource/picker/projects',
-					}"
-				></k-pages-field>
-			</k-column>
+						<k-dialog
+							ref="editDialog"
+							class="ms-edit-dialog"
+							@submit="editorSubmit"
+						>
+							<k-textarea-field
+								label="JSON"
+								font="monospace"
+								v-model="dataString"
+								:buttons="false"
+								:counter="false"
+							></k-textarea-field>
+						</k-dialog>
+					</k-button-group>
+				</li>
+			</ul>
+		</k-column>
 
-			<k-column
-				width="1/1"
-				v-if="missingProjectLangs && missingProjectLangs.length"
-			>
+		<k-column>
+			<k-pages-field
+				label="Project"
+				empty="No project selected yet"
+				v-model="project"
+				:search="true"
+				:endpoints="{
+					field: 'memsource/picker/projects',
+				}"
+			></k-pages-field>
+		</k-column>
+
+		<template v-if="selectedProject">
+			<k-column v-if="missingProjectLangs && missingProjectLangs.length">
 				<k-box theme="notice">
 					The selected project does not target the following site
 					languages:
@@ -50,10 +61,7 @@
 				</k-box>
 			</k-column>
 
-			<k-column
-				width="1/1"
-				v-if="missingSiteLangs && missingSiteLangs.length"
-			>
+			<k-column v-if="missingSiteLangs && missingSiteLangs.length">
 				<k-box theme="notice">
 					The selected project targets languages not yet added to the
 					site:
@@ -72,38 +80,26 @@
 				/>
 			</k-column>
 
-			<k-column width="1/2">
+			<k-column>
 				<k-text-field
 					v-model="jobName"
 					:label="$t('memsource.label.job')"
 				/>
 			</k-column>
 
-			<k-dialog
-				ref="editDialog"
-				class="ms-edit-dialog"
-				@submit="editorSubmit"
-			>
-				<k-textarea-field
-					label="JSON"
-					font="monospace"
-					v-model="dataString"
-					:buttons="false"
-					:counter="false"
-				></k-textarea-field>
-			</k-dialog>
-		</k-grid>
+			<k-column>
+				<k-button-group align="center">
+					<k-button icon="download" @click="downloadExport">
+						{{ $t("file") }}
+					</k-button>
 
-		<k-button-group align="center">
-			<k-button icon="download" @click="downloadExport">
-				{{ $t("file") }}
-			</k-button>
-
-			<k-button theme="positive" icon="upload" @click="upload">
-				{{ $t("upload") }}
-			</k-button>
-		</k-button-group>
-	</div>
+					<k-button theme="positive" icon="upload" @click="upload">
+						{{ $t("upload") }}
+					</k-button>
+				</k-button-group>
+			</k-column>
+		</template>
+	</k-grid>
 </template>
 
 <script>
