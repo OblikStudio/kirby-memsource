@@ -25,6 +25,18 @@
 				</ul>
 			</k-column>
 
+			<k-column width="1/1">
+				<k-pages-field
+					label="Project"
+					empty="No project selected yet"
+					v-model="project"
+					:search="true"
+					:endpoints="{
+						field: 'memsource/picker/projects',
+					}"
+				></k-pages-field>
+			</k-column>
+
 			<k-column width="1/2">
 				<k-text-field
 					v-model="jobName"
@@ -103,6 +115,7 @@ export default {
 	data() {
 		return {
 			dataString: null,
+			project: [],
 			selectedLangs: [],
 			jobName: null,
 		};
