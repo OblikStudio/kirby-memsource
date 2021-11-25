@@ -5,6 +5,7 @@ namespace Oblik\Memsource;
 use Kirby\Cms\App;
 
 load([
+	'Oblik\\Memsource\\DiffWalker' => 'DiffWalker.php',
 	'Oblik\\Memsource\\Exporter' => 'Exporter.php',
 	'Oblik\\Memsource\\ExportWalker' => 'ExportWalker.php',
 	'Oblik\\Memsource\\Importer' => 'Importer.php',
