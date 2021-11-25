@@ -37,6 +37,32 @@
 				></k-pages-field>
 			</k-column>
 
+			<k-column
+				width="1/1"
+				v-if="missingProjectLangs && missingProjectLangs.length"
+			>
+				<k-box theme="notice">
+					The selected project does not target the following site
+					languages:
+					<strong>
+						{{ missingProjectLangs.join(", ").toUpperCase() }}
+					</strong>
+				</k-box>
+			</k-column>
+
+			<k-column
+				width="1/1"
+				v-if="missingSiteLangs && missingSiteLangs.length"
+			>
+				<k-box theme="notice">
+					The selected project targets languages not yet added to the
+					site:
+					<strong>
+						{{ missingSiteLangs.join(", ").toUpperCase() }}
+					</strong>
+				</k-box>
+			</k-column>
+
 			<k-column width="1/2">
 				<k-text-field
 					v-model="jobName"
@@ -126,6 +152,35 @@ export default {
 		},
 		stats() {
 			return countObjectData(this.data);
+		},
+		selectedProject() {
+			return this.project?.[0];
+		},
+		siteLangs() {
+			return this.$store.state.languages.all;
+		},
+		projectLangs() {
+			return this.selectedProject?.targetLangs;
+		},
+		missingSiteLangs() {
+			return (
+				this.selectedProject &&
+				this.projectLangs?.filter((code) => {
+					return !this.siteLangs.find((lang) => lang.code === code);
+				})
+			);
+		},
+		missingProjectLangs() {
+			return (
+				this.selectedProject &&
+				this.siteLangs
+					?.filter((lang) => {
+						return !this.projectLangs?.find(
+							(code) => code === lang.code
+						);
+					})
+					.map((lang) => lang.code)
+			);
 		},
 	},
 	methods: {
