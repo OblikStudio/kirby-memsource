@@ -1,105 +1,83 @@
 <template>
-	<div v-if="jobs.length">
-		<k-text-field
-			class="k-section"
-			v-model="query"
-			:counter="false"
-			:label="$t('memsource.label.filter_jobs')"
-			:placeholder="$t('search')"
-		>
-			<k-button slot="options" icon="check" @click="toggle">
-				{{ $t("select") }}
-			</k-button>
-		</k-text-field>
+	<k-grid gutter="medium">
+		<k-column>
+			<k-pages-field
+				label="Project"
+				empty="No project selected yet"
+				v-model="project"
+				:search="true"
+				:endpoints="{
+					field: 'memsource/picker/projects',
+				}"
+			></k-pages-field>
+		</k-column>
 
-		<k-list>
-			<k-list-item
-				v-for="job in filteredJobs"
-				:key="job.uid"
-				:text="job.filename"
-				:info="$jobInfo(job)"
-				:icon="{ type: 'text', back: 'black' }"
-			>
-				<label slot="options" class="k-button" :for="job.uid">
-					<input
-						type="checkbox"
-						:id="job.uid"
-						v-model="selectedJobs"
-						:value="job.uid"
-					/>
-				</label>
-			</k-list-item>
-			<k-empty v-if="filteredJobs.length < jobs.length" icon="text">
-				{{
-					$t("memsource.info.hidden_jobs", {
-						count: jobs.length - filteredJobs.length,
-					})
-				}}
-			</k-empty>
-		</k-list>
+		<k-column v-if="selectedProject">
+			<k-pages-field
+				label="Jobs"
+				empty="No jobs selected yet"
+				v-model="jobs"
+				:search="true"
+				:multiple="true"
+				:endpoints="{
+					field: `memsource/picker/projects/${selectedProject.id}/jobs`,
+				}"
+			></k-pages-field>
+		</k-column>
 
-		<k-button-group v-if="selectedJobs.length" align="center">
-			<k-button
-				icon="trash"
+		<k-column>
+			<k-button-group v-if="selectedJobs.length" align="center">
+				<k-button
+					icon="trash"
+					theme="negative"
+					@click="$refs.dialog.open()"
+				>
+					{{ $t("delete") }}
+				</k-button>
+
+				<k-button
+					icon="download"
+					theme="positive"
+					@click="importHandler"
+				>
+					{{ $t("import") }}
+				</k-button>
+			</k-button-group>
+
+			<k-dialog
+				ref="dialog"
 				theme="negative"
-				@click="$refs.dialog.open()"
+				icon="trash"
+				:button="$t('delete')"
+				@submit="deleteJobs"
 			>
-				{{ $t("delete") }}
-			</k-button>
-
-			<k-button icon="download" theme="positive" @click="importHandler">
-				{{ $t("import") }}
-			</k-button>
-		</k-button-group>
-
-		<k-dialog
-			ref="dialog"
-			theme="negative"
-			icon="trash"
-			:button="$t('delete')"
-			@submit="deleteJobs"
-		>
-			<k-text>
-				{{
-					$t("memsource.info.jobs_deletion", {
-						count: selectedJobs.length,
-					})
-				}}
-			</k-text>
-		</k-dialog>
-	</div>
-	<k-empty v-else icon="text">
-		{{ $t("memsource.info.jobs_empty") }}
-	</k-empty>
+				<k-text>
+					{{
+						$t("memsource.info.jobs_deletion", {
+							count: selectedJobs.length,
+						})
+					}}
+				</k-text>
+			</k-dialog>
+		</k-column>
+	</k-grid>
 </template>
 
 <script>
 import freeze from "deep-freeze-node";
 
 export default {
-	inject: ["$alert", "$jobInfo", "$loading"],
 	data() {
 		return {
+			project: [],
 			jobs: [],
 			query: null,
 			selectedJobs: [],
 		};
 	},
 	computed: {
-		projectId() {
-			return this.$store.state.memsource.project.id;
-		},
-		filteredJobs() {
-			return this.jobs.filter((job) => {
-				let matches =
-					!this.query || job.filename.indexOf(this.query) >= 0;
-				let selectedIndex = this.selectedJobs.indexOf(job.uid);
-				if (selectedIndex >= 0 && !matches) {
-					this.selectedJobs.splice(selectedIndex, 1);
-				}
-
-				return matches;
-			});
+		selectedProject() {
+			return this.project?.[0];
 		},
 	},
 	methods: {
@@ -206,26 +184,10 @@ export default {
 			);
 		},
 	},
-	created() {
-		this.$loading(this.loadJobs());
+	watch: {
+		selectedProject() {
+			this.jobs = [];
+		},
 	},
 };
 </script>
-
-<style lang="postcss" scoped>
-/deep/ {
-	.k-list-item {
-		.k-button {
-			display: flex;
-			align-items: center;
-			margin-left: -10px;
-			top: 2px;
-
-			&,
-			input {
-				cursor: pointer;
-			}
-		}
-	}
-}
-</style>
