@@ -44,13 +44,14 @@
 			<k-dialog
 				ref="editDialog"
 				class="ms-edit-dialog"
-				@submit="applyEdits"
+				@submit="editorSubmit"
 			>
 				<k-textarea-field
-					label="Data"
+					label="JSON"
 					font="monospace"
 					v-model="dataString"
 					:buttons="false"
+					:counter="false"
 				></k-textarea-field>
 			</k-dialog>
 		</k-grid>
@@ -101,7 +102,7 @@ export default {
 	},
 	data() {
 		return {
-			dataString: "testing",
+			dataString: null,
 			selectedLangs: [],
 			jobName: null,
 		};
@@ -119,9 +120,19 @@ export default {
 			this.dataString = JSON.stringify(this.data, undefined, 2);
 			this.$refs.editDialog.open();
 		},
-		applyEdits() {
-			console.log(JSON.stringify(this.dataString));
-			this.$refs.editDialog.error("Invalid JSON.");
+		editorSubmit() {
+			let data = null;
+
+			try {
+				data = JSON.parse(this.dataString);
+			} catch (e) {
+				this.$refs.editDialog.error("Invalid JSON.");
+			}
+
+			if (data !== null) {
+				this.$store.commit("memsource/SET_EXPORT", data);
+				this.$refs.editDialog.close();
+			}
 		},
 		upload() {
 			this.$alert(this.$t("upload.progress"));
