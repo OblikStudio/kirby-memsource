@@ -5,13 +5,13 @@
 				<li>
 					<dl>
 						<dt>{{ $t("strings") }}</dt>
-						<dd>{{ stats.strings }}</dd>
+						<dd>{{ stats.strings.toLocaleString() }}</dd>
 					</dl>
 				</li>
 				<li>
 					<dl>
 						<dt>{{ $t("words") }}</dt>
-						<dd>{{ stats.words }}</dd>
+						<dd>{{ stats.words.toLocaleString() }}</dd>
 					</dl>
 				</li>
 				<li>
