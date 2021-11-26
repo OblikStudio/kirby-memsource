@@ -29,13 +29,7 @@ return [
 
 				if ($remote->code() === 200) {
 					$content = json_decode($remote->content(), true);
-
-					$importer = new Importer([
-						'lang' => $job['targetLang'],
-						'options' => option('oblik.memsource.walker')
-					]);
-
-					$diffs = $importer->import($content);
+					$diffs = Importer::import($content, $job['targetLang']);
 					file_put_contents(__DIR__ . '/diffs.json', json_encode($diffs, JSON_UNESCAPED_UNICODE));
 
 					$job['success'] = true;

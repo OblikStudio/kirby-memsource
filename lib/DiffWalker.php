@@ -11,11 +11,11 @@ class DiffWalker extends Walker
 	public static function walk(ModelWithContent $model, array $context = [])
 	{
 		$context['translation'] = Walker::walk($model, [
-			'lang' => $context['lang'] ?? null
+			'lang' => $context['lang']
 		]);
 
 		// Set the main walked data to always be the default language.
-		$context['lang'] = null;
+		$context['lang'] = kirby()->defaultLanguage()->code();
 
 		return parent::walk($model, $context);
 	}
