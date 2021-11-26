@@ -1,6 +1,5 @@
 <?php
 
 return [
-	'cache' => true,
-	'snapshots' => kirby()->root('content') . '/_snapshots'
+	'importsFolder' => kirby()->root('content') . '/_memsource/imports'
 ];

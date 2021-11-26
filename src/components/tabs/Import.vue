@@ -25,13 +25,27 @@
 			></k-pages-field>
 		</k-column>
 
-		<k-column v-if="jobs.length">
-			<k-button-group align="center">
-				<k-button icon="download" theme="positive" @click="doImport">
-					Import jobs
-				</k-button>
-			</k-button-group>
-		</k-column>
+		<template v-if="jobs.length">
+			<k-column>
+				<k-toggle-field
+					label="Dry run"
+					v-model="dry"
+					help="Test import without updating the content?"
+				></k-toggle-field>
+			</k-column>
+
+			<k-column>
+				<k-button-group align="center">
+					<k-button
+						icon="download"
+						theme="positive"
+						@click="doImport"
+					>
+						Import jobs
+					</k-button>
+				</k-button-group>
+			</k-column>
+		</template>
 	</k-grid>
 </template>
 
@@ -41,6 +55,7 @@ export default {
 		return {
 			project: [],
 			jobs: [],
+			dry: false,
 		};
 	},
 	computed: {
@@ -54,6 +69,7 @@ export default {
 				.post("memsource/import", {
 					project: this.selectedProject.id,
 					jobs: this.jobs,
+					dry: this.dry,
 				})
 				.then((data) => {
 					this.$store.commit("memsource/SET_RESULTS", data);

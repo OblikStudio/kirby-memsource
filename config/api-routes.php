@@ -5,6 +5,7 @@ namespace Oblik\Memsource;
 use Exception;
 use Kirby\Cms\PagePicker;
 use Kirby\Http\Remote;
+use Kirby\Toolkit\F;
 
 return [
 	[
@@ -27,14 +28,48 @@ return [
 					]
 				]);
 
-				if ($remote->code() === 200) {
-					$content = json_decode($remote->content(), true);
-					$diffs = Importer::import($content, $job['targetLang']);
-					file_put_contents(__DIR__ . '/diffs.json', json_encode($diffs, JSON_UNESCAPED_UNICODE));
+				$body = json_decode($remote->content(), true);
+				$dry = $request['dry'] ?? false;
+				$diff = null;
+				$error = null;
 
-					$job['success'] = true;
+				if ($remote->code() === 200) {
+					try {
+						$diff = Importer::import($body, [
+							'lang' => $job['targetLang'],
+							'dry' => $dry
+						]);
+					} catch (\Throwable $t) {
+						$error = $t->__toString();
+					}
 				} else {
-					$job['success'] = false;
+					$error = $body;
+				}
+
+				$logData = [
+					'date' => date(DATE_ISO8601),
+					'lang' => $job['targetLang'],
+					'dry' => $dry
+				];
+
+				if ($error !== null) $logData['error'] = $error;
+				if ($diff !== null) $logData['diff'] = $diff;
+
+				$logData = json_encode($logData, JSON_UNESCAPED_UNICODE);
+				$fileDir = option('oblik.memsource.importsFolder');
+				$fileName = time() . '-' . $job['id'] . '.json';
+				F::write("$fileDir/$fileName", $logData);
+
+				$job['success'] = empty($error);
+
+				if ($job['success']) {
+					$job['icon']['type'] = 'check';
+					$job['icon']['color'] = 'green';
+					$job['info'] = 'SUCCESS';
+				} else {
+					$job['icon']['type'] = 'cancel';
+					$job['icon']['color'] = 'red';
+					$job['info'] = 'ERROR';
 				}
 			}
 
@@ -188,8 +223,8 @@ return [
 				$data[] = [
 					'id' => $job['uid'],
 					'targetLang' => $job['targetLang'],
-					'info' => strtoupper($job['targetLang']) . ' (' . $job['status'] . ')',
-					'text' => $job['filename'],
+					'info' => $job['status'],
+					'text' => $job['filename'] . ' (' . $job['targetLang'] . ')',
 					'image' => true,
 					'icon' => [
 						'type' => 'text',

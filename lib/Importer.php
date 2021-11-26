@@ -23,6 +23,8 @@ class Importer
 					$data['pages'][$id] = static::importModel($page, $pageData, $settings);
 				}
 			}
+
+			$data['pages'] = array_filter($data['pages']);
 		}
 
 		if (is_array($files)) {
@@ -31,9 +33,13 @@ class Importer
 					$data['files'][$id] = static::importModel($file, $fileData, $settings);
 				}
 			}
+
+			$data['files'] = array_filter($data['files']);
 		}
 
-		return $data;
+		$data = array_filter($data);
+
+		return !empty($data) ? $data : null;
 	}
 
 	public static function importModel(ModelWithContent $model, array $data, array $settings)
