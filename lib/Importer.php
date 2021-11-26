@@ -7,26 +7,6 @@ use Oblik\Walker\Walker\Importer as WalkerImporter;
 
 class Importer
 {
-	public static function importModel(ModelWithContent $model, array $data, array $settings)
-	{
-		$importData = WalkerImporter::walk($model, [
-			'options' => option('oblik.memsource.walker'),
-			'lang' => kirby()->defaultLanguage()->code(),
-			'input' => $data
-		]);
-
-		$diff = DiffWalker::walk($model, [
-			'lang' => $settings['lang'],
-			'input' => $importData
-		]);
-
-		if (!($settings['dry'] ?? false)) {
-			$model->update($importData, $settings['lang']);
-		}
-
-		return $diff;
-	}
-
 	public static function import(array $data, array $settings)
 	{
 		$site = $data['site'] ?? null;
@@ -54,5 +34,25 @@ class Importer
 		}
 
 		return $data;
+	}
+
+	public static function importModel(ModelWithContent $model, array $data, array $settings)
+	{
+		$importData = WalkerImporter::walk($model, [
+			'options' => option('oblik.memsource.walker'),
+			'lang' => kirby()->defaultLanguage()->code(),
+			'input' => $data
+		]);
+
+		$diff = DiffWalker::walk($model, [
+			'lang' => $settings['lang'],
+			'input' => $importData
+		]);
+
+		if (!($settings['dry'] ?? false)) {
+			$model->update($importData, $settings['lang']);
+		}
+
+		return $diff;
 	}
 }
