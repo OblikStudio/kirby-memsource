@@ -7,46 +7,48 @@ use Oblik\Walker\Walker\Importer as WalkerImporter;
 
 class Importer
 {
-	public static function importModel(ModelWithContent $model, array $data, string $lang)
+	public static function importModel(ModelWithContent $model, array $data, array $settings)
 	{
-		$data = WalkerImporter::walk($model, [
+		$importData = WalkerImporter::walk($model, [
 			'options' => option('oblik.memsource.walker'),
 			'lang' => kirby()->defaultLanguage()->code(),
 			'input' => $data
 		]);
 
 		$diff = DiffWalker::walk($model, [
-			'lang' => $lang,
-			'input' => $data
+			'lang' => $settings['lang'],
+			'input' => $importData
 		]);
 
-		$model->update($data, $lang);
+		if (!($settings['dry'] ?? false)) {
+			$model->update($importData, $settings['lang']);
+		}
 
 		return $diff;
 	}
 
-	public static function import(array $data, string $lang)
+	public static function import(array $data, array $settings)
 	{
 		$site = $data['site'] ?? null;
 		$pages = $data['pages'] ?? null;
 		$files = $data['files'] ?? null;
 
 		if (is_array($site)) {
-			$data['site'] = static::importModel(site(), $site, $lang);
+			$data['site'] = static::importModel(site(), $site, $settings);
 		}
 
 		if (is_array($pages)) {
-			foreach ($pages as $id => $data) {
+			foreach ($pages as $id => $pageData) {
 				if ($page = page($id)) {
-					$data['pages'][$id] = static::importModel($page, $data, $lang);
+					$data['pages'][$id] = static::importModel($page, $pageData, $settings);
 				}
 			}
 		}
 
 		if (is_array($files)) {
-			foreach ($files as $id => $data) {
+			foreach ($files as $id => $fileData) {
 				if ($file = site()->file($id)) {
-					$data['files'][$id] = static::importModel($file, $data, $lang);
+					$data['files'][$id] = static::importModel($file, $fileData, $settings);
 				}
 			}
 		}
