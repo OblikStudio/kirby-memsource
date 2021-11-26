@@ -11,30 +11,40 @@ return [
 		'pattern' => 'memsource/import',
 		'method' => 'POST',
 		'action' => function () {
-			if ($config = $_SERVER['HTTP_MEMSOURCE'] ?? null) {
-				$config = json_decode($config, true);
-			}
+			$request = kirby()->request()->data();
+			$projectId = $request['project'];
+			$jobs = $request['jobs'];
 
-			$language = $config['language'] ?? null;
-			$postData = file_get_contents('php://input');
-			$content = json_decode($postData, true);
-
-			if (empty($language)) {
-				throw new Exception('Missing language', 400);
-			}
-
-			if (empty($content)) {
-				throw new Exception('Missing content', 400);
-			}
+			$service = new Service();
 
 			kirby()->impersonate('kirby');
 
-			$importer = new Importer([
-				'lang' => $config['language'],
-				'options' => option('oblik.memsource.walker')
-			]);
+			foreach ($jobs as &$job) {
+				$remote = Remote::get(Service::API_URL . '/projects/' . $projectId . '/jobs/' . $job['id'] . '/targetFile', [
+					'method' => 'GET',
+					'headers' => [
+						'Authorization' => 'ApiToken ' . $service->token
+					]
+				]);
 
-			$importer->import($content);
+				if ($remote->code() === 200) {
+					$content = json_decode($remote->content(), true);
+
+					$importer = new Importer([
+						'lang' => $job['targetLang'],
+						'options' => option('oblik.memsource.walker')
+					]);
+
+					$diffs = $importer->import($content);
+					file_put_contents(__DIR__ . '/diffs.json', json_encode($diffs, JSON_UNESCAPED_UNICODE));
+
+					$job['success'] = true;
+				} else {
+					$job['success'] = false;
+				}
+			}
+
+			return $jobs;
 		}
 	],
 	[
@@ -44,6 +54,7 @@ return [
 		'action' => function () {
 			$data = kirby()->request()->data();
 			$exporter = new Exporter([
+				'lang' => kirby()->defaultLanguage()->code(),
 				'options' => option('oblik.memsource.walker')
 			]);
 
@@ -182,7 +193,8 @@ return [
 			foreach ($jobs as $job) {
 				$data[] = [
 					'id' => $job['uid'],
-					'info' => $job['status'],
+					'targetLang' => $job['targetLang'],
+					'info' => strtoupper($job['targetLang']) . ' (' . $job['status'] . ')',
 					'text' => $job['filename'],
 					'image' => true,
 					'icon' => [

@@ -20,8 +20,14 @@ class Importer
 		$context['input'] = $data;
 
 		$data = WalkerImporter::walk($model, $context);
+		$diff = DiffWalker::walk($model, [
+			'lang' => $context['lang'],
+			'input' => $data
+		]);
 
-		return $model->update($data, $this->lang);
+		$model->update($data, $context['lang']);
+
+		return $diff;
 	}
 
 	public function import(array $data)
@@ -31,13 +37,13 @@ class Importer
 		$files = $data['files'] ?? null;
 
 		if (is_array($site)) {
-			$this->importModel(site(), $site);
+			$data['site'] = $this->importModel(site(), $site);
 		}
 
 		if (is_array($pages)) {
 			foreach ($pages as $id => $data) {
 				if ($page = page($id)) {
-					$this->importModel($page, $data);
+					$data['pages'][$id] = $this->importModel($page, $data);
 				}
 			}
 		}
@@ -45,9 +51,11 @@ class Importer
 		if (is_array($files)) {
 			foreach ($files as $id => $data) {
 				if ($file = site()->file($id)) {
-					$this->importModel($file, $data);
+					$data['files'][$id] = $this->importModel($file, $data);
 				}
 			}
 		}
+
+		return $data;
 	}
 }
