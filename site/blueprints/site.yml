@@ -1,11 +1,12 @@
 title: Site
 preset: page
 fields:
-  editor:
-    type: variables
-  text:
-    type: variables
-    variable: bar
-  jsonData:
-    label: barbaz
-    type: json
+  text: true
+  textarea:
+    translate: false
+  structure:
+    fields:
+      text: true
+      textarea: true
+      toggle:
+        translate: false

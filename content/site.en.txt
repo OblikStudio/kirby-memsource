@@ -1,1 +1,22 @@
 Title: Memsource
+
+----
+
+Text: en text
+
+----
+
+Textarea: en textarea
+
+----
+
+Structure:
+
+- 
+  text: en text 1
+  textarea: en textarea 1
+  toggle: 'true'
+- 
+  text: en text 2
+  textarea: en textarea 2
+  toggle: 'false'
