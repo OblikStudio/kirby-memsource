@@ -8,20 +8,6 @@ use Kirby\Http\Remote;
 
 return [
 	[
-		'pattern' => 'memsource/login',
-		'method' => 'POST',
-		'action' => function () {
-			return (new Service)->login();
-		}
-	],
-	[
-		'pattern' => 'memsource/upload/(:any)/(:any)',
-		'method' => 'POST',
-		'action' => function ($project, $filename) {
-			return (new Service)->upload($project, $filename);
-		}
-	],
-	[
 		'pattern' => 'memsource/import',
 		'method' => 'POST',
 		'action' => function () {
@@ -98,37 +84,6 @@ return [
 			}
 
 			return $data;
-		}
-	],
-	[
-		'pattern' => 'memsource/snapshot',
-		'method' => 'GET',
-		'action' => function () {
-			return array_map(function ($file) {
-				return [
-					'name' => basename($file, '.json'),
-					'date' => filemtime($file)
-				];
-			}, Snapshot::list());
-		}
-	],
-	[
-		'pattern' => 'memsource/snapshot',
-		'method' => 'POST',
-		'action' => function () {
-			// $lang = kirby()->defaultLanguage()->code();
-			// $exporter = new Exporter(walkerSettings());
-			// $exporter->export(site(), $lang);
-			// $data = $exporter->data();
-
-			// return Snapshot::create($_GET['name'], $data);
-		}
-	],
-	[
-		'pattern' => 'memsource/snapshot',
-		'method' => 'DELETE',
-		'action' => function () {
-			return Snapshot::remove($_GET['name']);
 		}
 	],
 	[
@@ -246,12 +201,6 @@ return [
 					'total' => $responseData['totalElements']
 				]
 			];
-		}
-	],
-		'pattern' => 'memsource/(:all)',
-		'method' => 'GET',
-		'action' => function ($resource) {
-			return (new Service)->get($resource);
 		}
 	]
 ];
