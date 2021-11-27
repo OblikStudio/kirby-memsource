@@ -61,6 +61,7 @@ return [
 				F::write("$fileDir/$fileName", $logData);
 
 				$job['success'] = empty($error);
+				$job['importFile'] = $fileName;
 
 				if ($job['success']) {
 					$job['icon']['type'] = 'check';
@@ -74,6 +75,17 @@ return [
 			}
 
 			return $jobs;
+		}
+	],
+	[
+		'pattern' => 'memsource/import',
+		'method' => 'GET',
+		'action' => function () {
+			$fileDir = option('oblik.memsource.importsFolder');
+			$fileName = kirby()->request()->data()['importFile'];
+			$data = F::read("$fileDir/$fileName");
+
+			return json_decode($data, true);
 		}
 	],
 	[
