@@ -57,18 +57,23 @@
 						</li>
 					</ul>
 				</k-column>
-				<k-column>
-					<k-select-field
-						label="Model"
-						v-model="logObjectActive"
-						:options="logObjectsOptions"
-						:empty="false"
-					></k-select-field>
-				</k-column>
-				<k-column>
-					<results-table
-						:data="logObjects[logObjectActive]"
-					></results-table>
+				<template v-if="!logError">
+					<k-column>
+						<k-select-field
+							label="Model"
+							v-model="logObjectActive"
+							:options="logObjectsOptions"
+							:empty="false"
+						></k-select-field>
+					</k-column>
+					<k-column>
+						<results-table
+							:data="logObjects[logObjectActive]"
+						></results-table>
+					</k-column>
+				</template>
+				<k-column v-else>
+					<k-box theme="negative" :text="logError"></k-box>
 				</k-column>
 			</k-grid>
 		</k-dialog>
@@ -92,6 +97,10 @@ export default {
 	computed: {
 		jobResults() {
 			return this.$store.state.memsource.results;
+		},
+		logError() {
+			let err = this.logData?.error;
+			return err?.errorDescription || err;
 		},
 		logObjects() {
 			let res = {};
@@ -205,6 +214,10 @@ export default {
 </script>
 
 <style>
+.ms-results-dialog .k-box .k-text {
+	white-space: pre-line; /* format long PHP error messages */
+}
+
 @media screen and (min-width: 40rem) {
 	.ms-results-dialog[data-size="large"] {
 		width: 55rem;
