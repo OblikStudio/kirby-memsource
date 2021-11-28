@@ -9,7 +9,11 @@
 		</thead>
 
 		<template v-for="(change, key, index) in data">
-			<tr :key="key">
+			<!-- If both <tr> elements have :key="key", an error is thrown when
+			the data changes: TypeError: Cannot read properties of undefined
+			(reading 'key'). -->
+			<!-- eslint-disable-next-line -->
+			<tr>
 				<td class="k-structure-table-index" rowspan="2">
 					<span class="k-structure-table-index-number">
 						{{ index + 1 }}
@@ -27,7 +31,8 @@
 				</td>
 			</tr>
 
-			<tr :key="key">
+			<!-- eslint-disable-next-line -->
+			<tr>
 				<td class="k-structure-table-column ms-results-table-new">
 					<p class="k-structure-table-text">
 						{{ change.$new }}
