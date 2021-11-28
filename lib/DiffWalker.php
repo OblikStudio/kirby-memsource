@@ -4,13 +4,13 @@ namespace Oblik\Memsource;
 
 use Kirby\Cms\Field;
 use Kirby\Cms\ModelWithContent;
-use Oblik\Walker\Walker\Walker;
+use Oblik\Walker\Walker\Exporter;
 
-class DiffWalker extends Walker
+class DiffWalker extends Exporter
 {
 	public static function walk(ModelWithContent $model, array $context = [])
 	{
-		$context['translation'] = Walker::walk($model, [
+		$context['translation'] = Exporter::walk($model, [
 			'lang' => $context['lang']
 		]);
 
@@ -34,11 +34,14 @@ class DiffWalker extends Walker
 
 	protected static function walkField(Field $field, $context)
 	{
-		if (!($context['blueprint']['translate'] ?? true)) {
+		$value = parent::walkField($field, $context);
+
+		if ($value === null) {
+			// If `null`, value is probably not translatable, so there's no need
+			// to go any further.
 			return null;
 		}
 
-		$value = parent::walkField($field, $context);
 		$type = $context['blueprint']['type'] ?? null;
 
 		if (in_array($type, ['structure', 'blocks', 'entity', 'editor'])) {
@@ -60,5 +63,12 @@ class DiffWalker extends Walker
 				'$old' => $oldValue
 			];
 		}
+	}
+
+	protected static function walkText(string $text, $context)
+	{
+		// Override base walkText() because applying options such as
+		// `parseKirbyTags` is not wanted here.
+		return $text;
 	}
 }
