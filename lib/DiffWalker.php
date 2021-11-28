@@ -37,7 +37,7 @@ class DiffWalker extends Walker
 		$value = parent::walkField($field, $context);
 		$type = $context['blueprint']['type'] ?? null;
 
-		if (in_array($type, ['structure', 'blocks', 'editor'])) {
+		if (in_array($type, ['structure', 'blocks', 'entity', 'editor'])) {
 			return $value;
 		}
 
