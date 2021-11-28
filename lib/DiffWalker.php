@@ -41,6 +41,12 @@ class DiffWalker extends Walker
 			return $value;
 		}
 
+		if ($type === 'link') {
+			$value = $value['text'] ?? null;
+			$context['input'] = $context['input']['text'] ?? null;
+			$context['translation'] = $context['translation']['text'] ?? null;
+		}
+
 		$oldValue = $context['translation'] ?? $value;
 		$newValue = $context['input'] ?? $oldValue;
 
