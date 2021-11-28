@@ -195,7 +195,7 @@ export default {
 					for (let vk in vres) {
 						res[`${k}/${vk}`] = vres[vk];
 					}
-				} else {
+				} else if (val.$new && val.$old) {
 					res[k] = val;
 				}
 			}
