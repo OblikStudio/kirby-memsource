@@ -34,6 +34,10 @@ class DiffWalker extends Walker
 
 	protected static function walkField(Field $field, $context)
 	{
+		if (!($context['blueprint']['translate'] ?? true)) {
+			return null;
+		}
+
 		$value = parent::walkField($field, $context);
 		$type = $context['blueprint']['type'] ?? null;
 
