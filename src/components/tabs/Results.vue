@@ -218,6 +218,10 @@ export default {
 	white-space: pre-line; /* format long PHP error messages */
 }
 
+.ms-results-dialog .k-structure-table th {
+	top: -1.5rem; /* sticky offset to negate dialog padding */
+}
+
 @media screen and (min-width: 40rem) {
 	.ms-results-dialog[data-size="large"] {
 		width: 55rem;
