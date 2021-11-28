@@ -206,10 +206,12 @@ return [
 		}
 	],
 	[
-		'pattern' => 'memsource/picker/projects/(:any)/jobs',
+		// Project and workflow level are passed as path parameters because the
+		// base <k-pages-field> has no option for additional GET parameters.
+		'pattern' => 'memsource/picker/projects/(:any)/workflows/(:any)/jobs',
 		'method' => 'GET',
 		'auth' => false,
-		'action' => function ($project) {
+		'action' => function ($project, $workflowLevel) {
 			$page = (int)$this->requestQuery('page') - 1;
 			$page = $page >= 0 ? $page : 0;
 
@@ -219,7 +221,8 @@ return [
 				'data' => [
 					'pageSize' => 20,
 					'pageNumber' => $page,
-					'filename' => $this->requestQuery('search')
+					'filename' => $this->requestQuery('search'),
+					'workflowLevel' => $workflowLevel
 				],
 				'headers' => [
 					'Authorization' => 'ApiToken ' . $service->token
@@ -253,6 +256,44 @@ return [
 					'limit' => $responseData['pageSize'],
 					'total' => $responseData['totalElements']
 				]
+			];
+		}
+	],
+	[
+		'pattern' => 'memsource/picker/projects/(:any)/workflowSteps',
+		'method' => 'GET',
+		'auth' => false,
+		'action' => function ($project) {
+			$service = new Service();
+			$response = Remote::get(Service::API_URL . '/projects/' . $project . '/workflowSteps', [
+				'method' => 'GET',
+				'headers' => [
+					'Authorization' => 'ApiToken ' . $service->token
+				]
+			]);
+
+			$responseData = json_decode($response->content(), true);
+			$workflowSteps = $responseData['projectWorkflowSteps'] ?? [];
+
+			$data = [];
+
+			foreach ($workflowSteps as $step) {
+				$data[] = [
+					'id' => $step['id'],
+					'info' => $step['abbreviation'],
+					'text' => $step['name'],
+					'image' => true,
+					'icon' => [
+						'type' => 'funnel',
+						'back' => 'white'
+					],
+					'workflowLevel' => $step['workflowLevel']
+				];
+			}
+
+			return [
+				'data' => $data,
+				'pagination' => []
 			];
 		}
 	]

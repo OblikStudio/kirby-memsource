@@ -14,13 +14,24 @@
 
 		<k-column v-if="selectedProject">
 			<k-pages-field
+				label="Workflow step"
+				empty="No workflow step selected yet"
+				v-model="workflowStep"
+				:endpoints="{
+					field: `memsource/picker/projects/${selectedProject.id}/workflowSteps`,
+				}"
+			></k-pages-field>
+		</k-column>
+
+		<k-column v-if="selectedProject && selectedWorkflowStep">
+			<k-pages-field
 				label="Jobs"
 				empty="No jobs selected yet"
 				v-model="jobs"
 				:search="true"
 				:multiple="true"
 				:endpoints="{
-					field: `memsource/picker/projects/${selectedProject.id}/jobs`,
+					field: `memsource/picker/projects/${selectedProject.id}/workflows/${selectedWorkflowStep.workflowLevel}/jobs`,
 				}"
 			></k-pages-field>
 		</k-column>
@@ -54,6 +65,7 @@ export default {
 	data() {
 		return {
 			project: [],
+			workflowStep: [],
 			jobs: [],
 			dry: false,
 		};
@@ -61,6 +73,9 @@ export default {
 	computed: {
 		selectedProject() {
 			return this.project?.[0];
+		},
+		selectedWorkflowStep() {
+			return this.workflowStep?.[0];
 		},
 	},
 	methods: {
@@ -82,6 +97,9 @@ export default {
 	},
 	watch: {
 		selectedProject() {
+			this.workflowStep = [];
+		},
+		selectedWorkflowStep() {
 			this.jobs = [];
 		},
 	},
