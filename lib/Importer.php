@@ -19,7 +19,7 @@ class Importer
 
 		if (is_array($pages)) {
 			foreach ($pages as $id => $pageData) {
-				if ($page = page($id)) {
+				if ($page = site()->findPageOrDraft($id)) {
 					$data['pages'][$id] = static::importModel($page, $pageData, $settings);
 				}
 			}
