@@ -38,7 +38,7 @@ return [
 				if ($remote->code() === 200) {
 					try {
 						$diff = Importer::import($body, [
-							'lang' => $job['targetLang'],
+							'lang' => lang_map($job['targetLang']),
 							'dry' => $dry
 						]);
 					} catch (\Throwable $t) {

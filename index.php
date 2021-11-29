@@ -13,6 +13,12 @@ load([
 	'Oblik\\Memsource\\Snapshot' => 'Snapshot.php'
 ], __DIR__ . '/lib');
 
+function lang_map(string $code)
+{
+	$mappedCode = option('oblik.memsource.langMap')[$code] ?? null;
+	return is_string($mappedCode) ? $mappedCode : $code;
+}
+
 App::plugin('oblik/memsource', [
 	'options' => require 'config/options.php',
 	'api' => [
