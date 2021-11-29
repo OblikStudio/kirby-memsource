@@ -88,7 +88,7 @@ export default {
 				})
 				.then((data) => {
 					this.$store.commit("memsource/SET_RESULTS", data);
-					this.$store.commit("memsource/SET_SCREEN", "Results");
+					this.$store.commit("memsource/SET_SCREEN", "History");
 				})
 				.catch((error) => {
 					this.$store.dispatch("notification/error", error);

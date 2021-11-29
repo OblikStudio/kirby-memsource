@@ -5,6 +5,8 @@ namespace Oblik\Memsource;
 use Exception;
 use Kirby\Cms\PagePicker;
 use Kirby\Http\Remote;
+use Kirby\Toolkit\Collection;
+use Kirby\Toolkit\Dir;
 use Kirby\Toolkit\F;
 
 return [
@@ -46,24 +48,37 @@ return [
 					$error = $body;
 				}
 
+				$isSuccess = empty($error);
+				$fileName = date('Ymd-His') . '-' . $job['id'] . '.json';
+
 				$logData = [
-					'date' => date(DATE_ISO8601),
-					'lang' => $job['targetLang'],
-					'dry' => $dry
+					'jobId' => $job['id'],
+					'jobFile' => $job['name'],
+					'jobLang' => $job['targetLang'],
+					'importFile' => $fileName,
+					'importDate' => date(DATE_ISO8601),
+					'isSuccess' => $isSuccess,
+					'isDry' => $dry
 				];
 
-				if ($error !== null) $logData['error'] = $error;
-				if ($diff !== null) $logData['diff'] = $diff;
+				if ($error !== null) {
+					$logData['importError'] = $error;
+				}
 
-				$logData = json_encode($logData, JSON_UNESCAPED_UNICODE);
-				$fileDir = option('oblik.memsource.importsFolder');
-				$fileName = time() . '-' . $job['id'] . '.json';
-				F::write("$fileDir/$fileName", $logData);
+				$logData = json_encode($logData, JSON_PRETTY_PRINT);
+				$importsDir = option('oblik.memsource.importsDir');
+				F::write("$importsDir/$fileName", $logData);
 
-				$job['success'] = empty($error);
+				if ($diff !== null) {
+					$diffsDir = option('oblik.memsource.diffsDir');
+					$diffJson = json_encode($diff, JSON_UNESCAPED_UNICODE);
+					F::write("$diffsDir/$fileName", $diffJson);
+				}
+
+				$job['success'] = $isSuccess;
 				$job['importFile'] = $fileName;
 
-				if ($job['success']) {
+				if ($isSuccess) {
 					$job['icon']['type'] = 'check';
 					$job['icon']['color'] = 'green';
 					$job['info'] = 'SUCCESS';
@@ -78,14 +93,55 @@ return [
 		}
 	],
 	[
-		'pattern' => 'memsource/import',
+		'pattern' => 'memsource/imports/(:any)',
+		'method' => 'GET',
+		'action' => function ($importFile) {
+			$importsDir = option('oblik.memsource.importsDir');
+			$importData = F::read("$importsDir/$importFile");
+
+			if (is_string($importData)) {
+				$importData = json_decode($importData, true);
+			}
+
+			if (is_array($importData)) {
+				$diffsDir = option('oblik.memsource.diffsDir');
+				$diffData = F::read("$diffsDir/$importFile");
+
+				if (is_string($diffData)) {
+					$importData['importDiff'] = json_decode($diffData, true);
+				}
+
+				return $importData;
+			}
+		}
+	],
+	[
+		'pattern' => 'memsource/imports',
 		'method' => 'GET',
 		'action' => function () {
-			$fileDir = option('oblik.memsource.importsFolder');
-			$fileName = kirby()->request()->data()['importFile'];
-			$data = F::read("$fileDir/$fileName");
+			$page = (int)$this->requestQuery('page');
+			$limit = (int)$this->requestQuery('limit');
 
-			return json_decode($data, true);
+			$importsDir = option('oblik.memsource.importsDir');
+			$entries = Dir::read($importsDir, null, true);
+			$collection = (new Collection($entries))->flip();
+			$results = $collection->paginate($limit, $page);
+			$pagination = $results->pagination();
+
+			$data = [];
+			foreach ($results->toArray() as $file) {
+				$fileData = F::read($file);
+				$data[] = json_decode($fileData, true);
+			}
+
+			return [
+				'data' => $data,
+				'pagination' => [
+					'page' => $pagination->page(),
+					'limit' => $pagination->limit(),
+					'total' => $pagination->total()
+				]
+			];
 		}
 	],
 	[
@@ -239,6 +295,7 @@ return [
 					'id' => $job['uid'],
 					'targetLang' => $job['targetLang'],
 					'info' => $job['status'],
+					'name' => $job['filename'],
 					'text' => $job['filename'] . ' (' . $job['targetLang'] . ')',
 					'image' => true,
 					'icon' => [

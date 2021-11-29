@@ -25,14 +25,14 @@
 import { store } from "./store";
 import Export from "./components/tabs/Export.vue";
 import Import from "./components/tabs/Import.vue";
-import Results from "./components/tabs/Results.vue";
+import History from "./components/tabs/History.vue";
 import Upload from "./components/tabs/Upload.vue";
 
 export default {
 	components: {
 		Export,
 		Import,
-		Results,
+		History,
 		Upload,
 	},
 	data() {
@@ -47,6 +47,11 @@ export default {
 					icon: "download",
 					text: "Import",
 					component: "Import",
+				},
+				{
+					icon: "clock",
+					text: "History",
+					component: "History",
 				},
 			],
 		};
