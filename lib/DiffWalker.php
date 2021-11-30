@@ -10,9 +10,8 @@ class DiffWalker extends Exporter
 {
 	public function walk(ModelWithContent $model, array $context = [])
 	{
-		$context['translation'] = Exporter::walk($model, [
-			'lang' => $context['lang']
-		]);
+		$exporter = new Exporter(['lang' => $context['lang']]);
+		$context['translation'] = $exporter->walk($model);
 
 		// Set the main walked data to always be the default language.
 		$context['lang'] = kirby()->defaultLanguage()->code();

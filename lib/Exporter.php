@@ -9,19 +9,23 @@ use Oblik\Walker\Walker\Exporter as WalkerExporter;
 
 class Exporter
 {
-	public $context;
 	public $site;
 	public $pages = [];
 	public $files = [];
 
+	/**
+	 * @var WalkerExporter
+	 */
+	public $walker;
+
 	public function __construct(array $context = [])
 	{
-		$this->context = $context;
+		$this->walker = new WalkerExporter($context);
 	}
 
 	public function exportSite()
 	{
-		$data = (new WalkerExporter())->walk(site(), $this->context);
+		$data = $this->walker->walk(site());
 
 		if (!empty($data)) {
 			$this->site = $data;
@@ -37,7 +41,7 @@ class Exporter
 
 	public function exportPage(Page $page)
 	{
-		$data = (new WalkerExporter())->walk($page, $this->context);
+		$data = $this->walker->walk($page);
 
 		if (!empty($data)) {
 			$this->pages[$page->id()] = $data;
@@ -46,7 +50,7 @@ class Exporter
 
 	public function exportFile(File $file)
 	{
-		$data = (new WalkerExporter())->walk($file, $this->context);
+		$data = $this->walker->walk($file);
 
 		if (!empty($data)) {
 			$this->files[$file->id()] = $data;
