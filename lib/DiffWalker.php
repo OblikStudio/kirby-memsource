@@ -8,7 +8,7 @@ use Oblik\Walker\Walker\Exporter;
 
 class DiffWalker extends Exporter
 {
-	public static function walk(ModelWithContent $model, array $context = [])
+	public function walk(ModelWithContent $model, array $context = [])
 	{
 		$context['translation'] = Exporter::walk($model, [
 			'lang' => $context['lang']
@@ -20,19 +20,19 @@ class DiffWalker extends Exporter
 		return parent::walk($model, $context);
 	}
 
-	protected static function subcontext($key, $context)
+	protected function subcontext($key, $context)
 	{
 		$context = parent::subcontext($key, $context);
 		$translation = $context['translation'] ?? null;
 
 		if (is_array($translation)) {
-			$context['translation'] = static::findMatchingEntry($key, $translation, $context);
+			$context['translation'] = $this->findMatchingEntry($key, $translation, $context);
 		}
 
 		return $context;
 	}
 
-	protected static function walkField(Field $field, $context)
+	protected function walkField(Field $field, $context)
 	{
 		$value = parent::walkField($field, $context);
 
@@ -65,7 +65,7 @@ class DiffWalker extends Exporter
 		}
 	}
 
-	protected static function walkText(string $text, $context)
+	protected function walkText(string $text, $context)
 	{
 		// Override base walkText() because applying options such as
 		// `parseKirbyTags` is not wanted here.

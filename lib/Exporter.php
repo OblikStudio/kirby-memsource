@@ -21,7 +21,7 @@ class Exporter
 
 	public function exportSite()
 	{
-		$data = WalkerExporter::walk(site(), $this->context);
+		$data = (new WalkerExporter())->walk(site(), $this->context);
 
 		if (!empty($data)) {
 			$this->site = $data;
@@ -37,7 +37,7 @@ class Exporter
 
 	public function exportPage(Page $page)
 	{
-		$data = WalkerExporter::walk($page, $this->context);
+		$data = (new WalkerExporter())->walk($page, $this->context);
 
 		if (!empty($data)) {
 			$this->pages[$page->id()] = $data;
@@ -46,7 +46,7 @@ class Exporter
 
 	public function exportFile(File $file)
 	{
-		$data = WalkerExporter::walk($file, $this->context);
+		$data = (new WalkerExporter())->walk($file, $this->context);
 
 		if (!empty($data)) {
 			$this->files[$file->id()] = $data;
