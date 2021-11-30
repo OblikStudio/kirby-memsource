@@ -6,7 +6,7 @@
 		:cancelButton="false"
 		v-on="$listeners"
 	>
-		<k-grid gutter="medium" v-if="data">
+		<k-grid gutter="medium">
 			<k-column>
 				<ul class="k-system-info-box">
 					<li>
@@ -83,12 +83,12 @@ export default {
 	},
 	computed: {
 		error() {
-			let err = this.data?.importError;
+			let err = this.data.importError;
 			return err?.errorDescription || err;
 		},
 		models() {
 			let res = {};
-			let diff = this.data?.importDiff;
+			let diff = this.data.importDiff;
 
 			if (diff && typeof diff === "object") {
 				for (let k of ["site", "pages", "files"]) {
@@ -132,7 +132,7 @@ export default {
 			});
 		},
 		statsLang() {
-			return this.data?.jobLang.toUpperCase();
+			return this.data.jobLang?.toUpperCase() || "??";
 		},
 		statsChanges() {
 			let res = 0;
@@ -144,7 +144,7 @@ export default {
 			return res.toLocaleString();
 		},
 		statsDryIcon() {
-			return this.data?.isDry === true ? "check" : "cancel";
+			return this.data.isDry === true ? "check" : "cancel";
 		},
 	},
 	methods: {

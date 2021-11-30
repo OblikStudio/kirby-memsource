@@ -12,6 +12,7 @@
 
 			<results-dialog
 				ref="dialog"
+				v-if="importData"
 				:data="importData"
 				@submit="$refs.dialog.close()"
 			/>
@@ -93,7 +94,9 @@ export default {
 				.get(`memsource/imports/${importFile}`)
 				.then((data) => {
 					this.importData = freeze(data);
-					this.$refs.dialog.open();
+					this.$nextTick(() => {
+						this.$refs.dialog.open();
+					});
 				})
 				.catch((error) => {
 					this.$store.dispatch("notification/error", error);

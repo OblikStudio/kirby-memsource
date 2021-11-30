@@ -3,7 +3,6 @@
 namespace Oblik\Memsource;
 
 use Error;
-use Kirby\Http\Cookie;
 use Kirby\Http\Remote;
 use Kirby\Http\Response;
 
@@ -23,59 +22,54 @@ class Service
 		]
 	];
 
-	public $token = null;
-
-	/**
-	 * @var \Kirby\Cache\Cache
-	 */
-	public $cache;
+	public $token;
 
 	public function __construct()
 	{
-		$this->cache = kirby()->cache('oblik.memsource');
-		$session = $this->cache->get('session');
+		$cache = kirby()->cache('oblik.memsource');
+		$session = $cache->get('session');
 
 		if (!$session) {
 			$session = $this->login();
 
 			if (!empty($session['expires'])) {
 				$timestamp = strtotime($session['expires']);
-				$this->cache->set('session', $session, $timestamp);
+				$cache->set('session', $session, $timestamp);
 			}
 		}
 
 		$this->token = $session['token'] ?? null;
-		return $this;
 	}
 
 	public function login()
 	{
-		$remote = Remote::request(self::API_URL . '/auth/login', [
+		return $this->request('auth/login', [
 			'method' => 'POST',
 			'data' => json_encode([
 				'userName' => option('oblik.memsource.login.username'),
 				'password' => option('oblik.memsource.login.password')
-			]),
+			])
+		]);
+	}
+
+	public function request(string $path, array $params = [])
+	{
+		$params = array_replace_recursive([
+			'method' => 'GET',
 			'headers' => [
+				'Authorization' => 'ApiToken ' . $this->token,
 				'Content-Type' => 'application/json'
 			]
-		]);
+		], $params);
 
-		return json_decode($remote->content(), true);
-	}
+		$remote = Remote::request(self::API_URL . '/' . $path, $params);
+		$body = json_decode($remote->content(), true);
 
-	public function request(string $path, array $params)
-	{
-		return Remote::request(self::API_URL . '/' . $path . '?token=' . $this->token, $params);
-	}
+		if ($remote->code() < 200 || $remote->code() >= 300) {
+			throw new ApiException($body);
+		}
 
-	public function get(string $resource)
-	{
-		$remote = $this->request($resource, [
-			'method' => 'GET'
-		]);
-
-		return new Response($remote->content(), 'application/json', $remote->code());
+		return $body;
 	}
 
 	public function upload(string $projectId, string $filename)

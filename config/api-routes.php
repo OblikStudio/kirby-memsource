@@ -19,45 +19,25 @@ return [
 			$jobId = $request['jobId'];
 			$isDry = $request['dry'] ?? false;
 
-			$service = new Service();
-
-			$remote = Remote::get(Service::API_URL . '/projects/' . $projectId . '/jobs/' . $jobId, [
-				'method' => 'GET',
-				'headers' => [
-					'Authorization' => 'ApiToken ' . $service->token
-				]
-			]);
-
-			$jobData = json_decode($remote->content(), true);
-
-			$remote = Remote::get(Service::API_URL . '/projects/' . $projectId . '/jobs/' . $jobId . '/targetFile', [
-				'method' => 'GET',
-				'headers' => [
-					'Authorization' => 'ApiToken ' . $service->token
-				]
-			]);
-
-			$body = json_decode($remote->content(), true);
-
 			$diff = null;
 			$error = null;
 			$changes = null;
 
-			if ($remote->code() === 200) {
-				try {
-					$importer = new Importer(lang_map($jobData['targetLang']));
-					$diff = $importer->import($body);
-					$changes = $importer->getChanges();
+			try {
+				$service = new Service();
+				$jobData = $service->request('projects/' . $projectId . '/jobs/' . $jobId);
+				$body = $service->request('projects/' . $projectId . '/jobs/' . $jobId . '/targetFile');
 
-					if (!$isDry) {
+				$importer = new Importer(lang_map($jobData['targetLang']));
+				$diff = $importer->import($body);
+				$changes = $importer->getChanges();
+
+				if (!$isDry) {
 					kirby()->impersonate('kirby');
-						$importer->update();
-					}
-				} catch (\Throwable $t) {
-					$error = $t->__toString();
+					$importer->update();
 				}
-			} else {
-				$error = $body;
+			} catch (\Throwable $throwable) {
+				$error = $throwable->__toString();
 			}
 
 			$isSuccess = empty($error);
@@ -65,18 +45,15 @@ return [
 
 			$logData = [
 				'jobId' => $jobId,
-				'jobFile' => $jobData['filename'],
-				'jobLang' => $jobData['targetLang'],
+				'jobFile' => $jobData['filename'] ?? null,
+				'jobLang' => $jobData['targetLang'] ?? null,
 				'importFile' => $fileName,
 				'importDate' => date(DATE_ISO8601),
 				'importChanges' => $changes,
+				'importError' => $error,
 				'isSuccess' => $isSuccess,
 				'isDry' => $isDry
 			];
-
-			if ($error !== null) {
-				$logData['importError'] = $error;
-			}
 
 			$logData = json_encode($logData, JSON_PRETTY_PRINT);
 			$importsDir = option('oblik.memsource.importsDir');
@@ -88,7 +65,15 @@ return [
 				F::write("$diffsDir/$fileName", $diffJson);
 			}
 
-			return $isSuccess;
+			if (!$isSuccess) {
+				if (!empty($throwable)) {
+					throw $throwable;
+				} else {
+					return false;
+				}
+			}
+
+			return true;
 		}
 	],
 	[
