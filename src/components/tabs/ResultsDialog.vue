@@ -44,7 +44,7 @@
 					</li>
 				</ul>
 			</k-column>
-			<template v-if="!error">
+			<template v-if="modelsOptions.length > 0">
 				<k-column>
 					<k-select-field
 						label="Model"
@@ -60,7 +60,15 @@
 				</k-column>
 			</template>
 			<k-column v-else>
-				<k-box theme="negative" :text="error"></k-box>
+				<k-box v-if="data.importChanges === 0" theme="info">
+					No differences in the content.
+				</k-box>
+				<k-box v-else-if="data.importChanges > 0" theme="notice">
+					Couldn't load import changes.
+				</k-box>
+				<k-box v-else theme="negative">
+					{{ error || "Unknown error." }}
+				</k-box>
 			</k-column>
 		</k-grid>
 	</k-dialog>
@@ -110,10 +118,13 @@ export default {
 			let res = [];
 
 			for (let k in this.models) {
-				res.push({
-					value: k,
-					text: `${k} (${Object.keys(this.models[k]).length})`,
-				});
+				let changes = Object.keys(this.models[k]).length;
+				if (changes > 0) {
+					res.push({
+						value: k,
+						text: `${k} (${changes})`,
+					});
+				}
 			}
 
 			return res;
@@ -132,16 +143,11 @@ export default {
 			});
 		},
 		statsLang() {
-			return this.data.jobLang?.toUpperCase() || "??";
+			return this.data.jobLang?.toUpperCase() || "?";
 		},
 		statsChanges() {
-			let res = 0;
-
-			for (let k in this.models) {
-				res += Object.keys(this.models[k]).length;
-			}
-
-			return res.toLocaleString();
+			let c = this.data.importChanges;
+			return typeof c === "number" ? c.toLocaleString() : "?";
 		},
 		statsDryIcon() {
 			return this.data.isDry === true ? "check" : "cancel";
@@ -179,10 +185,13 @@ export default {
 		},
 	},
 	watch: {
-		modelsOptions(val) {
-			if (val.length > 0) {
-				this.selectedModel = val[0].value;
-			}
+		modelsOptions: {
+			immediate: true,
+			handler(val) {
+				if (val.length > 0) {
+					this.selectedModel = val[0].value;
+				}
+			},
 		},
 	},
 };
