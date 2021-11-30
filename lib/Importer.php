@@ -7,63 +7,98 @@ use Oblik\Walker\Walker\Importer as WalkerImporter;
 
 class Importer
 {
-	public $changes = 0;
+	public $lang;
 
-	public function import(array $data, array $settings)
+	/**
+	 * Array holding all models that have been successfully walked over to later
+	 * be updated all at once.
+	 */
+	protected $queue = [];
+
+	/**
+	 * @var WalkerImporter
+	 */
+	protected $importWalker;
+
+	/**
+	 * @var DiffWalker
+	 */
+	protected $diffWalker;
+
+	public function __construct(string $lang)
 	{
-		$site = $data['site'] ?? null;
-		$pages = $data['pages'] ?? null;
-		$files = $data['files'] ?? null;
+		$this->lang = $lang;
 
-		if (is_array($site)) {
-			$data['site'] = $this->importModel(site(), $site, $settings);
-		}
+		$this->importWalker = new WalkerImporter([
+			'options' => option('oblik.memsource.walker'),
+			'lang' => kirby()->defaultLanguage()->code()
+		]);
 
-		if (is_array($pages)) {
-			foreach ($pages as $id => $pageData) {
-				if ($page = site()->findPageOrDraft($id)) {
-					$data['pages'][$id] = $this->importModel($page, $pageData, $settings);
-				}
-			}
-
-			$data['pages'] = array_filter($data['pages']);
-		}
-
-		if (is_array($files)) {
-			foreach ($files as $id => $fileData) {
-				if ($file = site()->file($id)) {
-					$data['files'][$id] = $this->importModel($file, $fileData, $settings);
-				}
-			}
-
-			$data['files'] = array_filter($data['files']);
-		}
-
-		$data = array_filter($data);
-
-		return !empty($data) ? $data : null;
+		$this->diffWalker = new DiffWalker([
+			'lang' => $this->lang
+		]);
 	}
 
-	public function importModel(ModelWithContent $model, array $data, array $settings)
+	public function import(array $input)
 	{
-		$importData = (new WalkerImporter())->walk($model, [
-			'options' => option('oblik.memsource.walker'),
-			'lang' => kirby()->defaultLanguage()->code(),
-			'input' => $data
-		]);
+		$diff = [];
 
-		$diffWalker = new DiffWalker();
-		$diff = $diffWalker->walk($model, [
-			'lang' => $settings['lang'],
-			'input' => $importData
-		]);
-
-		$this->changes += $diffWalker->changes;
-
-		if (!($settings['dry'] ?? false)) {
-			$model->update($importData, $settings['lang']);
+		if (is_array($site = $input['site'] ?? null)) {
+			$diff['site'] = $this->importModel(site(), $site);
 		}
 
+		if (is_array($pages = $input['pages'] ?? null)) {
+			$diff['pages'] = [];
+
+			foreach ($pages as $id => $pageInput) {
+				if ($page = site()->findPageOrDraft($id)) {
+					$diff['pages'][$id] = $this->importModel($page, $pageInput);
+				}
+			}
+		}
+
+		if (is_array($files = $input['files'] ?? null)) {
+			$diff['files'] = [];
+
+			foreach ($files as $id => $fileInput) {
+				if ($file = site()->file($id)) {
+					$diff['files'][$id] = $this->importModel($file, $fileInput);
+				}
+			}
+		}
+
+		return !empty($diff) ? $diff : null;
+	}
+
+	public function importModel(ModelWithContent $model, array $input)
+	{
+		$content = $this->importWalker->walk($model, [
+			'input' => $input
+		]);
+
+		$diff = $this->diffWalker->walk($model, [
+			'input' => $content
+		]);
+
+		$this->queue[] = [
+			'model' => $model,
+			'content' => $content
+		];
+
 		return $diff;
+	}
+
+	public function update()
+	{
+		foreach ($this->queue as $entry) {
+			$entry['model']->update($entry['content'], $this->lang);
+		}
+
+		$this->queue = [];
+	}
+
+	public function getChanges()
+	{
+		return $this->diffWalker->changes;
 	}
 }

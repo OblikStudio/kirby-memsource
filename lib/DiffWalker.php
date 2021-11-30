@@ -12,6 +12,8 @@ class DiffWalker extends Exporter
 
 	public function walk(ModelWithContent $model, array $context = [])
 	{
+		$context = array_replace($this->context, $context);
+
 		$exporter = new Exporter(['lang' => $context['lang']]);
 		$context['translation'] = $exporter->walk($model);
 

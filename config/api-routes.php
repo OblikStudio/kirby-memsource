@@ -45,14 +45,14 @@ return [
 
 			if ($remote->code() === 200) {
 				try {
-					kirby()->impersonate('kirby');
+					$importer = new Importer(lang_map($jobData['targetLang']));
+					$diff = $importer->import($body);
+					$changes = $importer->getChanges();
 
-					$importer = new Importer();
-					$diff = $importer->import($body, [
-						'lang' => lang_map($jobData['targetLang']),
-						'dry' => $isDry
-					]);
-					$changes = $importer->changes;
+					if (!$isDry) {
+					kirby()->impersonate('kirby');
+						$importer->update();
+					}
 				} catch (\Throwable $t) {
 					$error = $t->__toString();
 				}
@@ -88,7 +88,7 @@ return [
 				F::write("$diffsDir/$fileName", $diffJson);
 			}
 
-			return true;
+			return $isSuccess;
 		}
 	],
 	[
