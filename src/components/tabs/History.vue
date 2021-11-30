@@ -35,21 +35,35 @@ export default {
 		};
 	},
 	computed: {
+		recentImportFiles() {
+			return this.$store.state.memsource.results?.map(
+				(e) => e.importFile
+			);
+		},
 		importListItems() {
 			return this.importEntries.map((e) => {
-				let text = `${e.jobFile} (${e.jobLang})`;
+				let isNew = this.recentImportFiles?.includes(e.importFile);
 
+				let text = `${e.jobFile} (${e.jobLang})`;
 				if (e.isDry) {
 					text += " (dry)";
 				}
 
-				return {
-					text,
-					info: new Date(e.importDate).toLocaleString(undefined, {
+				let info;
+				if (isNew) {
+					info = "new";
+				} else {
+					info = new Date(e.importDate).toLocaleString(undefined, {
 						dateStyle: "medium",
 						timeStyle: "short",
-					}),
+					});
+				}
+
+				return {
+					text,
+					info,
 					image: true,
+					class: isNew ? "ms-list-item-new" : "",
 					icon: {
 						type: e.isSuccess ? "check" : "cancel",
 						color: e.isSuccess ? "green" : "red",
@@ -94,3 +108,9 @@ export default {
 	},
 };
 </script>
+
+<style>
+.ms-list-item-new {
+	font-weight: bold;
+}
+</style>

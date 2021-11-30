@@ -75,18 +75,8 @@ return [
 					F::write("$diffsDir/$fileName", $diffJson);
 				}
 
-				$job['success'] = $isSuccess;
+				// Used later in the History tab to display the job as "new".
 				$job['importFile'] = $fileName;
-
-				if ($isSuccess) {
-					$job['icon']['type'] = 'check';
-					$job['icon']['color'] = 'green';
-					$job['info'] = 'SUCCESS';
-				} else {
-					$job['icon']['type'] = 'cancel';
-					$job['icon']['color'] = 'red';
-					$job['info'] = 'ERROR';
-				}
 			}
 
 			return $jobs;
