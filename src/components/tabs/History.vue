@@ -78,7 +78,7 @@ export default {
 			this.$api
 				.get("memsource/imports", {
 					page,
-					limit: 20,
+					limit: 15,
 				})
 				.then((res) => {
 					this.importEntries = res.data;
