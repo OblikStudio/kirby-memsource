@@ -15,75 +15,80 @@ return [
 		'method' => 'POST',
 		'action' => function () {
 			$request = kirby()->request()->data();
-			$projectId = $request['project'];
-			$jobs = $request['jobs'];
+			$projectId = $request['projectId'];
+			$jobId = $request['jobId'];
+			$isDry = $request['dry'] ?? false;
 
 			$service = new Service();
 
-			kirby()->impersonate('kirby');
+			$remote = Remote::get(Service::API_URL . '/projects/' . $projectId . '/jobs/' . $jobId, [
+				'method' => 'GET',
+				'headers' => [
+					'Authorization' => 'ApiToken ' . $service->token
+				]
+			]);
 
-			foreach ($jobs as &$job) {
-				$remote = Remote::get(Service::API_URL . '/projects/' . $projectId . '/jobs/' . $job['id'] . '/targetFile', [
-					'method' => 'GET',
-					'headers' => [
-						'Authorization' => 'ApiToken ' . $service->token
-					]
-				]);
+			$jobData = json_decode($remote->content(), true);
 
-				$body = json_decode($remote->content(), true);
-				$dry = $request['dry'] ?? false;
-				$diff = null;
-				$error = null;
-				$changes = null;
+			$remote = Remote::get(Service::API_URL . '/projects/' . $projectId . '/jobs/' . $jobId . '/targetFile', [
+				'method' => 'GET',
+				'headers' => [
+					'Authorization' => 'ApiToken ' . $service->token
+				]
+			]);
 
-				if ($remote->code() === 200) {
-					try {
-						$importer = new Importer();
-						$diff = $importer->import($body, [
-							'lang' => lang_map($job['targetLang']),
-							'dry' => $dry
-						]);
-						$changes = $importer->changes;
-					} catch (\Throwable $t) {
-						$error = $t->__toString();
-					}
-				} else {
-					$error = $body;
+			$body = json_decode($remote->content(), true);
+
+			$diff = null;
+			$error = null;
+			$changes = null;
+
+			if ($remote->code() === 200) {
+				try {
+					kirby()->impersonate('kirby');
+
+					$importer = new Importer();
+					$diff = $importer->import($body, [
+						'lang' => lang_map($jobData['targetLang']),
+						'dry' => $isDry
+					]);
+					$changes = $importer->changes;
+				} catch (\Throwable $t) {
+					$error = $t->__toString();
 				}
-
-				$isSuccess = empty($error);
-				$fileName = date('Ymd-His') . '-' . $job['id'] . '.json';
-
-				$logData = [
-					'jobId' => $job['id'],
-					'jobFile' => $job['name'],
-					'jobLang' => $job['targetLang'],
-					'importFile' => $fileName,
-					'importDate' => date(DATE_ISO8601),
-					'importChanges' => $changes,
-					'isSuccess' => $isSuccess,
-					'isDry' => $dry
-				];
-
-				if ($error !== null) {
-					$logData['importError'] = $error;
-				}
-
-				$logData = json_encode($logData, JSON_PRETTY_PRINT);
-				$importsDir = option('oblik.memsource.importsDir');
-				F::write("$importsDir/$fileName", $logData);
-
-				if ($diff !== null) {
-					$diffsDir = option('oblik.memsource.diffsDir');
-					$diffJson = json_encode($diff, JSON_UNESCAPED_UNICODE);
-					F::write("$diffsDir/$fileName", $diffJson);
-				}
-
-				// Used later in the History tab to display the job as "new".
-				$job['importFile'] = $fileName;
+			} else {
+				$error = $body;
 			}
 
-			return $jobs;
+			$isSuccess = empty($error);
+			$fileName = date('Ymd-His') . '-' . $jobId . '.json';
+
+			$logData = [
+				'jobId' => $jobId,
+				'jobFile' => $jobData['filename'],
+				'jobLang' => $jobData['targetLang'],
+				'importFile' => $fileName,
+				'importDate' => date(DATE_ISO8601),
+				'importChanges' => $changes,
+				'isSuccess' => $isSuccess,
+				'isDry' => $isDry
+			];
+
+			if ($error !== null) {
+				$logData['importError'] = $error;
+			}
+
+			$logData = json_encode($logData, JSON_PRETTY_PRINT);
+			$importsDir = option('oblik.memsource.importsDir');
+			F::write("$importsDir/$fileName", $logData);
+
+			if ($diff !== null) {
+				$diffsDir = option('oblik.memsource.diffsDir');
+				$diffJson = json_encode($diff, JSON_UNESCAPED_UNICODE);
+				F::write("$diffsDir/$fileName", $diffJson);
+			}
+
+			return true;
 		}
 	],
 	[

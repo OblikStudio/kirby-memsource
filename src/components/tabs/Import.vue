@@ -80,19 +80,33 @@ export default {
 	},
 	methods: {
 		doImport() {
-			this.$api
-				.post("memsource/import", {
-					project: this.selectedProject.id,
-					jobs: this.jobs,
+			let promises = this.jobs.map((job) => {
+				return this.$api.post("memsource/import", {
+					projectId: this.selectedProject.id,
+					jobId: job.id,
 					dry: this.dry,
-				})
-				.then((data) => {
-					this.$store.commit("memsource/SET_RESULTS", data);
-					this.$store.commit("memsource/SET_SCREEN", "History");
-				})
-				.catch((error) => {
-					this.$store.dispatch("notification/error", error);
 				});
+			});
+
+			Promise.allSettled(promises).then((results) => {
+				let errors = results.filter((e) => e.status === "rejected");
+
+				if (errors.length > 0) {
+					this.$store.dispatch(
+						"notification/error",
+						"Some jobs have failed to import..."
+					);
+				} else {
+					this.$store.dispatch(
+						"notification/success",
+						"Successfully imported all jobs!"
+					);
+				}
+
+				if (this.$store.state.memsource.screen === "Import") {
+					this.$store.commit("memsource/SET_SCREEN", "History");
+				}
+			});
 		},
 	},
 	watch: {

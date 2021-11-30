@@ -35,14 +35,11 @@ export default {
 		};
 	},
 	computed: {
-		recentImportFiles() {
-			return this.$store.state.memsource.results?.map(
-				(e) => e.importFile
-			);
-		},
 		importListItems() {
 			return this.importEntries.map((e) => {
-				let isNew = this.recentImportFiles?.includes(e.importFile);
+				let importDate = new Date(e.importDate);
+				let isNew =
+					this.$store.state.memsource.historyDate < importDate;
 
 				let text = `${e.jobFile} (${e.jobLang})`;
 				if (e.isDry) {
@@ -53,7 +50,7 @@ export default {
 				if (isNew) {
 					info = "new";
 				} else {
-					info = new Date(e.importDate).toLocaleString(undefined, {
+					info = importDate.toLocaleString(undefined, {
 						dateStyle: "medium",
 						timeStyle: "short",
 					});

@@ -23,12 +23,15 @@ function formatRejection(Error) {
 export let store = {
 	namespaced: true,
 	state: {
+		/**
+		 * Date after which imports are considered "new".
+		 */
+		historyDate: new Date(),
 		alerts: [],
 		crumbs: [],
 		tab: null,
 		export: null,
 		project: null,
-		results: null,
 		loading: false,
 		screen: null,
 	},
@@ -90,9 +93,6 @@ export let store = {
 		SET_EXPORT: (state, value) => {
 			state.export = freeze(value);
 		},
-		SET_RESULTS: function (state, value) {
-			state.results = freeze(value);
-		},
 		ALERT(state, alert) {
 			if (!alert.theme) {
 				alert.theme = "info";
@@ -108,6 +108,10 @@ export let store = {
 			state.alerts = [];
 		},
 		SET_SCREEN(state, value) {
+			if (state.screen === "History") {
+				state.historyDate = new Date();
+			}
+
 			state.screen = value;
 		},
 	},
