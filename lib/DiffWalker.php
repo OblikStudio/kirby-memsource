@@ -8,6 +8,8 @@ use Oblik\Walker\Walker\Exporter;
 
 class DiffWalker extends Exporter
 {
+	public $changes = 0;
+
 	public function walk(ModelWithContent $model, array $context = [])
 	{
 		$exporter = new Exporter(['lang' => $context['lang']]);
@@ -57,6 +59,8 @@ class DiffWalker extends Exporter
 		$newValue = $context['input'] ?? $oldValue;
 
 		if ($newValue !== $oldValue) {
+			$this->changes++;
+
 			return [
 				'$new' => $newValue,
 				'$old' => $oldValue

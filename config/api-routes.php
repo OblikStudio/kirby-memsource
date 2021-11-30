@@ -34,13 +34,16 @@ return [
 				$dry = $request['dry'] ?? false;
 				$diff = null;
 				$error = null;
+				$changes = null;
 
 				if ($remote->code() === 200) {
 					try {
-						$diff = Importer::import($body, [
+						$importer = new Importer();
+						$diff = $importer->import($body, [
 							'lang' => lang_map($job['targetLang']),
 							'dry' => $dry
 						]);
+						$changes = $importer->changes;
 					} catch (\Throwable $t) {
 						$error = $t->__toString();
 					}
@@ -57,6 +60,7 @@ return [
 					'jobLang' => $job['targetLang'],
 					'importFile' => $fileName,
 					'importDate' => date(DATE_ISO8601),
+					'importChanges' => $changes,
 					'isSuccess' => $isSuccess,
 					'isDry' => $dry
 				];

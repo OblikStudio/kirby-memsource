@@ -7,20 +7,22 @@ use Oblik\Walker\Walker\Importer as WalkerImporter;
 
 class Importer
 {
-	public static function import(array $data, array $settings)
+	public $changes = 0;
+
+	public function import(array $data, array $settings)
 	{
 		$site = $data['site'] ?? null;
 		$pages = $data['pages'] ?? null;
 		$files = $data['files'] ?? null;
 
 		if (is_array($site)) {
-			$data['site'] = static::importModel(site(), $site, $settings);
+			$data['site'] = $this->importModel(site(), $site, $settings);
 		}
 
 		if (is_array($pages)) {
 			foreach ($pages as $id => $pageData) {
 				if ($page = site()->findPageOrDraft($id)) {
-					$data['pages'][$id] = static::importModel($page, $pageData, $settings);
+					$data['pages'][$id] = $this->importModel($page, $pageData, $settings);
 				}
 			}
 
@@ -30,7 +32,7 @@ class Importer
 		if (is_array($files)) {
 			foreach ($files as $id => $fileData) {
 				if ($file = site()->file($id)) {
-					$data['files'][$id] = static::importModel($file, $fileData, $settings);
+					$data['files'][$id] = $this->importModel($file, $fileData, $settings);
 				}
 			}
 
@@ -42,7 +44,7 @@ class Importer
 		return !empty($data) ? $data : null;
 	}
 
-	public static function importModel(ModelWithContent $model, array $data, array $settings)
+	public function importModel(ModelWithContent $model, array $data, array $settings)
 	{
 		$importData = (new WalkerImporter())->walk($model, [
 			'options' => option('oblik.memsource.walker'),
@@ -50,10 +52,13 @@ class Importer
 			'input' => $data
 		]);
 
-		$diff = (new DiffWalker())->walk($model, [
+		$diffWalker = new DiffWalker();
+		$diff = $diffWalker->walk($model, [
 			'lang' => $settings['lang'],
 			'input' => $importData
 		]);
+
+		$this->changes += $diffWalker->changes;
 
 		if (!($settings['dry'] ?? false)) {
 			$model->update($importData, $settings['lang']);
