@@ -1,23 +1,12 @@
 <template>
 	<k-grid gutter="medium">
-		<k-column>
-			<k-pages-field
-				label="Pages"
-				v-model="exportPages"
-				:search="true"
-				:multiple="true"
-				:endpoints="{
-					field: 'memsource/picker/pages',
-				}"
-			></k-pages-field>
-		</k-column>
 		<k-column width="1/2">
 			<k-radio-field
 				label="Site"
 				v-model="exportSite"
 				:options="[
-					{ value: false, text: 'Off' },
 					{ value: true, text: 'On' },
+					{ value: false, text: 'Off' },
 				]"
 				:columns="2"
 				:help="exportSiteHelp"
@@ -32,6 +21,17 @@
 				:help="activeFilesOption.help"
 				@input="input"
 			/>
+		</k-column>
+		<k-column>
+			<k-pages-field
+				label="Pages"
+				v-model="exportPages"
+				:search="true"
+				:multiple="true"
+				:endpoints="{
+					field: 'memsource/picker/pages',
+				}"
+			></k-pages-field>
 		</k-column>
 		<k-column align="center">
 			<k-button-group>
@@ -67,9 +67,9 @@ export default {
 		filesOptions() {
 			return [
 				{
-					value: "off",
-					text: "Off",
-					help: "Do not export file fields, such as alt texts.",
+					value: "only",
+					text: "Only",
+					help: "Export only site and page files, without their content.",
 				},
 				{
 					value: "include",
@@ -77,9 +77,9 @@ export default {
 					help: "Include all translatable content in files.",
 				},
 				{
-					value: "only",
-					text: "Only",
-					help: "Export only site and page files, without their content.",
+					value: "off",
+					text: "Off",
+					help: "Do not export file fields, such as alt texts.",
 				},
 			];
 		},
