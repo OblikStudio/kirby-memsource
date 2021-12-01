@@ -5,7 +5,7 @@ namespace Oblik\Memsource;
 use Kirby\Cms\PagePicker;
 
 return [
-	'pattern' => 'memsource/pages',
+	'pattern' => 'memsource/picker/pages',
 	'method' => 'GET',
 	'action' => function () {
 		return (new PagePicker([

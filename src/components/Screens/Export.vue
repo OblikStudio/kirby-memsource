@@ -7,7 +7,7 @@
 				:search="true"
 				:multiple="true"
 				:endpoints="{
-					field: 'memsource/pages',
+					field: 'memsource/picker/pages',
 				}"
 			></k-pages-field>
 		</k-column>
