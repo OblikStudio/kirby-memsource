@@ -7,10 +7,6 @@
 /.gitattributes    export-ignore
 /.gitignore        export-ignore
 /.htaccess         export-ignore
-/.postcssrc.js     export-ignore
-/.prettierrc       export-ignore
-/composer.lock     export-ignore
 /index.site.php    export-ignore
-/package.json      export-ignore
 /package-lock.json export-ignore
-/webpack.config.js export-ignore
+/package.json      export-ignore
