@@ -9,8 +9,7 @@ load([
 	'Oblik\\Memsource\\DiffWalker' => 'DiffWalker.php',
 	'Oblik\\Memsource\\Exporter' => 'Exporter.php',
 	'Oblik\\Memsource\\Importer' => 'Importer.php',
-	'Oblik\\Memsource\\Service' => 'Service.php',
-	'Oblik\\Memsource\\Snapshot' => 'Snapshot.php'
+	'Oblik\\Memsource\\Service' => 'Service.php'
 ], __DIR__ . '/lib');
 
 function lang_map(string $code)
@@ -20,11 +19,20 @@ function lang_map(string $code)
 }
 
 App::plugin('oblik/memsource', [
-	'options' => require 'config/options.php',
 	'api' => [
-		'routes' => require 'config/api-routes.php'
+		'routes' => [
+			require 'config/routes/export.php',
+			require 'config/routes/import.php',
+			require 'config/routes/imports-entry.php',
+			require 'config/routes/imports.php',
+			require 'config/routes/picker-jobs.php',
+			require 'config/routes/picker-pages.php',
+			require 'config/routes/picker-projects.php',
+			require 'config/routes/picker-workflows.php'
+		]
 	],
 	'translations' => [
-		'en' => require 'config/translations-en.php'
-	]
+		'en' => require 'config/translations/en.php'
+	],
+	'options' => require 'config/options.php'
 ]);
