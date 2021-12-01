@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "e90c455b312205a625d13c9119950f5d",
+    "content-hash": "312da88f609c00fb29aa4904fa1f97d6",
     "packages": [
         {
             "name": "claviska/simpleimage",
@@ -595,114 +595,6 @@
                 "yml"
             ],
             "time": "2019-09-10T13:16:29+00:00"
-        },
-        {
-            "name": "oblik/kirby-json",
-            "version": "1.0.1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/OblikStudio/kirby-json.git",
-                "reference": "306e32d22bd45bf2635813293d5ba5a798a3f3ef"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/OblikStudio/kirby-json/zipball/306e32d22bd45bf2635813293d5ba5a798a3f3ef",
-                "reference": "306e32d22bd45bf2635813293d5ba5a798a3f3ef",
-                "shasum": ""
-            },
-            "require": {
-                "getkirby/composer-installer": "^1.1"
-            },
-            "type": "kirby-plugin",
-            "extra": {
-                "installer-name": "json"
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Hristiyan Dodov",
-                    "email": "h.dodov@gmail.com"
-                }
-            ],
-            "description": "JSON editor and field for Kirby.",
-            "time": "2019-09-25T05:10:48+00:00"
-        },
-        {
-            "name": "oblik/kirby-variables",
-            "version": "2.2.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/OblikStudio/kirby-variables.git",
-                "reference": "3c3d96e3a859f60bdf7caee6775855da94a1e037"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/OblikStudio/kirby-variables/zipball/3c3d96e3a859f60bdf7caee6775855da94a1e037",
-                "reference": "3c3d96e3a859f60bdf7caee6775855da94a1e037",
-                "shasum": ""
-            },
-            "require": {
-                "getkirby/composer-installer": "^1.1"
-            },
-            "require-dev": {
-                "oblik/kirby-tester": "^1.2",
-                "phpunit/phpunit": "^8.3"
-            },
-            "type": "kirby-plugin",
-            "extra": {
-                "installer-name": "variables"
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Hristiyan Dodov",
-                    "email": "h.dodov@gmail.com"
-                }
-            ],
-            "description": "Easy language variable management in YAML files for Kirby.",
-            "time": "2020-01-21T12:56:12+00:00"
-        },
-        {
-            "name": "oblik/kirby-variables-field",
-            "version": "1.2.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/OblikStudio/kirby-variables-field.git",
-                "reference": "5ec1a34d1534240c1ea9e64d14d5a927dadc61ed"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/OblikStudio/kirby-variables-field/zipball/5ec1a34d1534240c1ea9e64d14d5a927dadc61ed",
-                "reference": "5ec1a34d1534240c1ea9e64d14d5a927dadc61ed",
-                "shasum": ""
-            },
-            "require": {
-                "getkirby/composer-installer": "^1.1",
-                "oblik/kirby-json": "^1.0",
-                "oblik/kirby-variables": "^2.0"
-            },
-            "type": "kirby-plugin",
-            "extra": {
-                "installer-name": "variables-field"
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Hristiyan Dodov",
-                    "email": "h.dodov@gmail.com"
-                }
-            ],
-            "description": "Panel field that allows you to change language variables.",
-            "time": "2019-09-02T06:54:10+00:00"
         },
         {
             "name": "oblik/kirby-walker",
