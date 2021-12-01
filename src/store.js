@@ -20,6 +20,7 @@ export let store = {
 			}
 
 			state.screen = value;
+			localStorage.memsourceScreen = value;
 		},
 	},
 };

@@ -75,7 +75,7 @@ export default {
 		this.$store.registerModule("memsource", store);
 	},
 	created() {
-		this.screen = "Import";
+		this.screen = localStorage.memsourceScreen || "Export";
 	},
 };
 </script>
