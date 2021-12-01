@@ -45,6 +45,9 @@ class Service
 	{
 		return $this->request('auth/login', [
 			'method' => 'POST',
+			'headers' => [
+				'Content-Type' => 'application/json'
+			],
 			'data' => json_encode([
 				'userName' => option('oblik.memsource.login.username'),
 				'password' => option('oblik.memsource.login.password')
@@ -55,10 +58,8 @@ class Service
 	public function request(string $path, array $params = [])
 	{
 		$params = array_replace_recursive([
-			'method' => 'GET',
 			'headers' => [
-				'Authorization' => 'ApiToken ' . $this->token,
-				'Content-Type' => 'application/json'
+				'Authorization' => 'ApiToken ' . $this->token
 			]
 		], $params);
 
@@ -70,6 +71,18 @@ class Service
 		}
 
 		return $body;
+	}
+
+	public function getJobs(string $projectId, int $workflowLevel, array $options = [])
+	{
+		$query = http_build_query([
+			'workflowLevel' => $workflowLevel,
+			'pageNumber' => ($options['page'] ?? 1) - 1, // memsource pages start at 0
+			'pageSize' => $options['limit'] ?? 15,
+			'filename' => $options['search'] ?? null
+		]);
+
+		return $this->request("projects/$projectId/jobs?$query");
 	}
 
 	public function upload(string $projectId, string $filename)

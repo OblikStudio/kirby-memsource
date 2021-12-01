@@ -2,49 +2,35 @@
 
 namespace Oblik\Memsource;
 
-use Kirby\Http\Remote;
-
 return [
 	// Project and workflow level are passed as path parameters because the
 	// base <k-pages-field> has no option for additional GET parameters.
 	'pattern' => 'memsource/picker/projects/(:any)/workflows/(:any)/jobs',
 	'method' => 'GET',
-	'auth' => false,
 	'action' => function ($project, $workflowLevel) {
-		$page = (int)$this->requestQuery('page') - 1;
-		$page = $page >= 0 ? $page : 0;
+		// <k-pages-field> may request page=0 *or* page=1, depending on
+		// pagination, but both should return the first page.
+		$page = (int)$this->requestQuery('page');
+		$page = $page > 0 ? $page : 1;
 
-		$service = new Service();
-		$response = Remote::get(Service::API_URL . '/projects/' . $project . '/jobs', [
-			'method' => 'GET',
-			'data' => [
-				'pageSize' => 20,
-				'pageNumber' => $page,
-				'filename' => $this->requestQuery('search'),
-				'workflowLevel' => $workflowLevel
-			],
-			'headers' => [
-				'Authorization' => 'ApiToken ' . $service->token
-			]
+		$res = (new Service())->getJobs($project, $workflowLevel, [
+			'page' => $page,
+			'limit' => 15,
+			'search' => $this->requestQuery('search')
 		]);
 
-		$responseData = json_decode($response->content(), true);
-		$jobs = $responseData['content'] ?? [];
-
 		$data = [];
-
-		foreach ($jobs as $job) {
+		foreach ($res['content'] as $job) {
 			$data[] = [
 				'id' => $job['uid'],
-				'targetLang' => $job['targetLang'],
-				'info' => $job['status'],
+				'info' => strtolower($job['status']),
 				'name' => $job['filename'],
 				'text' => $job['filename'] . ' (' . $job['targetLang'] . ')',
 				'image' => true,
 				'icon' => [
 					'type' => 'text',
-					'back' => 'white',
-					'color' => $job['status'] === 'COMPLETED' ? 'green' : null
+					'color' => $job['status'] === 'COMPLETED' ? 'green' : null,
+					'back' => 'white'
 				]
 			];
 		}
@@ -52,9 +38,9 @@ return [
 		return [
 			'data' => $data,
 			'pagination' => [
-				'page' => $responseData['pageNumber'] + 1,
-				'limit' => $responseData['pageSize'],
-				'total' => $responseData['totalElements']
+				'page' => $res['pageNumber'] + 1, // kirby expects pages to start from 1
+				'limit' => $res['pageSize'],
+				'total' => $res['totalElements']
 			]
 		];
 	}
