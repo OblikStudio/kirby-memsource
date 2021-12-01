@@ -88,12 +88,23 @@ class Service
 	{
 		$query = http_build_query([
 			'workflowLevel' => $workflowLevel,
-			'pageNumber' => static::page($options['page'] ?? 1),
-			'pageSize' => $options['limit'] ?? 15,
-			'filename' => $options['search'] ?? null
+			'pageNumber' => static::page($options['page']),
+			'pageSize' => $options['limit'],
+			'filename' => $options['search']
 		]);
 
 		return $this->request("projects/$projectId/jobs?$query");
+	}
+
+	public function getProjects(array $options = [])
+	{
+		$query = http_build_query([
+			'pageNumber' => static::page($options['page']),
+			'pageSize' => $options['limit'],
+			'name' => $options['search']
+		]);
+
+		return $this->request("projects?$query");
 	}
 
 	public function upload(string $projectId, string $filename)

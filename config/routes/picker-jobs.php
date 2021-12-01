@@ -33,7 +33,9 @@ return [
 		return [
 			'data' => $data,
 			'pagination' => [
-				'page' => $res['pageNumber'] + 1, // kirby expects pages to start from 1
+				// Incremented with 1 because Memsource returns the page index
+				// (starting from 0), while Kirby expects pages to start from 1.
+				'page' => $res['pageNumber'] + 1,
 				'limit' => $res['pageSize'],
 				'total' => $res['totalElements']
 			]
