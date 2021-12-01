@@ -22,6 +22,17 @@ class Service
 		]
 	];
 
+	public static function page($input)
+	{
+		// <k-pages-field> may request page=0 *or* page=1, depending on
+		// pagination, but both should return the first page.
+		$page = (int)$input;
+		$page = $page > 0 ? $page : 1;
+
+		// Memsource pagination starts at 0.
+		return $page - 1;
+	}
+
 	public $token;
 
 	public function __construct()
@@ -77,7 +88,7 @@ class Service
 	{
 		$query = http_build_query([
 			'workflowLevel' => $workflowLevel,
-			'pageNumber' => ($options['page'] ?? 1) - 1, // memsource pages start at 0
+			'pageNumber' => static::page($options['page'] ?? 1),
 			'pageSize' => $options['limit'] ?? 15,
 			'filename' => $options['search'] ?? null
 		]);

@@ -8,13 +8,8 @@ return [
 	'pattern' => 'memsource/picker/projects/(:any)/workflows/(:any)/jobs',
 	'method' => 'GET',
 	'action' => function ($project, $workflowLevel) {
-		// <k-pages-field> may request page=0 *or* page=1, depending on
-		// pagination, but both should return the first page.
-		$page = (int)$this->requestQuery('page');
-		$page = $page > 0 ? $page : 1;
-
 		$res = (new Service())->getJobs($project, $workflowLevel, [
-			'page' => $page,
+			'page' => $this->requestQuery('page'),
 			'limit' => 15,
 			'search' => $this->requestQuery('search')
 		]);
