@@ -22,17 +22,17 @@
 </template>
 
 <script>
-import { store } from "./store";
-import Export from "./components/tabs/Export.vue";
-import Import from "./components/tabs/Import.vue";
-import History from "./components/tabs/History.vue";
-import Upload from "./components/tabs/Upload.vue";
+import { store } from "../store";
+import Export from "./Screens/Export.vue";
+import History from "./Screens/History.vue";
+import Import from "./Screens/Import.vue";
+import Upload from "./Screens/Upload.vue";
 
 export default {
 	components: {
 		Export,
-		Import,
 		History,
+		Import,
 		Upload,
 	},
 	data() {

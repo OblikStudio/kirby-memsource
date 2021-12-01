@@ -103,8 +103,6 @@
 </template>
 
 <script>
-import Stats from "../Stats.vue";
-
 function countObjectData(data) {
 	let stats = {
 		strings: 0,
@@ -131,9 +129,6 @@ function countObjectData(data) {
 }
 
 export default {
-	components: {
-		Stats,
-	},
 	data() {
 		return {
 			dataString: null,

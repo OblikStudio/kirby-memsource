@@ -22,7 +22,7 @@
 
 <script>
 import freeze from "deep-freeze-node";
-import ResultsDialog from "./ResultsDialog.vue";
+import ResultsDialog from "../Util/ResultsDialog.vue";
 
 export default {
 	components: {

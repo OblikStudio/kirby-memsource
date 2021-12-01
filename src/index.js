@@ -1,4 +1,4 @@
-import App from "./App.vue";
+import App from "./components/App.vue";
 
 panel.plugin("oblik/memsource", {
 	views: {
