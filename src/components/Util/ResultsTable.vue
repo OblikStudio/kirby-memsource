@@ -26,7 +26,12 @@
 				</td>
 				<td class="k-structure-table-column ms-results-table-old">
 					<p class="k-structure-table-text">
-						{{ change.$old }}
+						<template v-if="isChangeEmpty(change.$old)">
+							<i>empty</i>
+						</template>
+						<template v-else>
+							{{ change.$old }}
+						</template>
 					</p>
 				</td>
 			</tr>
@@ -35,7 +40,12 @@
 			<tr>
 				<td class="k-structure-table-column ms-results-table-new">
 					<p class="k-structure-table-text">
-						{{ change.$new }}
+						<template v-if="isChangeEmpty(change.$new)">
+							<i>empty</i>
+						</template>
+						<template v-else>
+							{{ change.$new }}
+						</template>
 					</p>
 				</td>
 			</tr>
@@ -48,6 +58,11 @@ export default {
 	props: {
 		data: Object,
 	},
+	methods: {
+		isChangeEmpty(change) {
+			return !(typeof change === "string" ? change.trim() : change);
+		},
+	},
 };
 </script>
 
@@ -55,6 +70,11 @@ export default {
 .ms-results-table {
 	box-shadow: none;
 	border: 1px solid #ccc;
+}
+
+.ms-results-table i {
+	font-style: italic;
+	color: var(--color-text-light);
 }
 
 .ms-results-table th:nth-child(2) {
