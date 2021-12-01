@@ -10,7 +10,7 @@ class Service
 {
 	public const API_URL = 'https://cloud.memsource.com/web/api2/v1';
 	public const IMPORT_SETTINGS = [
-		'name' => 'kirby-1',
+		'name' => 'kirby',
 		'fileImportSettings' => [
 			'inputCharset' => 'UTF-8',
 			'outputCharset' => 'UTF-8',

@@ -90,6 +90,7 @@
 			<k-column>
 				<k-text-field
 					v-model="jobName"
+					after=".json"
 					:label="$t('memsource.label.job')"
 				/>
 			</k-column>
@@ -137,11 +138,21 @@ function countObjectData(data) {
 
 export default {
 	data() {
+		let domain = window.location.hostname.replace(".", "-");
+		let date = new Date().toLocaleDateString("en", {
+			day: "2-digit",
+			month: "short",
+			year: "2-digit",
+		});
+		let jobName = `${domain}-${date}`
+			.toLowerCase()
+			.replace(/[^a-z0-9]+/g, "-");
+
 		return {
 			dataString: null,
 			project: [],
 			selectedLangs: [],
-			jobName: null,
+			jobName,
 		};
 	},
 	computed: {
@@ -211,29 +222,22 @@ export default {
 			return !data || Object.keys(data).length === 0;
 		},
 		upload() {
-			this.$alert(this.$t("upload.progress"));
-
-			this.$store
-				.dispatch("memsource/memsource", {
-					url: `/upload/${this.project.uid}/${this.jobName}.json`,
-					method: "post",
-					headers: {
-						"Memsource-Langs": JSON.stringify(this.selectedLangs),
-					},
-					data: this.data,
+			this.$api
+				.post("memsource/upload", {
+					projectId: this.selectedProject.id,
+					targetLangs: this.selectedLangs,
+					jobName: this.jobName,
+					jobData: this.data,
 				})
-				.then((response) => {
-					let jobs = response.data && response.data.jobs;
-					if (jobs && jobs.length) {
-						this.$alert(
-							this.$t("memsource.info.created_jobs", {
-								count: jobs.length,
-							}),
-							"positive"
-						);
-					}
+				.then((res) => {
+					this.$store.dispatch(
+						"notification/success",
+						`Successfully created ${res.jobs.length} jobs!`
+					);
 				})
-				.catch(this.$alert);
+				.catch((error) => {
+					this.$store.dispatch("notification/error", error);
+				});
 		},
 		downloadExport() {
 			let part = JSON.stringify(this.data, null, 2);
