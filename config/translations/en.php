@@ -31,5 +31,7 @@ return [
 	'memsource.label.filter_jobs' => 'Filter jobs',
 	'memsource.label.job' => 'Job Name',
 	'memsource.help.snapshot' => 'Compare current site data with a snapshot to export only the differences.',
-	'memsource.help.pages' => 'When set, only pages containing the given string will be exported.'
+	'memsource.help.pages' => 'When set, only pages containing the given string will be exported.',
+
+	'error.memsource.exportEmpty' => 'Nothing to export'
 ];
