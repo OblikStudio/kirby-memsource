@@ -107,6 +107,11 @@ class Service
 		return $this->request("projects?$query");
 	}
 
+	public function getWorkflowSteps(string $projectId)
+	{
+		return $this->request("projects/$projectId/workflowSteps");
+	}
+
 	public function upload(string $projectId, string $filename)
 	{
 		$response = Remote::request(self::API_URL . '/importSettings?token=' . $this->token, [
