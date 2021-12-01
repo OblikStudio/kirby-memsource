@@ -39,9 +39,14 @@ export default {
 		return {
 			tabs: [
 				{
-					icon: "upload",
+					icon: "share",
 					text: "Export",
 					component: "Export",
+				},
+				{
+					icon: "upload",
+					text: "Upload",
+					component: "Upload",
 				},
 				{
 					icon: "download",

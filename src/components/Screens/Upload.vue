@@ -1,7 +1,7 @@
 <template>
 	<k-grid gutter="medium">
 		<k-column v-if="stats">
-			<ul class="k-system-info-box">
+			<ul class="k-system-info-box ms-edit-info">
 				<li>
 					<dl>
 						<dt>{{ $t("strings") }}</dt>
@@ -36,6 +36,13 @@
 					</k-button-group>
 				</li>
 			</ul>
+		</k-column>
+
+		<k-column v-if="checkDataEmpty(data)">
+			<k-box theme="notice">
+				The upload data is currently empty. You should export something
+				first.
+			</k-box>
 		</k-column>
 
 		<k-column>
@@ -182,7 +189,9 @@ export default {
 	},
 	methods: {
 		editorOpen() {
-			this.dataString = JSON.stringify(this.data, undefined, 2);
+			this.dataString = !this.checkDataEmpty(this.data)
+				? JSON.stringify(this.data, undefined, 2)
+				: "";
 			this.$refs.editDialog.open();
 		},
 		editorSubmit() {
@@ -192,12 +201,14 @@ export default {
 				data = JSON.parse(this.dataString);
 			} catch (e) {
 				this.$refs.editDialog.error("Invalid JSON.");
+				return;
 			}
 
-			if (data !== null) {
-				this.$store.commit("memsource/SET_EXPORT", data);
-				this.$refs.editDialog.close();
-			}
+			this.$store.commit("memsource/SET_EXPORT", data);
+			this.$refs.editDialog.close();
+		},
+		checkDataEmpty(data) {
+			return !data || Object.keys(data).length === 0;
 		},
 		upload() {
 			this.$alert(this.$t("upload.progress"));
@@ -248,12 +259,13 @@ export default {
 </script>
 
 <style>
-.k-system-info-box {
+.ms-edit-info {
 	text-align: center;
 }
 
-.ms-edit-dialog {
-	width: 100% !important;
-	max-width: 75vw;
+@media screen and (min-width: 22rem) {
+	.ms-edit-dialog[data-size="default"] {
+		width: 55rem;
+	}
 }
 </style>
