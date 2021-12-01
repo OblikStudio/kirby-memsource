@@ -66,9 +66,11 @@
 				<k-box v-else-if="data.importChanges > 0" theme="notice">
 					Couldn't load import changes.
 				</k-box>
-				<k-box v-else theme="negative">
-					{{ error || "Unknown error." }}
-				</k-box>
+				<k-box
+					v-else
+					theme="negative"
+					:text="error || 'Unknown error.'"
+				></k-box>
 			</k-column>
 		</k-grid>
 	</k-dialog>
