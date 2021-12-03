@@ -10,8 +10,8 @@ return [
 	'action' => function () {
 		$req = kirby()->request()->data();
 		$exportSite = !empty($req['site']);
-		$exportPages = explode(',', $req['pages']);
-		$exportFiles = $req['files'];
+		$exportPages = explode(',', $req['pages'] ?? '');
+		$exportFiles = $req['files'] ?? 'off';
 
 		$exporter = new Exporter([
 			'lang' => kirby()->defaultLanguage()->code(),
