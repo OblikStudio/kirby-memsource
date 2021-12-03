@@ -8,5 +8,12 @@ return [
 	'login' => [
 		'username' => getenv('MEMSOURCE_USERNAME'),
 		'password' => getenv('MEMSOURCE_PASSWORD')
+	],
+	'importSettings' => [
+		'json' => [
+			'htmlSubFilter' => true,
+			'tagRegexp' => '\{\{[^}]+\}\}',
+			'excludeKeyRegexp' => '.*\/id$'
+		]
 	]
 ];

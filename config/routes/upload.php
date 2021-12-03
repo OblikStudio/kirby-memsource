@@ -11,28 +11,31 @@ return [
 		$jobName = $req['jobName'];
 
 		$service = new Service();
-		$settingsName = Service::IMPORT_SETTINGS['name'];
-		$settings = $service->request("importSettings?name={$settingsName}")['content'][0] ?? null;
+		$name = Service::IMPORT_SETTINGS_NAME;
+		$entry = $service->request("importSettings?name={$name}")['content'][0] ?? null;
 
-		if (!$settings) {
-			$settings = $service->request('importSettings', [
-				'method' => 'POST',
-				'headers' => [
-					'Content-Type' => 'application/json'
-				],
-				'data' => json_encode(Service::IMPORT_SETTINGS)
-			]);
-		} else {
-			$settingsData = array_merge([
-				'uid' => $settings['uid']
-			], Service::IMPORT_SETTINGS);
-
+		if ($entry) {
 			$settings = $service->request('importSettings', [
 				'method' => 'PUT',
 				'headers' => [
 					'Content-Type' => 'application/json'
 				],
-				'data' => json_encode($settingsData)
+				'data' => json_encode([
+					'uid' => $entry['uid'],
+					'name' => Service::IMPORT_SETTINGS_NAME,
+					'fileImportSettings' => option('oblik.memsource.importSettings')
+				])
+			]);
+		} else {
+			$settings = $service->request('importSettings', [
+				'method' => 'POST',
+				'headers' => [
+					'Content-Type' => 'application/json'
+				],
+				'data' => json_encode([
+					'name' => Service::IMPORT_SETTINGS_NAME,
+					'fileImportSettings' => option('oblik.memsource.importSettings')
+				])
 			]);
 		}
 
@@ -43,7 +46,7 @@ return [
 			]
 		];
 
-		return (new Service())->request("projects/$projectId/jobs", [
+		return $service->request("projects/$projectId/jobs", [
 			'method' => 'POST',
 			'data' => json_encode($req['jobData'], JSON_UNESCAPED_UNICODE),
 			'headers' => [
