@@ -29,7 +29,8 @@ App::plugin('oblik/memsource', [
 			require 'config/routes/picker-pages.php',
 			require 'config/routes/picker-projects.php',
 			require 'config/routes/picker-workflows.php',
-			require 'config/routes/upload.php'
+			require 'config/routes/upload.php',
+			require 'config/routes/verify-languages.php'
 		]
 	],
 	'translations' => [

@@ -1,5 +1,13 @@
 <template>
 	<k-grid gutter="medium">
+		<k-column>
+			<k-text-field
+				v-model="jobName"
+				after=".json"
+				:label="$t('memsource.label.job')"
+			/>
+		</k-column>
+
 		<k-column v-if="stats">
 			<ul class="k-system-info-box">
 				<li>
@@ -24,6 +32,10 @@
 					<k-button-group>
 						<k-button icon="edit" @click="editorOpen">
 							Edit
+						</k-button>
+
+						<k-button icon="download" @click="downloadExport">
+							{{ $t("file") }}
 						</k-button>
 
 						<k-dialog
@@ -64,7 +76,7 @@
 		</k-column>
 
 		<template v-if="selectedProject">
-			<k-column v-if="missingProjectLangs && missingProjectLangs.length">
+			<k-column v-if="missingProjectLangs.length">
 				<k-box theme="notice">
 					The selected project does not target the following site
 					languages:
@@ -74,7 +86,7 @@
 				</k-box>
 			</k-column>
 
-			<k-column v-if="missingSiteLangs && missingSiteLangs.length">
+			<k-column v-if="missingSiteLangs.length">
 				<k-box theme="notice">
 					The selected project targets languages not yet added to the
 					site:
@@ -84,33 +96,31 @@
 				</k-box>
 			</k-column>
 
-			<k-column>
-				<k-checkboxes-field
-					v-model="selectedLangs"
-					:label="$t('memsource.label.target_langs')"
-					:options="availableLangs"
-					:columns="Math.min(availableLangs.length, 7)"
-				/>
-			</k-column>
+			<template v-if="validTargetLangsOptions.length">
+				<k-column>
+					<k-checkboxes-field
+						v-model="selectedTargetLangs"
+						:label="$t('memsource.label.target_langs')"
+						:options="validTargetLangsOptions"
+						:columns="Math.min(validTargetLangsOptions.length, 7)"
+					/>
+				</k-column>
 
-			<k-column>
-				<k-text-field
-					v-model="jobName"
-					after=".json"
-					:label="$t('memsource.label.job')"
-				/>
-			</k-column>
-
-			<k-column>
-				<k-button-group align="center">
-					<k-button icon="download" @click="downloadExport">
-						{{ $t("file") }}
-					</k-button>
-
-					<k-button theme="positive" icon="upload" @click="upload">
-						{{ $t("upload") }}
-					</k-button>
-				</k-button-group>
+				<k-column>
+					<k-button-group align="center">
+						<k-button
+							theme="positive"
+							icon="upload"
+							:disabled="!selectedTargetLangs.length"
+							@click="upload"
+						>
+							{{ $t("upload") }}
+						</k-button>
+					</k-button-group>
+				</k-column>
+			</template>
+			<k-column v-else-if="!isLoadingLangs">
+				<k-box theme="negative">No valid target langs.</k-box>
 			</k-column>
 		</template>
 	</k-grid>
@@ -155,9 +165,13 @@ export default {
 			.replace(/[^a-z0-9]+/g, "-");
 
 		return {
+			isLoadingLangs: false,
 			dataString: null,
 			project: [],
-			selectedLangs: [],
+			validTargetLangs: [],
+			missingSiteLangs: [],
+			missingProjectLangs: [],
+			selectedTargetLangs: [],
 			jobName,
 		};
 	},
@@ -182,34 +196,8 @@ export default {
 		selectedProject() {
 			return this.project?.[0];
 		},
-		siteLangs() {
-			return this.$store.state.languages.all;
-		},
-		projectLangs() {
-			return this.selectedProject?.targetLangs;
-		},
-		missingSiteLangs() {
-			return (
-				this.selectedProject &&
-				this.projectLangs?.filter((code) => {
-					return !this.siteLangs.find((lang) => lang.code === code);
-				})
-			);
-		},
-		missingProjectLangs() {
-			return (
-				this.selectedProject &&
-				this.siteLangs
-					?.filter((lang) => {
-						return !this.projectLangs?.find(
-							(code) => code === lang.code
-						);
-					})
-					.map((lang) => lang.code)
-			);
-		},
-		availableLangs() {
-			return this.projectLangs?.map((code) => ({
+		validTargetLangsOptions() {
+			return this.validTargetLangs.map((code) => ({
 				text: code.toUpperCase(),
 				value: code,
 			}));
@@ -242,7 +230,7 @@ export default {
 			this.$api
 				.post("memsource/upload", {
 					projectId: this.selectedProject.id,
-					targetLangs: this.selectedLangs,
+					targetLangs: this.selectedTargetLangs,
 					jobName: this.jobName,
 					jobData: this.data,
 				})
@@ -271,9 +259,33 @@ export default {
 	},
 	watch: {
 		selectedProject(value) {
-			if (value) {
-				this.selectedLangs = [...this.projectLangs];
+			this.validTargetLangs = [];
+			this.missingSiteLangs = [];
+			this.missingProjectLangs = [];
+
+			if (!value) {
+				return;
 			}
+
+			this.isLoadingLangs = true;
+			this.$api
+				.get("memsource/verify-languages", {
+					targetLangs: value.targetLangs,
+				})
+				.then((data) => {
+					this.validTargetLangs = data.validTargetLangs;
+					this.missingSiteLangs = data.missingSiteLangs;
+					this.missingProjectLangs = data.missingProjectLangs;
+				})
+				.catch((error) => {
+					this.$store.dispatch("notification/error", error);
+				})
+				.then(() => {
+					this.isLoadingLangs = false;
+				});
+		},
+		validTargetLangs(value) {
+			this.selectedTargetLangs = [...value];
 		},
 	},
 };
