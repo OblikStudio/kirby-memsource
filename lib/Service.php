@@ -98,4 +98,62 @@ class Service
 	{
 		return $this->request("projects/$projectId/workflowSteps");
 	}
+
+	public function getImportSettings()
+	{
+		$name = static::IMPORT_SETTINGS_NAME;
+		return $this->request("importSettings?name={$name}")['content'][0];
+	}
+
+	public function createImportSettings()
+	{
+		return $this->request('importSettings', [
+			'method' => 'POST',
+			'headers' => [
+				'Content-Type' => 'application/json'
+			],
+			'data' => json_encode([
+				'name' => static::IMPORT_SETTINGS_NAME,
+				'fileImportSettings' => option('oblik.memsource.importSettings')
+			])
+		]);
+	}
+
+	public function updateImportSettings(string $settingsId)
+	{
+		return $this->request('importSettings', [
+			'method' => 'PUT',
+			'headers' => [
+				'Content-Type' => 'application/json'
+			],
+			'data' => json_encode([
+				'uid' => $settingsId,
+				'name' => static::IMPORT_SETTINGS_NAME,
+				'fileImportSettings' => option('oblik.memsource.importSettings')
+			])
+		]);
+	}
+
+	public function postJobs(array $input)
+	{
+		$memsourceHeader = [
+			'targetLangs' => $input['targetLangs'],
+			'importSettings' => [
+				'uid' => $input['settingsId']
+			]
+		];
+
+		$projectId = $input['projectId'];
+		$jobName = $input['jobName'];
+
+		return $this->request("projects/$projectId/jobs", [
+			'method' => 'POST',
+			'data' => json_encode($input['jobData'], JSON_UNESCAPED_UNICODE),
+			'headers' => [
+				'Memsource' => json_encode($memsourceHeader),
+				'Content-Type' => 'application/octet-stream',
+				'Content-Disposition' => "filename*=UTF-8''{$jobName}.json"
+			]
+		]);
+	}
 }
