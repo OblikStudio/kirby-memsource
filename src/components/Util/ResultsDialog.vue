@@ -29,6 +29,12 @@
 					</li>
 					<li>
 						<dl>
+							<dt>Models</dt>
+							<dd>{{ statsModels }}</dd>
+						</dl>
+					</li>
+					<li>
+						<dl>
 							<dt>Changes</dt>
 							<dd>{{ statsChanges }}</dd>
 						</dl>
@@ -146,6 +152,9 @@ export default {
 		},
 		statsLang() {
 			return this.data.jobLang?.toUpperCase() || "?";
+		},
+		statsModels() {
+			return this.modelsOptions.length;
 		},
 		statsChanges() {
 			let c = this.data.importChanges;
