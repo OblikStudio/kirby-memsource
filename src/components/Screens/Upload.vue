@@ -4,6 +4,12 @@
 			<ul class="k-system-info-box">
 				<li>
 					<dl>
+						<dt>Models</dt>
+						<dd>{{ modelsCount.toLocaleString() }}</dd>
+					</dl>
+				</li>
+				<li>
+					<dl>
 						<dt>{{ $t("strings") }}</dt>
 						<dd>{{ stats.strings.toLocaleString() }}</dd>
 					</dl>
@@ -161,6 +167,17 @@ export default {
 		},
 		stats() {
 			return countObjectData(this.data);
+		},
+		modelsCount() {
+			let result = 0;
+			let pages = this.data?.pages;
+			let files = this.data?.files;
+
+			if (this.data?.site) result++;
+			if (pages) result += Object.keys(pages).length;
+			if (files) result += Object.keys(files).length;
+
+			return result;
 		},
 		selectedProject() {
 			return this.project?.[0];
