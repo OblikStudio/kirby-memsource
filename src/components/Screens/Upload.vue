@@ -89,7 +89,7 @@
 					v-model="selectedLangs"
 					:label="$t('memsource.label.target_langs')"
 					:options="availableLangs"
-					:columns="6"
+					:columns="Math.min(availableLangs.length, 7)"
 				/>
 			</k-column>
 
