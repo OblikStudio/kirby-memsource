@@ -221,6 +221,5 @@ export default {
 .ms-results-dialog-stats-icon {
 	display: flex;
 	align-items: center;
-	justify-content: center;
 }
 </style>

@@ -1,7 +1,7 @@
 <template>
 	<k-grid gutter="medium">
 		<k-column v-if="stats">
-			<ul class="k-system-info-box ms-edit-info">
+			<ul class="k-system-info-box">
 				<li>
 					<dl>
 						<dt>{{ $t("strings") }}</dt>
@@ -263,10 +263,6 @@ export default {
 </script>
 
 <style>
-.ms-edit-info {
-	text-align: center;
-}
-
 @media screen and (min-width: 22rem) {
 	.ms-edit-dialog[data-size="default"] {
 		width: 55rem;
