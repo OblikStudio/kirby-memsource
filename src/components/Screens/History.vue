@@ -1,6 +1,6 @@
 <template>
 	<k-grid gutter="medium">
-		<k-column>
+		<k-column v-if="importListItems.length">
 			<k-list :items="importListItems" />
 
 			<k-pagination
@@ -17,6 +17,9 @@
 				@submit="$refs.dialog.close()"
 			/>
 		</k-column>
+		<k-column v-else-if="isLoaded">
+			<k-box theme="info">No imports recorded.</k-box>
+		</k-column>
 	</k-grid>
 </template>
 
@@ -30,6 +33,7 @@ export default {
 	},
 	data() {
 		return {
+			isLoaded: false,
 			importEntries: [],
 			pagination: undefined,
 			importData: null,
@@ -87,6 +91,9 @@ export default {
 				})
 				.catch((error) => {
 					this.$store.dispatch("notification/error", error);
+				})
+				.then(() => {
+					this.isLoaded = true;
 				});
 		},
 		openImportResults(importFile) {
