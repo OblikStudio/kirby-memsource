@@ -70,6 +70,26 @@ class DiffWalker extends Exporter
 		}
 	}
 
+	protected function walkFieldEditorBlock($block, $context)
+	{
+		$block = parent::walkFieldEditorBlock($block, $context);
+
+		$value = $block['content'] ?? null;
+		$oldValue = $context['translation']['content'] ?? $value;
+		$newValue = $context['input']['content'] ?? $oldValue;
+
+		if ($newValue !== $oldValue) {
+			$this->changes++;
+
+			$block['content'] = [
+				'$new' => $newValue,
+				'$old' => $oldValue
+			];
+		}
+
+		return $block;
+	}
+
 	protected function walkText(string $text, $context)
 	{
 		// Override base walkText() because applying options such as
