@@ -10,9 +10,17 @@ class ApiException extends Exception
 	{
 		parent::__construct([
 			'key' => 'memsource.api',
-			'fallback' => $data['errorDescription'] ?? null,
 			'httpCode' => 500,
 			'details' => $data
 		]);
+
+		/**
+		 * Memsource could respond with a message containing `{` and `}`, which
+		 * Kirby would interpret as a template string, so we assign the error
+		 * message here, instead of passing it to the constructor.
+		 */
+		if (!empty($data['errorDescription'])) {
+			$this->message = $data['errorDescription'];
+		}
 	}
 }
