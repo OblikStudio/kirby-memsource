@@ -14,7 +14,6 @@ return [
 		$exportFiles = $req['files'] ?? 'off';
 
 		$exporter = new Exporter([
-			'lang' => kirby()->defaultLanguage()->code(),
 			'options' => option('oblik.memsource.walker')
 		]);
 

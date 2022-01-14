@@ -30,8 +30,7 @@ class Importer
 		$this->lang = $lang;
 
 		$this->importWalker = new WalkerImporter([
-			'options' => option('oblik.memsource.walker'),
-			'lang' => kirby()->defaultLanguage()->code()
+			'options' => option('oblik.memsource.walker')
 		]);
 
 		$this->diffWalker = new DiffWalker([

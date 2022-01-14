@@ -15,5 +15,6 @@ return [
 			'tagRegexp' => '\{\{[^}]+\}\}',
 			'excludeKeyRegexp' => '.*\/id$'
 		]
-	]
+	],
+	'walker' => []
 ];
