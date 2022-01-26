@@ -5,7 +5,6 @@ namespace Oblik\Memsource;
 use Kirby\Cms\File;
 use Kirby\Cms\Page;
 use Kirby\Cms\Pages;
-use Oblik\Walker\Walker\Exporter as WalkerExporter;
 
 class Exporter
 {
@@ -14,13 +13,13 @@ class Exporter
 	public $files = [];
 
 	/**
-	 * @var WalkerExporter
+	 * @var ExportWalker
 	 */
 	public $walker;
 
 	public function __construct(array $context = [])
 	{
-		$this->walker = new WalkerExporter($context);
+		$this->walker = new ExportWalker($context);
 	}
 
 	public function exportSite()

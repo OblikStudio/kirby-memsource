@@ -8,6 +8,7 @@ load([
 	'Oblik\\Memsource\\ApiException' => 'ApiException.php',
 	'Oblik\\Memsource\\DiffWalker' => 'DiffWalker.php',
 	'Oblik\\Memsource\\Exporter' => 'Exporter.php',
+	'Oblik\\Memsource\\ExportWalker' => 'ExportWalker.php',
 	'Oblik\\Memsource\\Importer' => 'Importer.php',
 	'Oblik\\Memsource\\Service' => 'Service.php'
 ], __DIR__ . '/lib');
