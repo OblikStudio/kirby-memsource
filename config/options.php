@@ -13,7 +13,8 @@ return [
 		'json' => [
 			'htmlSubFilter' => true,
 			'tagRegexp' => '\{\{[^}]+\}\}',
-			'excludeKeyRegexp' => '.*\/id$'
+			'excludeKeyRegexp' => '.*\/(id|\$note)$',
+			'contextNotePath' => '../$note'
 		]
 	],
 	'walker' => []
