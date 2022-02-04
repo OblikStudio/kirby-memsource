@@ -3,7 +3,6 @@
 namespace Oblik\Memsource;
 
 use Kirby\Cms\ModelWithContent;
-use Oblik\Walker\Walker\Importer as WalkerImporter;
 
 class Importer
 {
@@ -16,7 +15,7 @@ class Importer
 	protected $queue = [];
 
 	/**
-	 * @var WalkerImporter
+	 * @var ImportWalker
 	 */
 	protected $importWalker;
 
@@ -29,7 +28,7 @@ class Importer
 	{
 		$this->lang = $lang;
 
-		$this->importWalker = new WalkerImporter([
+		$this->importWalker = new ImportWalker([
 			'options' => option('oblik.memsource.walker')
 		]);
 
