@@ -12,7 +12,7 @@ return [
 	'importSettings' => [
 		'json' => [
 			'htmlSubFilter' => true,
-			'tagRegexp' => '\{\{[^}]+\}\}',
+			'tagRegexp' => '\{\{?[^}]+\}?\}',
 			'excludeKeyRegexp' => '.*\/(id|\$note)$',
 			'contextNotePath' => '../$note'
 		]
