@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "312da88f609c00fb29aa4904fa1f97d6",
+    "content-hash": "0d0dd2ea08f8f3adba7f9adbdea37d1d",
     "packages": [
         {
             "name": "claviska/simpleimage",
@@ -598,11 +598,17 @@
         },
         {
             "name": "oblik/kirby-walker",
-            "version": "dev-master",
+            "version": "3.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/OblikStudio/kirby-walker.git",
+                "reference": "7a6da1c69caa277689f0b2c0c510a2cff3e751f4"
+            },
             "dist": {
-                "type": "path",
-                "url": "../kirby-walker",
-                "reference": "bb15a1f76e550e1032653556e0390ed807ef8a51"
+                "type": "zip",
+                "url": "https://api.github.com/repos/OblikStudio/kirby-walker/zipball/7a6da1c69caa277689f0b2c0c510a2cff3e751f4",
+                "reference": "7a6da1c69caa277689f0b2c0c510a2cff3e751f4",
+                "shasum": ""
             },
             "require": {
                 "getkirby/cms": "^3.4",
@@ -611,37 +617,43 @@
             },
             "require-dev": {
                 "getkirby/editor": "^1.0",
-                "oblik/kirby-variables": "^2.0",
+                "oblik/kirby-link-field": "^3.0",
                 "phpunit/phpunit": "^8"
             },
             "type": "kirby-plugin",
             "extra": {
                 "installer-name": "walker"
             },
-            "autoload": {
-                "psr-4": {
-                    "Oblik\\Walker\\": "src/"
-                }
-            },
-            "scripts": {
-                "test": [
-                    "phpunit"
-                ]
-            },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
             "authors": [
                 {
+                    "name": "Oblik Studio",
+                    "email": "hello@oblik.studio",
+                    "homepage": "https://oblik.studio/"
+                },
+                {
                     "name": "Hristiyan Dodov",
-                    "email": "h.dodov@gmail.com",
-                    "homepage": "https://dodov.me"
+                    "email": "hello@dodov.dev",
+                    "homepage": "https://dodov.dev/"
                 }
             ],
-            "description": "Kirby plugin for exporting, importing, and iterating over site content.",
-            "transport-options": {
-                "relative": true
-            }
+            "description": "Kirby 3 plugin for exporting, importing, and iterating over site content.",
+            "keywords": [
+                "export",
+                "import",
+                "kirby",
+                "kirby-plugin",
+                "traverse",
+                "walk"
+            ],
+            "support": {
+                "issues": "https://github.com/OblikStudio/kirby-walker/issues",
+                "source": "https://github.com/OblikStudio/kirby-walker"
+            },
+            "time": "2022-10-06T10:18:00+00:00"
         },
         {
             "name": "phpmailer/phpmailer",
@@ -903,9 +915,7 @@
     "packages-dev": [],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": {
-        "oblik/kirby-walker": 20
-    },
+    "stability-flags": [],
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": [],

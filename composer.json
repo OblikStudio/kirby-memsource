@@ -1,25 +1,40 @@
 {
     "name": "oblik/kirby-memsource",
-    "description": "Kirby integration for the Memsource TMS service.",
-    "type": "kirby-plugin",
+    "description": "Kirby integration for the Phrase (formerly Memsource) TMS service.",
     "license": "MIT",
+    "version": "2.0.0",
+    "type": "kirby-plugin",
+    "keywords": [
+        "kirby",
+        "kirby-plugin",
+        "memsource",
+        "phrase",
+        "tms",
+        "translation",
+        "localization",
+        "export",
+        "import"
+    ],
     "authors": [
         {
-            "name": "Hristiyan Dodov",
-            "email": "h.dodov@gmail.com",
-            "homepage": "https://dodov.me"
-        }
-    ],
-    "repositories": [
+            "name": "Oblik Studio",
+            "email": "hello@oblik.studio",
+            "homepage": "https://oblik.studio/"
+        },
         {
-            "type": "path",
-            "url": "../kirby-walker"
+            "name": "Hristiyan Dodov",
+            "email": "hello@dodov.dev",
+            "homepage": "https://dodov.dev/"
         }
     ],
+    "support": {
+        "issues": "https://github.com/OblikStudio/kirby-memsource/issues",
+        "source": "https://github.com/OblikStudio/kirby-memsource"
+    },
     "require": {
         "getkirby/cms": "^3.5",
         "getkirby/composer-installer": "^1.1",
-        "oblik/kirby-walker": "dev-master"
+        "oblik/kirby-walker": "3.0.0"
     },
     "extra": {
         "installer-name": "memsource"
