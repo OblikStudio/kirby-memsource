@@ -106,6 +106,35 @@ export default {
 					this.$store.dispatch("notification/error", error);
 				});
 		},
+		storeSettings() {
+			const { exportSite, exportPages, exportFiles } = this;
+			localStorage.memsourceExportSettings = JSON.stringify({
+				exportSite,
+				exportPages,
+				exportFiles,
+			});
+		},
+	},
+	watch: {
+		exportSite() {
+			this.storeSettings();
+		},
+		exportPages() {
+			this.storeSettings();
+		},
+		exportFiles() {
+			this.storeSettings();
+		},
+	},
+	created() {
+		if (!localStorage.memsourceExportSettings) {
+			return;
+		}
+
+		const data = JSON.parse(localStorage.memsourceExportSettings);
+		this.exportSite = data.exportSite;
+		this.exportPages = data.exportPages;
+		this.exportFiles = data.exportFiles;
 	},
 };
 </script>
