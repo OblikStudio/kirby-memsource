@@ -29,7 +29,7 @@ class DiffWalker extends Exporter
 		$translation = $context['translation'] ?? null;
 
 		if (is_array($translation)) {
-			$context['translation'] = $this->findMatchingEntry($key, $translation, $context);
+			$context['translation'] = $this->findMatchingEntry($strategy, $key, $translation);
 		}
 
 		return $context;
