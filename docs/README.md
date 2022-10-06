@@ -4,18 +4,18 @@ This plugin allows you to translate your entire site content in the powerful TMS
 
 -   Create Memsource jobs with great control over what's exported
 -   Import Memsource jobs with reports for what has changed
--   Functionality to capture the state of your site and use it as a reference so you can later export only the differences
 -   Great control over the exported format of fields via [kirby-walker](https://github.com/OblikStudio/kirby-walker)
--   Functionality to translate language variables via [kirby-variables](https://github.com/OblikStudio/kirby-variables)
 -   Support for the [Kirby Editor](https://github.com/getkirby/editor)
 
 | Exporting Content          | Importing Translations     |
 | -------------------------- | -------------------------- |
 | ![export demo](export.gif) | ![import demo](import.gif) |
 
+**Note:** Currently does not support Kirby `3.6` and above.
+
 ## Installation
 
-With [Composer](https://packagist.org/packages/oblik/kirby-memsource):
+With Composer from [oblik/kirby-memsource](https://packagist.org/packages/oblik/kirby-memsource) on Packagist:
 
 ```
 composer require oblik/kirby-memsource
@@ -23,31 +23,92 @@ composer require oblik/kirby-memsource
 
 [Sign up](https://cloud.memsource.com/web/organization/signup?e=DEVELOPER) for a developer account in Memsource.
 
-## Usage
+## Context notes
 
-You can specify how each filed type should be exported for translation. For example, if you have a field formatted in YAML, you can specify that YAML should be parsed on export and encoded on import like this:
+You can specify comments to aid translators by adding them in the blueprint:
 
 ```yml
 fields:
-    data:
-        type: myfield
-        walker:
-            serialize:
-                yaml: true
+    heading:
+        type: text
+        memsource:
+            note: This is the title of the page.
 ```
 
-If you don't want to specify that for each occurrence of the `myfield` field type, use _config.php_:
+When exported, the JSON will look like this:
+
+```json
+{
+    "pages": {
+        "home": {
+            "heading": {
+                "$value": "Hello World!",
+                "$note": "This is the title of the page."
+            }
+        }
+    }
+}
+```
+
+Then, you can configure Memsource's [context note functionality](https://support.phrase.com/hc/en-us/articles/5709700187292) to trigger on `$note` keys.
+
+## Settings
+
+You can configure the plugin in your `site/config.php`:
 
 ```php
 return [
-    'oblik.memsource.fields' => [
-        'myfield' => [
-            'serialize' => [
-                'yaml' => true
-            ]
+    'oblik.memsource' => [
+        // settings…
+    ]
+];
+```
+
+### Credentials
+
+Add your Memsource account credentials:
+
+```php
+return [
+    'oblik.memsource' => [
+        'login' => [
+			'username' => 'john',
+			'password' => '1234'
+		]
+    ]
+];
+```
+
+### Remove `<br>` tags
+
+You might want to put `<br>` to force text to break at specific positions in order to achieve a certain layout effect. This is pretty much impossible to be achieved in translations because the text will have different word length and overall length.
+
+For this reason, you might want to remove `<br>` tags from your exports:
+
+```php
+return [
+    'oblik.memsource' => [
+        'walker' => [
+            'removeBrTags' => true
         ]
     ]
 ];
 ```
 
-For more information on that, refer to the [kirby-walker](https://github.com/OblikStudio/kirby-walker#field-settings) documentation.
+### Dynamic context notes
+
+You may generate context notes on the fly:
+
+```php
+return [
+    'oblik.memsource' => [
+		'walker' => [
+			'contextNote' => function ($value) {
+				if (strpos($value, '{{ year }}') !== false) {
+                    return "{{ year }} is the current calendar year.";
+                }
+			}
+		]
+    ]
+];
+```
