@@ -72,9 +72,9 @@ Add your Memsource account credentials:
 return [
     'oblik.memsource' => [
         'login' => [
-			'username' => 'john',
-			'password' => '1234'
-		]
+            'username' => 'john',
+            'password' => '1234'
+        ]
     ]
 ];
 ```
@@ -102,13 +102,13 @@ You may generate context notes on the fly:
 ```php
 return [
     'oblik.memsource' => [
-		'walker' => [
-			'contextNote' => function ($value) {
-				if (strpos($value, '{{ year }}') !== false) {
+        'walker' => [
+            'contextNote' => function ($value) {
+                if (strpos($value, '{{ year }}') !== false) {
                     return "{{ year }} is the current calendar year.";
                 }
-			}
-		]
+            }
+        ]
     ]
 ];
 ```
