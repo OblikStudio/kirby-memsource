@@ -23,9 +23,9 @@ class DiffWalker extends Exporter
 		return parent::walk($model, $context);
 	}
 
-	protected function subcontext($key, $context)
+	protected function subcontext($strategy, $key, $context)
 	{
-		$context = parent::subcontext($key, $context);
+		$context = parent::subcontext($strategy, $key, $context);
 		$translation = $context['translation'] ?? null;
 
 		if (is_array($translation)) {
