@@ -111,7 +111,9 @@
 						<k-button
 							theme="positive"
 							icon="upload"
-							:disabled="!selectedTargetLangs.length"
+							:disabled="
+								!selectedTargetLangs.length || isUploading
+							"
 							@click="upload"
 						>
 							{{ $t("upload") }}
@@ -166,6 +168,7 @@ export default {
 
 		return {
 			isLoadingLangs: false,
+			isUploading: false,
 			dataString: null,
 			project: [],
 			validTargetLangs: [],
@@ -227,6 +230,8 @@ export default {
 			return !data || Object.keys(data).length === 0;
 		},
 		upload() {
+			this.isUploading = true;
+
 			this.$api
 				.post("memsource/upload", {
 					projectId: this.selectedProject.id,
@@ -242,6 +247,9 @@ export default {
 				})
 				.catch((error) => {
 					this.$store.dispatch("notification/error", error);
+				})
+				.then(() => {
+					this.isUploading = false;
 				});
 		},
 		downloadExport() {
