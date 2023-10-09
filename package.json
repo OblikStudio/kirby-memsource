@@ -19,7 +19,7 @@
 		"deep-freeze-node": "^1.1.3"
 	},
 	"devDependencies": {
-		"kirbyup": "^0.21.0"
+		"kirbyup": "^3.0.1"
 	},
 	"prettier": {
 		"htmlWhitespaceSensitivity": "ignore"
