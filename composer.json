@@ -32,7 +32,7 @@
         "source": "https://github.com/OblikStudio/kirby-memsource"
     },
     "require": {
-        "getkirby/cms": ">=3.5 <3.6",
+        "getkirby/cms": "^3.6.6.5",
         "getkirby/composer-installer": "^1.1",
         "oblik/kirby-walker": "3.0.0"
     },
